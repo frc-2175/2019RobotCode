@@ -1,7 +1,5 @@
 package frc.command;
 
-import java.util.ArrayList;
-
 /**
  * Runs commands in parallel (at the same time).
  * This command will end when the last of the commands in parallel has ended.
@@ -46,6 +44,6 @@ public class ParallelCommand implements Command {
     }
 
     public void end() {
-        //Doesn't really do much in this situation
+        // Doesn't really do much in this situation
     }
 }
