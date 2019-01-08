@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import frc.command.Command;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -41,6 +43,7 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private boolean hasAutoEnded;
 
   /**
    * This function is run when the robot is first started up and should be
@@ -51,6 +54,7 @@ public class Robot extends TimedRobot {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    hasAutoEnded = false;
   }
 
   /**
@@ -66,6 +70,25 @@ public class Robot extends TimedRobot {
   }
 
   /**
+   * Runs the execute portion of a command until it is finished.
+   * When it is finished, it'll call the end portion of the command
+   * once.
+   * <p>Note: this method will not call the initialize portion of the 
+   * command.
+   * @param command the command to execute
+   */
+  public void executeCommand(Command command) {
+    if(!hasAutoEnded) {
+      if(!command.isFinished()) {
+        command.execute();
+      } else {
+        command.end();
+        hasAutoEnded = true;
+      }
+    }
+  }
+
+  /**
    * This autonomous (along with the chooser code above) shows how to select
    * between different autonomous modes using the dashboard. The sendable
    * chooser code works with the Java SmartDashboard. If you prefer the
@@ -78,6 +101,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    hasAutoEnded = false;
     m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
     System.out.println("Auto selected: " + m_autoSelected);
