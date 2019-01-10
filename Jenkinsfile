@@ -37,7 +37,7 @@ String urlSanitize(String str) {
 }
 
 node {
-  withEnv(["JAVA_HOME=C:\\Program Files\\Java\\${jdk}"]) {
+  withEnv(["JAVA_HOME=C:\\Users\\Public\\frc2019\\jdk"]) {
     int testCount = 0
     int failureCount = 0
     int skippedCount = 0
