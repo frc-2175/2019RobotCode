@@ -37,7 +37,7 @@ String urlSanitize(String str) {
 }
 
 node {
-  env.PATH = "${tool 'ant'}\\bin;${env.PATH}"
+  env.PATH = "${tool 'gradlew'}\\bin;${env.PATH}"
   withEnv(["JAVA_HOME=C:\\Program Files\\Java\\${jdk}"]) {
     int testCount = 0
     int failureCount = 0
