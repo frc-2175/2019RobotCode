@@ -10,7 +10,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import frc.command.Command;
 
 /**
@@ -19,8 +18,7 @@ import frc.command.Command;
  * documentation. If you change the name of this class or the package after
  * creating this project, you must also update the build.gradle file in the
  * project.
- */
-/*                                                                                                                                         
+ * - FRC Team                                                                                                                                       
  222222222222222      1111111   77777777777777777777555555555555555555 
 2:::::::::::::::22   1::::::1   7::::::::::::::::::75::::::::::::::::5 
 2::::::222222:::::2 1:::::::1   7::::::::::::::::::75::::::::::::::::5 
@@ -37,12 +35,9 @@ import frc.command.Command;
 2::::::2222222:::::21::::::::::1  7::::::7           55:::::::::::::55 
 2::::::::::::::::::21::::::::::1 7::::::7              55:::::::::55   
 2222222222222222222211111111111177777777                 555555555     
+The Fighting Calculators
 */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private boolean hasAutoEnded;
 
   /**
@@ -51,9 +46,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
     hasAutoEnded = false;
   }
 
@@ -94,33 +86,22 @@ public class Robot extends TimedRobot {
    * chooser code works with the Java SmartDashboard. If you prefer the
    * LabVIEW Dashboard, remove all of the chooser code and uncomment the
    * getString line to get the auto name from the text box below the Gyro
-   *
-   * <p>You can add additional auto modes by adding additional comparisons to
-   * the switch structure below with additional strings. If using the
-   * SendableChooser make sure to add them to the chooser code above as well.
+   * 
+   * <p>You will need to initialize whatever autonomous command is selected 
+   * inside this method.
    */
   @Override
   public void autonomousInit() {
     hasAutoEnded = false;
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
   }
 
   /**
    * This function is called periodically during autonomous.
+   * This is where the autonomous commands must be executed.
+   * @see frc.robot.Robot#executeCommand(Command)
    */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
-        break;
-      case kDefaultAuto:
-      default:
-        // Put default auto code here
-        break;
-    }
   }
 
   /**
