@@ -53,7 +53,7 @@ node {
     }
     stage ('Build') {
       try {
-        bat 'ant clean-compile'
+        bat 'gradlew build'
       } catch (Exception e) {
         currentBuild.result = 'ERROR'
         compileSuccess = false
@@ -62,7 +62,7 @@ node {
     if (compileSuccess) {
       stage ('Build and Test') {
         try {
-          bat 'ant clean-jar'
+          bat 'gradlew build'
         } catch (Exception e) {
           currentBuild.result = 'ERROR'
         } 
@@ -81,7 +81,7 @@ node {
       if (failureCount == 0) {
         stage ('Deploy') {
           try {
-            bat 'ant deploy'
+            bat 'gradlew deploy'
           } catch (Exception e) {
             currentBuild.result = 'ERROR'
             deploySuccess = false
