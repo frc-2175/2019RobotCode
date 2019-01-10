@@ -13,6 +13,8 @@ public class ParallelCommand implements Command {
      */
     public ParallelCommand(Command[] commands) {
         this.commands = commands;
+        System.out.println("# Of Commands");
+        System.out.println(commands.length);
         hasEndRunYet = new boolean[commands.length];
     }
     
@@ -27,6 +29,7 @@ public class ParallelCommand implements Command {
             if(!commands[i].isFinished()) {
                 commands[i].execute();
             } else if(!hasEndRunYet[i]) {
+                System.out.println("Ending a command");
                 commands[i].end();
                 hasEndRunYet[i] = true;
             }
@@ -44,6 +47,12 @@ public class ParallelCommand implements Command {
     }
 
     public void end() {
-        // Doesn't really do much in this situation
+        for(int i = 0; i < commands.length; i++) {
+            if(!hasEndRunYet[i]) {
+                System.out.println("Ending a command");
+                commands[i].end();
+                hasEndRunYet[i] = true;
+            }
+        }
     }
 }

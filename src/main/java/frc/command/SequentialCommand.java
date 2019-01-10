@@ -18,16 +18,21 @@ public class SequentialCommand implements Command {
     }
 
     public void init() {
+        index = 0;
         if(!isEmpty) {
             commands[0].init();
         }
     }
 
     public void execute() {
+        System.out.println(index);
         if(!isEmpty) {
+            System.out.println(index);
             if(commands[index].isFinished()) {
+                System.out.println("Ending a command");
                 commands[index].end();
                 if(index < commands.length - 1) {
+                    System.out.println("Starting a new command");
                     index += 1;
                     commands[index].init();
                 }
@@ -38,10 +43,11 @@ public class SequentialCommand implements Command {
     }
 
     public boolean isFinished() {
-        return isEmpty ? true : commands[commands.length - 1].isFinished();
+        boolean isFinished = index == commands.length - 1 && commands[commands.length - 1].isFinished();
+        return isEmpty ? true : isFinished;
     }
 
     public void end() {
-        // Doesn't really do much in this situation
+        commands[commands.length - 1].end();
     }
 }
