@@ -64,17 +64,6 @@ node {
           bat 'gradlew build'
         } catch (Exception e) {
           currentBuild.result = 'ERROR'
-        } 
-        step([$class: 'JUnitResultArchiver', testResults: 'buildtest/results/*.xml', allowEmptyResults: true])
-        def xmlFiles = findFiles(glob: 'buildtest/results/*.xml')
-        for (int i = 0; i < xmlFiles.length; i++) {
-          def file = xmlFiles[i]
-          def contents = readFile file.getPath()
-          
-          testCount += matchInt(contents, 'tests')
-          failureCount += matchInt(contents, 'failures') 
-          failureCount += matchInt(contents, 'errors') // errors are treated as failures
-          skippedCount += matchInt(contents, 'skipped')
         }
       }
       if (failureCount == 0) {
@@ -147,24 +136,6 @@ node {
         slackMessage += "\n\nLink: ${buildUrl}"
         
         slackSend channel: slackChannel, color: (overallSuccess ? 'good' : 'danger'), message: slackMessage.trim()
-      }
-    }
-    stage ('Upload to Archive') {
-      withCredentials([
-        string(credentialsId: archiveHostId, variable: 'ARCHIVEHOST'),
-        string(credentialsId: archivePathId, variable: 'ARCHIVEPATH'),
-        usernamePassword(credentialsId: archiveCredentialsId, passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')
-      ]) {
-        def projectName = getProjectName()
-        def buildDirectory = env.JENKINS_HOME + "\\jobs\\${projectName}\\branches\\${env.BRANCH_NAME}\\builds\\${env.BUILD_NUMBER}"
-        def archiveDirectory = urlSanitize("$ARCHIVEPATH/jobs/${projectName}/${env.BRANCH_NAME}/${env.BUILD_NUMBER}")
-
-        echo "Switching to directory: ${buildDirectory}"
-        dir (buildDirectory) {
-          bat 'copy log log_archive.txt'
-          bat "plink -v -ssh -pw $PASSWORD $USERNAME@$ARCHIVEHOST \"mkdir -p ${archiveDirectory}\""
-          bat returnStatus: true, script: "pscp -r -v -pw $PASSWORD *.xml *.txt *.log $USERNAME@$ARCHIVEHOST:${archiveDirectory}"
-        }
       }
     }
   }
