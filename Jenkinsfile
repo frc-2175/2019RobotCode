@@ -1,9 +1,6 @@
 repoURL = 'https://github.com/frc-2175/2018RobotCode'
 jdk = 'jdk1.8.0_111'
 slackChannel = '#code'
-archiveCredentialsId = 'archive-ssh'
-archiveHostId = 'archive-host'
-archivePathId = 'archive-path'
 
 void setBuildStatus(String message, String state) {
   step([
