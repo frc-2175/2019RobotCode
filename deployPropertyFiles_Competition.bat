@@ -1,6 +1,6 @@
 ::Shared Files
-pscp -pw "" src\properties\*.properties admin@roborio-2175-frc.local:/home/lvuser
+echo y | pscp -pw "" src\Properties\*.properties admin@roborio-2175-frc.local:/home/lvuser
 ::Bot Specified Files
-pscp -pw "" src\properties\compBot\*.properties admin@roborio-2175-frc.local:/home/lvuser
+echo y | pscp -pw "" src\Properties\compBot\*.properties admin@roborio-2175-frc.local:/home/lvuser
 ::SSH files to robot
-plink -ssh -pw "" admin@roborio-2175-frc.local "mkdir -m 775 -v -p log; . /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r"
+echo y | plink -ssh -pw "" admin@roborio-2175-frc.local "mkdir -m 775 -v -p log; . /etc/profile.d/natinst-path.sh; /usr/local/frc/bin/frcKillRobot.sh -t -r"
