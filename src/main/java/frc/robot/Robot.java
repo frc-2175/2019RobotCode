@@ -8,8 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.command.Command;
 
 /**
@@ -40,6 +38,8 @@ The Fighting Calculators
 public class Robot extends TimedRobot {
   private boolean hasAutoEnded;
 
+  //WPI Lib Functions
+
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -61,6 +61,46 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
   }
 
+  
+  /**
+   * This autonomous (along with the chooser code above) shows how to select
+   * between different autonomous modes using the dashboard. The sendable
+   * chooser code works with the Java SmartDashboard. If you prefer the
+   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
+   * getString line to get the auto name from the text box below the Gyro
+   * 
+   * <p>You will need to initialize whatever autonomous command is selected 
+   * inside this method.
+   */
+  @Override
+  public void autonomousInit() {
+    hasAutoEnded = false;
+  }
+  
+  /**
+   * This function is called periodically during autonomous.
+   * This is where the autonomous commands must be executed.
+   * @see frc.robot.Robot#executeCommand(Command)
+   */
+  @Override
+  public void autonomousPeriodic() {
+  }
+  
+  /**
+   * This function is called periodically during operator control.
+   */
+  @Override
+  public void teleopPeriodic() {
+  }
+  
+  /**
+   * This function is called periodically during test mode.
+   */
+  @Override
+  public void testPeriodic() {
+  }
+
+  // Custom Functions
   /**
    * Runs the execute portion of a command until it is finished.
    * When it is finished, it'll call the end portion of the command
@@ -80,41 +120,15 @@ public class Robot extends TimedRobot {
     }
   }
 
-  /**
-   * This autonomous (along with the chooser code above) shows how to select
-   * between different autonomous modes using the dashboard. The sendable
-   * chooser code works with the Java SmartDashboard. If you prefer the
-   * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-   * getString line to get the auto name from the text box below the Gyro
-   * 
-   * <p>You will need to initialize whatever autonomous command is selected 
-   * inside this method.
-   */
-  @Override
-  public void autonomousInit() {
-    hasAutoEnded = false;
-  }
-
-  /**
-   * This function is called periodically during autonomous.
-   * This is where the autonomous commands must be executed.
-   * @see frc.robot.Robot#executeCommand(Command)
-   */
-  @Override
-  public void autonomousPeriodic() {
-  }
-
-  /**
-   * This function is called periodically during operator control.
-   */
-  @Override
-  public void teleopPeriodic() {
-  }
-
-  /**
-   * This function is called periodically during test mode.
-   */
-  @Override
-  public void testPeriodic() {
-  }
+  public static double deadband(double value, double deadband) {
+		if (Math.abs(value) > deadband) {
+			if (value > 0.0) {
+				return (value - deadband) / (1.0 - deadband);
+			} else {
+				return (value + deadband) / (1.0 - deadband);
+			}
+		} else {
+			return 0.0;
+		}
+	}
 }
