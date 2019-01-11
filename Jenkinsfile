@@ -1,5 +1,4 @@
-repoURL = 'https://github.com/frc-2175/2018RobotCode'
-jdk = 'jdk1.8.0_111'
+repoURL = 'https://github.com/frc-2175/2019RobotCode'
 slackChannel = '#code'
 
 void setBuildStatus(String message, String state) {
@@ -86,7 +85,7 @@ node {
         if (deploySuccess) {
           stage ('Startup') {
             try {
-              bat 'ant compile-listener'
+              bat 'gradlew :listener:build'
 
               echo '--------------------------\nStarting practice robot\n--------------------------'
               bat 'deployPropertiesFiles_Practice.bat'
