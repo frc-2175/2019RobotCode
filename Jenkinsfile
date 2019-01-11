@@ -52,17 +52,6 @@ node {
       } catch (Exception e) {
         currentBuild.result = 'ERROR'
         compileSuccess = false
-      } 
-      step([$class: 'JUnitResultArchiver', testResults: 'buildtest/results/*.xml', allowEmptyResults: true])
-      def xmlFiles = findFiles(glob: 'buildtest/results/*.xml')
-      for (int i = 0; i < xmlFiles.length; i++) {
-        def file = xmlFiles[i]
-        def contents = readFile file.getPath()
-
-        testCount += matchInt(contents, 'tests')
-        failureCount += matchInt(contents, 'failures') 
-        failureCount += matchInt(contents, 'errors') // errors are treated as failures
-        skippedCount += matchInt(contents, 'skipped')
       }
     }
     if (compileSuccess) {
@@ -71,6 +60,17 @@ node {
           bat 'gradlew build'
         } catch (Exception e) {
           currentBuild.result = 'ERROR'
+        }
+        step([$class: 'JUnitResultArchiver', testResults: 'buildtest/results/*.xml', allowEmptyResults: true])
+        def xmlFiles = findFiles(glob: 'buildtest/results/*.xml')
+        for (int i = 0; i < xmlFiles.length; i++) {
+          def file = xmlFiles[i]
+          def contents = readFile file.getPath()
+
+          testCount += matchInt(contents, 'tests')
+          failureCount += matchInt(contents, 'failures') 
+          failureCount += matchInt(contents, 'errors') // errors are treated as failures
+          skippedCount += matchInt(contents, 'skipped')
         }
       }
       if (failureCount == 0) {
