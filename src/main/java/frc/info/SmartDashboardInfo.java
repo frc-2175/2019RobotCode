@@ -82,4 +82,3 @@ public class SmartDashboardInfo {
 		return SmartDashboard.getRaw(PREFIX + key, defaultArray);
 	}
 }
-}
