@@ -60,21 +60,21 @@ node {
     if (compileSuccess) {
       stage ('Build and Test') {
         try {
-          bat 'gradlew build'
+          bat 'gradlew test'
         } catch (Exception e) {
           currentBuild.result = 'ERROR'
         }
         step([$class: 'JUnitResultArchiver', testResults: 'buildtest/results/*.xml', allowEmptyResults: true])
-        //def xmlFiles = findFiles(glob: 'buildtest/results/*.xml')
-        //for (int i = 0; i < xmlFiles.length; i++) {
-        //  def file = xmlFiles[i]
-        //  def contents = readFile file.getPath()
+        def xmlFiles = findFiles(glob: 'buildtest/results/*.xml')
+        for (int i = 0; i < xmlFiles.length; i++) {
+          def file = xmlFiles[i]
+          def contents = readFile file.getPath()
 
-        //  testCount += matchInt(contents, 'tests')
-        //  failureCount += matchInt(contents, 'failures') 
-        //  failureCount += matchInt(contents, 'errors') // errors are treated as failures
-        //  skippedCount += matchInt(contents, 'skipped')
-        //}
+          testCount += matchInt(contents, 'tests')
+          failureCount += matchInt(contents, 'failures') 
+          failureCount += matchInt(contents, 'errors') // errors are treated as failures
+          skippedCount += matchInt(contents, 'skipped')
+        }
       }
       if (failureCount == 0) {
         stage ('Deploy') {
@@ -91,14 +91,14 @@ node {
               bat 'gradlew :listener:build'
 
               echo '--------------------------\nStarting practice robot\n--------------------------'
-              // bat 'deployPropertiesFiles_Practice.bat'
+              bat 'deployPropertiesFiles_Practice.bat'
               timeout (time: 30, unit: 'SECONDS') {
                 bat 'java -jar listener\\build\\libs\\listener.jar'
               }
               echo 'Practice robot started up successfully!\n'
 
               echo '--------------------------\nStarting competition robot\n--------------------------'
-              // bat 'deployPropertiesFiles_Competition.bat'
+              bat 'deployPropertiesFiles_Competition.bat'
               timeout (time: 30, unit: 'SECONDS') {
                 bat 'java -jar listener\\build\\libs\\listener.jar'
               }
@@ -141,9 +141,6 @@ node {
             }
           }
         }
-
-        def buildUrl = urlSanitize("http://fightingcalculators.org/ci/${getProjectName()}/${env.BRANCH_NAME}/${env.BUILD_NUMBER}")
-        slackMessage += "\n\nLink: ${buildUrl}"
         
         slackSend channel: slackChannel, color: (overallSuccess ? 'good' : 'danger'), message: slackMessage.trim()
       }
