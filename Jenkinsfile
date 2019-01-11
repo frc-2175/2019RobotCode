@@ -36,6 +36,7 @@ node {
   env.PATH = "C:\\Users\\Public\\frc2019\\roborio\bin;${env.PATH}"
   env.PATH = "C:\\Users\\Public\\frc2019\\frccode;${env.PATH}"
   env.PATH = "C:\\Users\\Public\\frc2019\\jdk\\bin;${env.PATH}"
+  env.PATH = "C:\\Program Files\\PuTTY;${env.PATH}"
   withEnv(["JAVA_HOME=C:\\Users\\Public\\frc2019\\jdk"]) {
     int testCount = 0
     int failureCount = 0
