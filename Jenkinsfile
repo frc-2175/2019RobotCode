@@ -88,16 +88,16 @@ node {
               bat 'gradlew :listener:build'
 
               echo '--------------------------\nStarting practice robot\n--------------------------'
-              bat 'deployPropertiesFiles_Practice.bat'
+              // bat 'deployPropertiesFiles_Practice.bat'
               timeout (time: 30, unit: 'SECONDS') {
-                bat 'java -jar buildlistener\\listener.jar'
+                bat 'java -jar listener\\build\\libs\\listener.jar'
               }
               echo 'Practice robot started up successfully!\n'
 
               echo '--------------------------\nStarting competition robot\n--------------------------'
-              bat 'deployPropertiesFiles_Competition.bat'
+              // bat 'deployPropertiesFiles_Competition.bat'
               timeout (time: 30, unit: 'SECONDS') {
-                bat 'java -jar buildlistener\\listener.jar'
+                bat 'java -jar listener\\build\\libs\\listener.jar'
               }
               echo 'Competition robot started up successfully!\n'
             } catch (Exception e) {
