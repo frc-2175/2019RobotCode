@@ -64,8 +64,8 @@ node {
         } catch (Exception e) {
           currentBuild.result = 'ERROR'
         }
-        step([$class: 'JUnitResultArchiver', testResults: 'buildtest/results/*.xml', allowEmptyResults: true])
-        def xmlFiles = findFiles(glob: 'buildtest/results/*.xml')
+        // step([$class: 'JUnitResultArchiver', testResults: 'buildtest/results/*.xml', allowEmptyResults: true])
+        def xmlFiles = findFiles(glob: 'build/test-results/**/*.xml')
         for (int i = 0; i < xmlFiles.length; i++) {
           def file = xmlFiles[i]
           def contents = readFile file.getPath()
