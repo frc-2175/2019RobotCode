@@ -61,7 +61,11 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
   }
 
-  
+  @Override
+  public void disabledInit() {
+    System.out.println("Robot program is disabled and ready.");
+  }
+
   /**
    * This autonomous (along with the chooser code above) shows how to select
    * between different autonomous modes using the dashboard. The sendable
