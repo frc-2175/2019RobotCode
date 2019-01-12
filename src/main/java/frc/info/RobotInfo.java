@@ -1,6 +1,5 @@
 package frc.info;
 
-import com.ctre.phoenix.motorcontrol.can.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,7 +7,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Properties;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.MotorWrapper;
+import frc.SolenoidWrapper;
+import frc.log.LoggableAnalogInput;
+import frc.log.LoggableJoystick;
+import frc.log.LoggableJoystickButton;
+import frc.log.LoggableNavX;
+import frc.log.LoggableSolenoid;
+import frc.log.LoggableTalonSRX;
+import frc.log.LoggableVictorSPX;
+import frc.log.RobotLogger;
 
 public class RobotInfo {
     public static interface ValueContainer {
@@ -17,12 +33,14 @@ public class RobotInfo {
     
     private static final String CAN_T_CONTINUE_MSG = "; can't continue";
     private final boolean isComp;
-    private HashMap<String, Object> info;
+	private HashMap<String, Object> info;
+	private final RobotLogger robotLogger;
 
     public RobotInfo() {
         Properties properties = loadProperties("/home/lvuser/bot.properties");
         isComp = Boolean.parseBoolean((String) properties.get("isComp"));
-        info = new HashMap<>();
+		info = new HashMap<>();
+		robotLogger = new RobotLogger();
         populate();
     }
 
@@ -34,10 +52,20 @@ public class RobotInfo {
 
 	}
 	
+	/**
+	 * Shorthand for creating a motor wrapper for a talon
+	 * @param talon the talon object to add to the wrapper
+	 * @return a motor wrapper object containing the talon parameter
+	 */
 	private MotorWrapper talon(WPI_TalonSRX talon) {
 		return new MotorWrapper(talon);
 	}
 
+	/**
+	 * Shorthand for creating a motor wrapper for a victor
+	 * @param victor the talon object to add to the wrapper
+	 * @return a motor wrapper object containing the victor parameter
+	 */
 	private MotorWrapper victor(WPI_VictorSPX victor) {
 		return new MotorWrapper(victor);
 	}
@@ -49,9 +77,11 @@ public class RobotInfo {
      * being run on is the competition robot
      * @param practice will be put in the has map if the robot the code is
      * being run on is the practice robot
+	 * @param name a human-readable name for the device (with spaces and all)
      */
-    private void put(String key, Object comp, Object practice) {
+    private void put(String key, Object comp, Object practice, String name) {
 		Object choice = isComp ? comp : practice;
+		addToLogger(choice, name);
 		info.put(key, choice);
 	}
     /**
@@ -59,8 +89,10 @@ public class RobotInfo {
      * @param key the key by which the object is referred to
      * @param value the object to put into the hash map (regardless of 
      * competition/practice robot)
+	 * @param name a human-readable name for the device (with spaces and all)
      */
-	private void put(String key, Object value) {
+	private void put(String key, Object value, String name) {
+		addToLogger(value, name);
 		info.put(key, value);
     }
 
@@ -70,11 +102,13 @@ public class RobotInfo {
      * <p>Format: put(KEY_VARIABLE, () -> WhateverSolenoidThing(port1, port2), 
      * () -> WhateverSolenoidThing(port1, port2))
      * @param key the key by which the object is referred to
-     * @param comp
-     * @param practice
+     * @param comp the value container for the competition robot
+     * @param practice the value container for the practice robot
+	 * @param name a human-readable name for the device (with spaces and all)
      */
-    private void put(String key, ValueContainer comp, ValueContainer practice) {
+    private void put(String key, ValueContainer comp, ValueContainer practice, String name) {
 		Object choice = isComp ? comp.get() : practice.get();
+		addToLogger(choice, name);
 		info.put(key, choice);
 	}
     
@@ -87,6 +121,28 @@ public class RobotInfo {
     @SuppressWarnings("unchecked")
     public <T> T get(String key) {
 		return (T) info.get(key);
+	}
+
+
+	public void addToLogger(Object device, String name) {
+		if (device.getClass() == SolenoidWrapper.class) {
+			robotLogger.addLoggable(new LoggableSolenoid(name, (SolenoidWrapper) device));
+		} else if (device.getClass() == WPI_TalonSRX.class) {
+			robotLogger.addLoggable(new LoggableTalonSRX(name, (WPI_TalonSRX) device));
+		} else if (device.getClass() == WPI_VictorSPX.class) {
+			robotLogger.addLoggable(new LoggableVictorSPX(name, (WPI_VictorSPX) device));
+		} else if (device.getClass() == Joystick.class) {
+			robotLogger.addLoggable(new LoggableJoystick(name, (Joystick) device));
+		} else if (device.getClass() == JoystickButton.class) {
+			robotLogger.addLoggable(new LoggableJoystickButton(name, (JoystickButton) device));
+		} else if (device.getClass() == AnalogInput.class) {
+			robotLogger.addLoggable(new LoggableAnalogInput(name, (AnalogInput) device));
+		} else if (device.getClass() == MotorWrapper.class) {
+			MotorWrapper mw = (MotorWrapper) device;
+			addToLogger(mw.getMotor(), name);
+		} else if (device.getClass() == AHRS.class) {
+			robotLogger.addLoggable(new LoggableNavX((AHRS) device, name));
+		}
 	}
 
     // Properties Loading Code... not much reason to change this
