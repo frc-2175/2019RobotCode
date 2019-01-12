@@ -1,17 +1,16 @@
 package netconsole2;
 
 import java.io.DataInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -206,7 +205,7 @@ public class RioConsole {
       sender = new Thread(() -> {
         while (!Thread.interrupted() && !cleanup.get()) {
           try {
-            Thread.currentThread().sleep(2000);
+            Thread.sleep(2000);
             out.write(emptyFrame);
             out.flush();
           } catch (InterruptedException e) {
@@ -272,7 +271,7 @@ public class RioConsole {
           if (teamNumber == null) {
             try {
               // wait a bit so we don't hammer the CPU
-              Thread.currentThread().sleep(5000);
+              Thread.sleep(5000);
             } catch (InterruptedException e) {
               Thread.currentThread().interrupt();
               break;
