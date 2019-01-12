@@ -1,5 +1,5 @@
 repoURL = 'https://github.com/frc-2175/2019RobotCode'
-slackChannel = '#code'
+slackChannel = '#code-automessages'
 
 void setBuildStatus(String message, String state) {
   step([
