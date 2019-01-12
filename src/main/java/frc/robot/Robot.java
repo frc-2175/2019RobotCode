@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.*;
 import frc.command.Command;
 import frc.subsystem.DrivetrainSubsystem;
+import frc.subsystem.HatchIntakeSubsystem;
 import frc.info.*;
 
 
@@ -97,6 +98,10 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     hasAutoEnded = false;
+
+    new RobotInfo();
+
+    new HatchIntakeSubsystem();
   }
   
   /**

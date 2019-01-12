@@ -10,11 +10,14 @@ import java.util.HashMap;
 import java.util.Properties;
 import frc.MotorWrapper;
 import frc.ServiceLocator;
+import frc.SolenoidWrapper;
 
 public class RobotInfo {
 
 	public static final String LEFT_MOTOR_MASTER = "drivetrain.motor.left";
 	public static final String RIGHT_MOTOR_MASTER = "drivetrain.motor.right";
+	public static final String HATCH_ROLLER_BAR_MOTOR = "intake.hatch.motor.rollerbar";
+	public static final String HATCH_ACTUATOR_SOLENOID = "intake.hatch.solenoid.actuator";
 
 	public static interface ValueContainer {
 		public Object get();
@@ -39,6 +42,8 @@ public class RobotInfo {
     public void populate() {
 		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(1)));
 		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(6)));
+		put(HATCH_ROLLER_BAR_MOTOR, talon(new WPI_TalonSRX(2)));
+		put(HATCH_ACTUATOR_SOLENOID, new SolenoidWrapper(0));
 	}
 	
 	private MotorWrapper talon(WPI_TalonSRX talon) {
