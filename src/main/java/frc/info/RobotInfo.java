@@ -9,9 +9,14 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Properties;
 import frc.MotorWrapper;
+import frc.ServiceLocator;
 
 public class RobotInfo {
-    public static interface ValueContainer {
+
+	public static final String LEFT_MOTOR_MASTER = "drivetrain.motor.left";
+	public static final String RIGHT_MOTOR_MASTER = "drivetrain.motor.right";
+
+	public static interface ValueContainer {
 		public Object get();
 	}
     
@@ -20,6 +25,7 @@ public class RobotInfo {
     private HashMap<String, Object> info;
 
     public RobotInfo() {
+		ServiceLocator.register(this);
         Properties properties = loadProperties("/home/lvuser/bot.properties");
         isComp = Boolean.parseBoolean((String) properties.get("isComp"));
         info = new HashMap<>();
@@ -31,7 +37,8 @@ public class RobotInfo {
      * @see frc.info.RobotInfo#put(String, Object)
      * */ 
     public void populate() {
-
+		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(1)));
+		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(6)));
 	}
 	
 	private MotorWrapper talon(WPI_TalonSRX talon) {
