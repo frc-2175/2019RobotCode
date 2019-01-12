@@ -38,7 +38,7 @@ The Fighting Calculators
 public class Robot extends TimedRobot {
   private boolean hasAutoEnded;
 
-  //WPI Lib Functions
+  // WPI Lib Functions
 
   /**
    * This function is run when the robot is first started up and should be
@@ -105,6 +105,7 @@ public class Robot extends TimedRobot {
   }
 
   // Custom Functions
+
   /**
    * Runs the execute portion of a command until it is finished.
    * When it is finished, it'll call the end portion of the command
@@ -124,6 +125,13 @@ public class Robot extends TimedRobot {
     }
   }
 
+  /**
+   * Takes an input value and applies a deadband to it with ramping.
+   * Maintains a full -1 to +1 coverage of output.
+   * @param value the value to apply a deadband on
+   * @param deadband the deadband threshold (same upper as lower)
+   * @return the value with the applied deadband
+   */
   public static double deadband(double value, double deadband) {
 		if (Math.abs(value) > deadband) {
 			if (value > 0.0) {
