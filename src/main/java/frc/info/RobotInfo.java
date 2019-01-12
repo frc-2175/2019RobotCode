@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Properties;
+import frc.MotorWrapper;
 
 public class RobotInfo {
     public static interface ValueContainer {
@@ -30,7 +31,15 @@ public class RobotInfo {
      * */ 
     public void populate() {
 
-    }
+	}
+	
+	private MotorWrapper talon(WPI_TalonSRX talon) {
+		return new MotorWrapper(talon);
+	}
+
+	private MotorWrapper victor(WPI_VictorSPX victor) {
+		return new MotorWrapper(victor);
+	}
 
     /**
      * Puts an object in the hash map
