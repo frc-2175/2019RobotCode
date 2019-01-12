@@ -1,1 +1,0 @@
-Stores info and hashmaps

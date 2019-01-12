@@ -8,7 +8,11 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Properties;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 public class RobotInfo {
+	public static final String CARGO_ROLLER_BAR_MOTOR = "intake.cargo.motor.rollerbar";
+	public static final String  CARGO_BOX_MOTOR = "intake.cargo.motor.box";
     public static interface ValueContainer {
 		public Object get();
 	}
@@ -29,7 +33,8 @@ public class RobotInfo {
      * @see frc.info.RobotInfo#put(String, Object)
      * */ 
     public void populate() {
-
+		put(CARGO_ROLLER_BAR_MOTOR, new TalonSRX(0));
+		put(CARGO_BOX_MOTOR, new TalonSRX(1));
     }
 
     /**
