@@ -60,6 +60,7 @@ public class ErrorMessage implements Message {
       output.endStyle();
       output.append('\t');
       output = new IndentAppendable(output, "\t\t");
+      formatter.close();
     }
 
     // error/warning label

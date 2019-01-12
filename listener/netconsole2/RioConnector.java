@@ -1,20 +1,18 @@
 package netconsole2;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,6 +102,7 @@ public class RioConnector {
         }
 
         if (isDone()) {
+          socket.close();
           return;
         }
 
@@ -113,6 +112,7 @@ public class RioConnector {
         Matcher m = dsPattern.matcher(json);
         if (!m.find()) {
           logger.log("DS did not provide robotIP");
+          socket.close();
           return;
         }
         long ip = 0;
@@ -126,6 +126,7 @@ public class RioConnector {
 
         // If zero, the DS isn't connected to the robot
         if (ip == 0) {
+          socket.close();
           return;
         }
 
@@ -137,6 +138,8 @@ public class RioConnector {
             (byte)(ip & 0xff)});
         logger.log("DS provided " + address.getHostAddress());
         startConnect(address);
+
+        socket.close();
       } catch (Exception e) {
         if (!isDone()) {
           //logger.log("could not get IP from DS");
@@ -207,7 +210,7 @@ public class RioConnector {
   private void startTimeDelay(int timeout) {
     startAttempt("timeout", new Thread(() -> {
       try {
-        Thread.currentThread().sleep(timeout);
+        Thread.sleep(timeout);
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       } finally {
