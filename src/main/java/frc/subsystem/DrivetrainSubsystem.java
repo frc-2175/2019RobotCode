@@ -30,8 +30,6 @@ public class DrivetrainSubsystem {
 		// rightSlave = robotInfo.get(RobotInfo.RIGHT_MOTOR_SLAVE);
 		// driveShifters = robotInfo.get(RobotInfo.DRIVE_SHIFTERS);
 
-		rightMaster.setInverted(true);
-
 		// leftSlave.follow(leftMaster);
 		// rightSlave.follow(rightMaster);
 
@@ -141,7 +139,7 @@ public class DrivetrainSubsystem {
 	}
 
 	public void tankDrive(double leftSpeed, double rightSpeed) {
-		robotDrive.tankDrive(-leftSpeed, -rightSpeed);
+		robotDrive.tankDrive(leftSpeed, rightSpeed);
 	}
 
 }

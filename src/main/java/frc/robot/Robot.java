@@ -48,6 +48,7 @@ public class Robot extends TimedRobot {
   private Joystick gamepad;
 
   private DrivetrainSubsystem drivetrainSubsystem;
+  private HatchIntakeSubsystem hatchIntakeSubsystem;
 
   //WPI Lib Functions
 
@@ -62,6 +63,7 @@ public class Robot extends TimedRobot {
     new RobotInfo();
 
     drivetrainSubsystem = new DrivetrainSubsystem();
+    hatchIntakeSubsystem = new HatchIntakeSubsystem();
 
     leftJoystick = new Joystick(0);
     rightJoystick = new Joystick(1);
@@ -98,10 +100,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     hasAutoEnded = false;
-
-    new RobotInfo();
-
-    new HatchIntakeSubsystem();
   }
   
   /**
@@ -118,8 +116,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    // drivetrainSubsystem.blendedDrive(leftJoystick.getY(), rightJoystick.getX());
-    drivetrainSubsystem.arcadeDrive(leftJoystick.getY(), rightJoystick.getX());
+    drivetrainSubsystem.blendedDrive(leftJoystick.getY(), -rightJoystick.getX());
+    if (leftJoystick.getRawButton(1)) {
+      hatchIntakeSubsystem.spinIn();
+    } else if (rightJoystick.getRawButton(1)) {
+      hatchIntakeSubsystem.spinOut();
+    } else {
+      hatchIntakeSubsystem.stopSpinning();
+    }
   }
   
   /**

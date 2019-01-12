@@ -7,7 +7,7 @@ import frc.info.*;
 
 public class HatchIntakeSubsystem {
 	private MotorWrapper rollerBarMotor;
-	private SolenoidWrapper actuatorSolenoid;
+	// private SolenoidWrapper actuatorSolenoid;
 
 	public HatchIntakeSubsystem() {
 		ServiceLocator.register(this);
@@ -15,7 +15,7 @@ public class HatchIntakeSubsystem {
 		RobotInfo robotInfo = ServiceLocator.get(RobotInfo.class);
 
 		rollerBarMotor = robotInfo.get(RobotInfo.HATCH_ROLLER_BAR_MOTOR);
-		actuatorSolenoid = robotInfo.get(RobotInfo.HATCH_ACTUATOR_SOLENOID);
+		// actuatorSolenoid = robotInfo.get(RobotInfo.HATCH_ACTUATOR_SOLENOID);
 	}
 
 	public void spinIn() {
@@ -25,13 +25,17 @@ public class HatchIntakeSubsystem {
 	public void spinOut() {
 		rollerBarMotor.set(-0.3);
 	}
-
-	public void setIntakeUp() {
-		actuatorSolenoid.set(true);
+	
+	public void stopSpinning() {
+		rollerBarMotor.set(0);
 	}
 
-	public void setIntakeDown() {
-		actuatorSolenoid.set(false);
-	}
+	// public void setIntakeUp() {
+	// 	actuatorSolenoid.set(true);
+	// }
+
+	// public void setIntakeDown() {
+	// 	actuatorSolenoid.set(false);
+	// }
 
 }
