@@ -1,10 +1,13 @@
 package frc.subsystem;
 
-import frc.*;
-import frc.info.*;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase;
+import frc.MotorWrapper;
+import frc.SolenoidWrapper;
+import frc.ServiceLocator;
+import frc.VirtualSpeedController;
+import frc.info.RobotInfo;
 
-import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.drive.*;
 
 public class DrivetrainSubsystem {
 

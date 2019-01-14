@@ -3,7 +3,7 @@ package frc.subsystem;
 import frc.MotorWrapper;
 import frc.SolenoidWrapper;
 import frc.ServiceLocator;
-import frc.info.*;
+import frc.info.RobotInfo;
 
 public class HatchIntakeSubsystem {
 	private MotorWrapper rollerBarMotor;

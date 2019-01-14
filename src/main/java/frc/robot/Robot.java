@@ -7,14 +7,13 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.*;
 import frc.command.Command;
+import frc.info.RobotInfo;
 import frc.subsystem.DrivetrainSubsystem;
 import frc.subsystem.HatchIntakeSubsystem;
 import frc.subsystem.VisionSubsystem;
-import frc.info.*;
-
 
 /**
  * The VM is configured to automatically run this class, and to call the
