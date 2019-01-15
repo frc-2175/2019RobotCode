@@ -160,6 +160,12 @@ public class Robot extends TimedRobot {
     }
   }
 
+  /**
+   * Applies deadband onto input value
+   * @param value input for value
+   * @param deadband threshold for deadband
+   * @return value with deadband
+   */
   public static double deadband(double value, double deadband) {
 		if (Math.abs(value) > deadband) {
 			if (value > 0.0) {
