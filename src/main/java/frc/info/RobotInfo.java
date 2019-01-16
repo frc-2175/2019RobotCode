@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.MotorWrapper;
+import frc.ServiceLocator;
 import frc.SolenoidWrapper;
 import frc.log.LoggableAnalogInput;
 import frc.log.LoggableJoystick;
@@ -27,7 +28,13 @@ import frc.log.LoggableVictorSPX;
 import frc.log.RobotLogger;
 
 public class RobotInfo {
-    public static interface ValueContainer {
+
+	public static final String LEFT_MOTOR_MASTER = "drivetrain.motor.left";
+	public static final String RIGHT_MOTOR_MASTER = "drivetrain.motor.right";
+	public static final String HATCH_ROLLER_BAR_MOTOR = "intake.hatch.motor.rollerbar";
+	public static final String HATCH_ACTUATOR_SOLENOID = "intake.hatch.solenoid.actuator";
+
+	public static interface ValueContainer {
 		public Object get();
 	}
     
@@ -37,6 +44,7 @@ public class RobotInfo {
 	private final RobotLogger robotLogger;
 
     public RobotInfo() {
+		ServiceLocator.register(this);
         Properties properties = loadProperties("/home/lvuser/bot.properties");
         isComp = Boolean.parseBoolean((String) properties.get("isComp"));
 		info = new HashMap<>();
@@ -49,7 +57,10 @@ public class RobotInfo {
      * @see frc.info.RobotInfo#put(String, Object)
      * */ 
     public void populate() {
-
+		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(1)), "Left Master Motor");
+		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(6)), "Right Master Motor");
+		put(HATCH_ROLLER_BAR_MOTOR, talon(new WPI_TalonSRX(2)), "Hatch Intake Roller Bar");
+		//put(HATCH_ACTUATOR_SOLENOID, new SolenoidWrapper(0));
 	}
 	
 	/**
