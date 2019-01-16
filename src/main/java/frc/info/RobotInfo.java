@@ -1,5 +1,6 @@
 package frc.info;
 
+import com.ctre.phoenix.motorcontrol.can.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -7,13 +8,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Properties;
+import frc.MotorWrapper;
+import frc.ServiceLocator;
+import frc.SolenoidWrapper;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class RobotInfo {
 	public static final String CARGO_ROLLER_BAR_MOTOR = "intake.cargo.motor.rollerbar";
 	public static final String  CARGO_BOX_MOTOR = "intake.cargo.motor.box";
-    public static interface ValueContainer {
+
+	public static final String LEFT_MOTOR_MASTER = "drivetrain.motor.left";
+	public static final String RIGHT_MOTOR_MASTER = "drivetrain.motor.right";
+	public static final String HATCH_ROLLER_BAR_MOTOR = "intake.hatch.motor.rollerbar";
+	public static final String HATCH_ACTUATOR_SOLENOID = "intake.hatch.solenoid.actuator";
+
+	public static interface ValueContainer {
 		public Object get();
 	}
     
@@ -22,6 +32,7 @@ public class RobotInfo {
     private HashMap<String, Object> info;
 
     public RobotInfo() {
+		ServiceLocator.register(this);
         Properties properties = loadProperties("/home/lvuser/bot.properties");
         isComp = Boolean.parseBoolean((String) properties.get("isComp"));
         info = new HashMap<>();
@@ -34,8 +45,20 @@ public class RobotInfo {
      * */ 
     public void populate() {
 		put(CARGO_ROLLER_BAR_MOTOR, new TalonSRX(0));
-		put(CARGO_BOX_MOTOR, new TalonSRX(1));
-    }
+		put(CARGO_BOX_MOTOR, new TalonSRX(3));
+		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(1)));
+		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(6)));
+		put(HATCH_ROLLER_BAR_MOTOR, talon(new WPI_TalonSRX(2)));
+		//put(HATCH_ACTUATOR_SOLENOID, new SolenoidWrapper(0));
+	}
+	
+	private MotorWrapper talon(WPI_TalonSRX talon) {
+		return new MotorWrapper(talon);
+	}
+
+	private MotorWrapper victor(WPI_VictorSPX victor) {
+		return new MotorWrapper(victor);
+	}
 
     /**
      * Puts an object in the hash map

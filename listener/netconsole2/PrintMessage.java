@@ -35,6 +35,7 @@ public class PrintMessage implements Message {
       output.endStyle();
       output.append('\t');
       output = new IndentAppendable(output, "\t\t");
+      formatter.close();
     }
 
     // line
