@@ -22,12 +22,4 @@ public class CSVWriter {
     public void close() throws IOException {
         writer.close();
     }
-
-    public static void main(String args[]) throws IOException {
-        CSVWriter csv = new CSVWriter("test");
-        String[] row = { "Value 1", "Value 2", "Test" };
-        csv.newRow(row);
-        csv.newRow(row);
-        csv.close();
-    }
 }
