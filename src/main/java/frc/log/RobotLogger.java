@@ -1,8 +1,6 @@
 package frc.log;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,8 +13,6 @@ import java.util.logging.Logger;
 
 import frc.ServiceLocator;
 
-import edu.wpi.first.wpilibj.Timer;
-
 public class RobotLogger {
 	private ArrayList<Loggable> loggers;
 	private final static Logger log = Logger.getLogger(RobotLogger.class.getName());
@@ -24,17 +20,7 @@ public class RobotLogger {
 	private int matchNumber = 0;
 	private final static int NUMBER_OF_FOLDERS_TO_KEEP = 10;
 
-	public static class LogEntry {
-		double timestamp;
-		HashMap<String, Object> values;
-
-		public LogEntry(HashMap<String, Object> values) {
-			this.timestamp = Timer.getFPGATimestamp();
-			this.values = values;
-		}
-	}
-
-	private HashMap<Loggable, BufferedWriter> writers;
+	private HashMap<Loggable, CSVWriter> writers;
 
 	public RobotLogger() {
 		File workingDirectory = new File(BASE_DIRECTORY);
@@ -104,30 +90,28 @@ public class RobotLogger {
 		loggers.add(loggable);
 	}
 
-	public void flush() {
-		for (BufferedWriter w : writers.values()) {
-			try {
-				w.flush();
-			} catch (IOException e) {
-				log.log(Level.WARNING, "Failed to flush", e);
-			}
-		}
-	}
-
 	public String getLogFilename(Loggable l) {
 		return BASE_DIRECTORY + "/" + matchNumber + "/" + l.getLogType() + "-" + l.getId().replace(" ", "") + ".data";
 	}
 
 	public void logLoggable(Loggable l) throws IOException {
-		BufferedWriter w = writers.get(l);
+		CSVWriter w = writers.get(l);
 		if (w == null) {
-			w = new BufferedWriter(new FileWriter(getLogFilename(l)));
+			w = new CSVWriter(getLogFilename(l));
 			writers.put(l, w);
+			ArrayList<String> keys = new ArrayList<>();
+			for(String key : l.getValues().keySet()) {
+				keys.add(key);
+			}
+			w.newRow((String[]) keys.toArray());
 		}
 
-		// CHANGE THIS TO CSV STUFF!!!!!!!!!
-		String json = "";
-		w.write(json + "\n");
+		ArrayList<String> row = new ArrayList<>();
+		for(Object value : l.getValues().values()) {
+			row.add(value.toString());
+		}
+
+		w.newRow((String[]) row.toArray());
 	}
 
 	public void log() {
