@@ -28,10 +28,10 @@ public class LogServer {
 					}
 				}
 				// CHANGE THIS TO CSV STUFF!!!!!!!!!!!
-				String json = "";
+				String directory = String.join("\n", directoryContents);
 
-				ctx.header("Content-Type", "application/json");
-				ctx.result(json);
+				ctx.header("Content-Type", "text/plain");
+				ctx.result(directory);
 			});
 
 			app.get("/:name", ctx -> {
@@ -45,11 +45,10 @@ public class LogServer {
 				for (File file : logFileFolder.listFiles()) {
 					directoryContents.add(file.getName());
 				}
-				// CHANGE THIS TO CSV STUFF!!!!!!!!!!!!
-				String json = "";
+				String directory = String.join("\n", directoryContents);
 
-				ctx.header("Content-Type", "application/json");
-				ctx.result(json);
+				ctx.header("Content-Type", "text/plain");
+				ctx.result(directory);
 			});
 
 			app.get("/:foldername/:filename", ctx -> {
