@@ -15,14 +15,15 @@ import frc.SolenoidWrapper;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class RobotInfo {
-	public static final String CARGO_ROLLER_BAR_MOTOR = "intake.cargo.motor.rollerbar";
-	public static final String  CARGO_BOX_MOTOR = "intake.cargo.motor.box";
-
+	
 	public static final String LEFT_MOTOR_MASTER = "drivetrain.motor.left";
 	public static final String RIGHT_MOTOR_MASTER = "drivetrain.motor.right";
+	public static final String CARGO_ROLLER_BAR_MOTOR = "intake.cargo.motor.rollerbar";
+	public static final String CARGO_BOX_MOTOR = "intake.cargo.motor.box";
 	public static final String HATCH_ROLLER_BAR_MOTOR = "intake.hatch.motor.rollerbar";
+	public static final String GROUND_ROLLER_BAR_MOTOR = "intake.hatch.ground.motor.rollerbar"; 
+	public static final String GROUND_ACTUATOR_MOTOR = "intake.hatch.ground.actuator";
 	public static final String HATCH_ACTUATOR_SOLENOID = "intake.hatch.solenoid.actuator";
-
 	public static interface ValueContainer {
 		public Object get();
 	}
@@ -46,8 +47,10 @@ public class RobotInfo {
     public void populate() {
 		put(CARGO_ROLLER_BAR_MOTOR, new TalonSRX(0));
 		put(CARGO_BOX_MOTOR, new TalonSRX(3));
+		put(GROUND_ROLLER_BAR_MOTOR,talon(new WPI_TalonSRX(3)));
 		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(1)));
 		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(6)));
+		put(GROUND_ACTUATOR_MOTOR, talon(new WPI_TalonSRX(5)));
 		put(HATCH_ROLLER_BAR_MOTOR, talon(new WPI_TalonSRX(2)));
 		//put(HATCH_ACTUATOR_SOLENOID, new SolenoidWrapper(0));
 	}
