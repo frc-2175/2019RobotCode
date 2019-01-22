@@ -52,7 +52,7 @@ public class RobotInfo {
 		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(6)));
 		put(GROUND_ACTUATOR_MOTOR, talon(new WPI_TalonSRX(5)));
 		put(HATCH_ROLLER_BAR_MOTOR, talon(new WPI_TalonSRX(2)));
-		//put(HATCH_ACTUATOR_SOLENOID, new SolenoidWrapper(0));
+		put(HATCH_ACTUATOR_SOLENOID, new SolenoidWrapper(0));
 	}
 	
 	private MotorWrapper talon(WPI_TalonSRX talon) {
