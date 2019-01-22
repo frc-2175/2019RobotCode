@@ -25,9 +25,7 @@ public class SequentialCommand implements Command {
     }
 
     public void execute() {
-        System.out.println(index);
         if(!isEmpty) {
-            System.out.println(index);
             if(commands[index].isFinished()) {
                 System.out.println("Ending a command");
                 commands[index].end();
