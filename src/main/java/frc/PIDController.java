@@ -18,7 +18,7 @@ public class PIDController {
         dt = 0;
     }
 
-    /** 
+    /**
      * At any time you want to re-use a PID controller with new
      * constants, call this method.
      */
@@ -38,12 +38,17 @@ public class PIDController {
         double error = setpoint - input;
         double p = error * kp;
         integral += dt * error;
-        double i = integral * ki;
-        double d = Double.isNaN(previousError) ? 0 : ((error - previousError) / dt) * kd;
+		double i = integral * ki;
+		double d;
+		if(Double.isNaN(previousError) || dt == 0) {
+			d = 0;
+		} else {
+			d = ((error - previousError) / dt) * kd;
+		}
         previousError = error;
         return p + i + d;
     }
-    
+
     /**
      * Every time the loop goes forward by one interation, call this
      * method with a new dt.
