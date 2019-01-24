@@ -9,12 +9,13 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.ServiceLocator;
 import frc.command.Command;
 import frc.info.RobotInfo;
+import frc.log.LogServer;
 import frc.log.RobotLogger;
 import frc.subsystem.DrivetrainSubsystem;
 import frc.subsystem.HatchIntakeSubsystem;
-import frc.subsystem.VisionSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -51,6 +52,7 @@ public class Robot extends TimedRobot {
   private DrivetrainSubsystem drivetrainSubsystem;
   private HatchIntakeSubsystem hatchIntakeSubsystem;
   private RobotLogger robotLogger;
+  private LogServer logServer;
 
   //WPI Lib Functions
 
@@ -62,15 +64,20 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     hasAutoEnded = false;
 
-    new RobotInfo();
-
-    drivetrainSubsystem = new DrivetrainSubsystem();
-    hatchIntakeSubsystem = new HatchIntakeSubsystem();
+    ServiceLocator.clear();
+    
     robotLogger = new RobotLogger();
+    new RobotInfo();
+    logServer = new LogServer();
+
+    // drivetrainSubsystem = new DrivetrainSubsystem();
+    // hatchIntakeSubsystem = new HatchIntakeSubsystem();
 
     leftJoystick = new Joystick(0);
     rightJoystick = new Joystick(1);
     gamepad = new Joystick(2);
+
+    logServer.runServer();
   }
 
   /**
@@ -121,20 +128,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    if (gamepad.getRawButton(9)) {
-      if (VisionSubsystem.isTarget()) {
-        drivetrainSubsystem.arcadeDrive(0, -Math.signum(VisionSubsystem.getTx()) / 5);
-      }
-    } else {
-      drivetrainSubsystem.blendedDrive(leftJoystick.getY(), -rightJoystick.getX());
-    }
-    if (leftJoystick.getRawButton(1)) {
-      hatchIntakeSubsystem.spinIn();
-    } else if (rightJoystick.getRawButton(1)) {
-      hatchIntakeSubsystem.spinOut();
-    } else {
-      hatchIntakeSubsystem.stopSpinning();
-    }
+    // if (gamepad.getRawButton(9)) {
+    //   if (VisionSubsystem.isTarget()) {
+    //     drivetrainSubsystem.arcadeDrive(0, -Math.signum(VisionSubsystem.getTx()) / 5);
+    //   }
+    // } else {
+    //   drivetrainSubsystem.blendedDrive(leftJoystick.getY(), -rightJoystick.getX());
+    // }
+    // if (leftJoystick.getRawButton(1)) {
+    //   hatchIntakeSubsystem.spinIn();
+    // } else if (rightJoystick.getRawButton(1)) {
+    //   hatchIntakeSubsystem.spinOut();
+    // } else {
+    //   hatchIntakeSubsystem.stopSpinning();
+    // }
 
     robotLogger.log();
   }
@@ -144,6 +151,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+    robotLogger.log();
   }
 
   // Custom Functions

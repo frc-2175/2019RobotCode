@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import edu.wpi.first.wpilibj.Timer;
 import frc.ServiceLocator;
 
 public class RobotLogger {
@@ -91,7 +92,7 @@ public class RobotLogger {
 	}
 
 	public String getLogFilename(Loggable l) {
-		return BASE_DIRECTORY + "/" + matchNumber + "/" + l.getLogType() + "-" + l.getId().replace(" ", "") + ".data";
+		return BASE_DIRECTORY + "/" + matchNumber + "/" + l.getId().replace(" ", "") + ".csv";
 	}
 
 	public void logLoggable(Loggable l) throws IOException {
@@ -100,18 +101,20 @@ public class RobotLogger {
 			w = new CSVWriter(getLogFilename(l));
 			writers.put(l, w);
 			ArrayList<String> keys = new ArrayList<>();
+			keys.add("Timestamp");
 			for(String key : l.getValues().keySet()) {
 				keys.add(key);
 			}
-			w.newRow((String[]) keys.toArray());
+			w.newRow(Arrays.copyOf(keys.toArray(), keys.toArray().length, String[].class));
 		}
 
 		ArrayList<String> row = new ArrayList<>();
+		row.add(Double.toString(Timer.getFPGATimestamp()));
 		for(Object value : l.getValues().values()) {
 			row.add(value.toString());
 		}
 
-		w.newRow((String[]) row.toArray());
+		w.newRow(Arrays.copyOf(row.toArray(), row.toArray().length, String[].class));
 	}
 
 	public void flush() {

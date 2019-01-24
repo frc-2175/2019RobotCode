@@ -17,6 +17,7 @@ public class LogServer {
 
 			app.before(ctx -> {
 				ctx.header("Access-Control-Allow-Origin", "*");
+				System.out.println("Access Header Set");
 			});
 
 			app.get("/", ctx -> {
@@ -59,6 +60,7 @@ public class LogServer {
 					return;
 				}
 
+				ctx.header("Content-Type", "text/csv");
 				ctx.result(new String(Files.readAllBytes(Paths.get(logFile.getAbsolutePath()))));
 			});
 		}

@@ -48,7 +48,7 @@ public class RobotInfo {
         Properties properties = loadProperties("/home/lvuser/bot.properties");
         isComp = Boolean.parseBoolean((String) properties.get("isComp"));
 		info = new HashMap<>();
-		robotLogger = new RobotLogger();
+		robotLogger = ServiceLocator.get(RobotLogger.class);
         populate();
     }
 
@@ -60,7 +60,7 @@ public class RobotInfo {
 		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(1)), "Left Master Motor");
 		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(6)), "Right Master Motor");
 		put(HATCH_ROLLER_BAR_MOTOR, talon(new WPI_TalonSRX(2)), "Hatch Intake Roller Bar");
-		//put(HATCH_ACTUATOR_SOLENOID, new SolenoidWrapper(0));
+		// put(HATCH_ACTUATOR_SOLENOID, new SolenoidWrapper(0));
 	}
 	
 	/**

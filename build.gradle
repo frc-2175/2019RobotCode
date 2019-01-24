@@ -51,6 +51,7 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
     testCompile 'junit:junit:4.12'
     compile group: 'io.javalin', name: 'javalin', version: '2.5.0'
+    compile "org.slf4j:slf4j-simple:1.7.25" 
 }
 
 // Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')

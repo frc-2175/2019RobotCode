@@ -14,7 +14,7 @@ public class CSVWriter {
     }
 
     public void newRow(String[] columns) throws IOException {
-        String row = String.join(", ", columns);
+        String row = String.join(",", columns);
         writer.write(row);
         writer.newLine();
     }
