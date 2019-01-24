@@ -114,6 +114,16 @@ public class RobotLogger {
 		w.newRow((String[]) row.toArray());
 	}
 
+	public void flush() {
+		for(CSVWriter w : writers.values()) {
+			try {
+				w.flush();
+			} catch(Exception e) {
+				System.out.println("Failed to flush (the toilet's clogged)");
+			}
+		}
+	}
+
 	public void log() {
 		for (Loggable logger : loggers) {
 			try {

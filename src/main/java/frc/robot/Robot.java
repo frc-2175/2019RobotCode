@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.command.Command;
 import frc.info.RobotInfo;
+import frc.log.RobotLogger;
 import frc.subsystem.DrivetrainSubsystem;
 import frc.subsystem.HatchIntakeSubsystem;
 import frc.subsystem.VisionSubsystem;
@@ -49,6 +50,7 @@ public class Robot extends TimedRobot {
 
   private DrivetrainSubsystem drivetrainSubsystem;
   private HatchIntakeSubsystem hatchIntakeSubsystem;
+  private RobotLogger robotLogger;
 
   //WPI Lib Functions
 
@@ -64,6 +66,7 @@ public class Robot extends TimedRobot {
 
     drivetrainSubsystem = new DrivetrainSubsystem();
     hatchIntakeSubsystem = new HatchIntakeSubsystem();
+    robotLogger = new RobotLogger();
 
     leftJoystick = new Joystick(0);
     rightJoystick = new Joystick(1);
@@ -85,6 +88,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     System.out.println("Robot program is disabled and ready.");
+    robotLogger.flush();
   }
 
   /**
@@ -109,6 +113,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    robotLogger.log();
   }
   
   /**
@@ -130,6 +135,8 @@ public class Robot extends TimedRobot {
     } else {
       hatchIntakeSubsystem.stopSpinning();
     }
+
+    robotLogger.log();
   }
   
   /**
