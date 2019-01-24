@@ -70,8 +70,8 @@ public class Robot extends TimedRobot {
     new RobotInfo();
     logServer = new LogServer();
 
-    // drivetrainSubsystem = new DrivetrainSubsystem();
-    // hatchIntakeSubsystem = new HatchIntakeSubsystem();
+    drivetrainSubsystem = new DrivetrainSubsystem();
+    hatchIntakeSubsystem = new HatchIntakeSubsystem();
 
     leftJoystick = new Joystick(0);
     rightJoystick = new Joystick(1);
@@ -128,20 +128,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    // if (gamepad.getRawButton(9)) {
-    //   if (VisionSubsystem.isTarget()) {
-    //     drivetrainSubsystem.arcadeDrive(0, -Math.signum(VisionSubsystem.getTx()) / 5);
-    //   }
-    // } else {
-    //   drivetrainSubsystem.blendedDrive(leftJoystick.getY(), -rightJoystick.getX());
-    // }
-    // if (leftJoystick.getRawButton(1)) {
-    //   hatchIntakeSubsystem.spinIn();
-    // } else if (rightJoystick.getRawButton(1)) {
-    //   hatchIntakeSubsystem.spinOut();
-    // } else {
-    //   hatchIntakeSubsystem.stopSpinning();
-    // }
+    if (gamepad.getRawButton(9)) {
+      if (VisionSubsystem.isTarget()) {
+        drivetrainSubsystem.arcadeDrive(0, -Math.signum(VisionSubsystem.getTx()) / 5);
+      }
+    } else {
+      drivetrainSubsystem.blendedDrive(leftJoystick.getY(), -rightJoystick.getX());
+    }
+    if (leftJoystick.getRawButton(1)) {
+      hatchIntakeSubsystem.spinIn();
+    } else if (rightJoystick.getRawButton(1)) {
+      hatchIntakeSubsystem.spinOut();
+    } else {
+      hatchIntakeSubsystem.stopSpinning();
+    }
 
     robotLogger.log();
   }
