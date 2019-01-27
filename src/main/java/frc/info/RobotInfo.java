@@ -24,6 +24,7 @@ public class RobotInfo {
 	public static final String GROUND_ROLLER_BAR_MOTOR = "intake.hatch.ground.motor.rollerbar"; 
 	public static final String GROUND_ACTUATOR_MOTOR = "intake.hatch.ground.actuator";
 	public static final String HATCH_ACTUATOR_SOLENOID = "intake.hatch.solenoid.actuator";
+	public static final String ELEVATOR_MOTOR = "elevator.motor"; 
 	public static interface ValueContainer {
 		public Object get();
 	}
@@ -53,6 +54,7 @@ public class RobotInfo {
 		put(GROUND_ACTUATOR_MOTOR, talon(new WPI_TalonSRX(5)));
 		put(HATCH_ROLLER_BAR_MOTOR, talon(new WPI_TalonSRX(2)));
 		put(HATCH_ACTUATOR_SOLENOID, new SolenoidWrapper(0));
+		put(ELEVATOR_MOTOR, talon(new WPI_TalonSRX(11)));
 	}
 	
 	private MotorWrapper talon(WPI_TalonSRX talon) {

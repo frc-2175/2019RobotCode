@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import frc.command.Command;
 import frc.info.RobotInfo;
 import frc.subsystem.DrivetrainSubsystem;
+import frc.subsystem.ElevatorSubsystem;
 import frc.subsystem.HatchIntakeSubsystem;
 import frc.subsystem.VisionSubsystem;
 
@@ -49,6 +50,7 @@ public class Robot extends TimedRobot {
 
   private DrivetrainSubsystem drivetrainSubsystem;
   private HatchIntakeSubsystem hatchIntakeSubsystem;
+  private ElevatorSubsystem elevatorSubsystem;
 
   //WPI Lib Functions
 
@@ -64,6 +66,7 @@ public class Robot extends TimedRobot {
 
     drivetrainSubsystem = new DrivetrainSubsystem();
     hatchIntakeSubsystem = new HatchIntakeSubsystem();
+    elevatorSubsystem = new ElevatorSubsystem();
 
     leftJoystick = new Joystick(0);
     rightJoystick = new Joystick(1);
@@ -130,6 +133,7 @@ public class Robot extends TimedRobot {
     } else {
       hatchIntakeSubsystem.stopSpinning();
     }
+    elevatorSubsystem.manualMove(-gamepad.getRawAxis(1));
   }
   
   /**
