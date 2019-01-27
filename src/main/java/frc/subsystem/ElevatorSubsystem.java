@@ -1,13 +1,11 @@
 package frc.subsystem;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-
+import frc.MotorWrapper;
 import frc.ServiceLocator;
-
 import frc.info.RobotInfo;
 
 public class ElevatorSubsystem {
-    private final WPI_TalonSRX  elevatorMotor;
+    private final MotorWrapper elevatorMotor;
 
     public ElevatorSubsystem() {
         ServiceLocator.register(this);
