@@ -28,23 +28,13 @@ public class ElevatorSubsystem {
     }
 
     public void setElevator() {
-        double output = pidController.pid(elevatorMotor.getSelectedSensorPosition(0), setpoint);
-
-
-
+        double output = pidController.pid(elevatorMotor.getSelectedSensorPosition(0), setpoint); //what to set motor speed to
+        elevatorMotor.set(output); //setting motor speed to speed needed to go to setpoint
     }
         
     public void placeElevatorTop() {
-        
-        if(currentposition < setpoint){
-        for(currentposition<setpoint) {
-            speed??? = positive movenumber
-        }
-        if(currentposition > setpoint){
-            for(currentposition>setpoint) {
-                speed??? = negative movenumber
-            }
-    }}
+        setpoint = 2;
+    }
 
     public void placeElevatorMiddle() {
         setpoint = 1;
