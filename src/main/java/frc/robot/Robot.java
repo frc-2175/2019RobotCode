@@ -7,14 +7,15 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.*;
 import frc.command.Command;
-import frc.info.RobotInfo;
 import frc.subsystem.DrivetrainSubsystem;
 import frc.subsystem.ElevatorSubsystem;
 import frc.subsystem.HatchIntakeSubsystem;
 import frc.subsystem.VisionSubsystem;
+import frc.info.*;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -50,7 +51,7 @@ public class Robot extends TimedRobot {
 
   private DrivetrainSubsystem drivetrainSubsystem;
   private HatchIntakeSubsystem hatchIntakeSubsystem;
-  private ElevatorSubsystem elevatorSubsystem;
+  private ElevatorSubsystem elevatorSubsystem; 
 
   //WPI Lib Functions
 
@@ -133,7 +134,16 @@ public class Robot extends TimedRobot {
     } else {
       hatchIntakeSubsystem.stopSpinning();
     }
-    elevatorSubsystem.manualMove(-gamepad.getRawAxis(1));
+      
+    if (gamepad.getRawButton(2)) {
+      elevatorSubsystem.placeElevatorTop();
+    }
+    if (gamepad.getRawButton(3)) {
+      elevatorSubsystem.placeElevatorMiddle();
+    }
+    if (gamepad.getRawButton(4)) {
+      elevatorSubsystem.placeElevatorBottom();
+    }
   }
   
   /**
@@ -164,10 +174,10 @@ public class Robot extends TimedRobot {
   }
 
   /**
-   * It applies a deadband to the joystick value
-   * @param value the input value
-   * @param deadband the threshold
-   * @return deadbanded value
+   * Applies deadband onto input value
+   * @param value input for value
+   * @param deadband threshold for deadband
+   * @return value with deadband
    */
   public static double deadband(double value, double deadband) {
 		if (Math.abs(value) > deadband) {
