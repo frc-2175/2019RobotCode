@@ -8,6 +8,19 @@ import frc.ServiceLocator;
 import frc.info.RobotInfo;
 import frc.PIDController;
 
+/*
+goToBottomPanel
+goToBottomCargo
+goToMiddlePanel
+goToTopPanel
+goToMiddleCargo
+goToTopCargo
+
+setMode(automatic or manual)
+
+manualMove
+*/
+
 public class ElevatorSubsystem {
     private final MotorWrapper elevatorMotor;
     private PIDController pidController;
@@ -31,7 +44,7 @@ public class ElevatorSubsystem {
         double output = pidController.pid(elevatorMotor.getSelectedSensorPosition(0), setpoint); //what to set motor speed to
         elevatorMotor.set(output); //setting motor speed to speed needed to go to setpoint
     }
-        
+
     public void placeElevatorTop() {
         setpoint = 2;
     }
@@ -39,7 +52,7 @@ public class ElevatorSubsystem {
     public void placeElevatorMiddle() {
         setpoint = 1;
     }
-    
+
     public void placeElevatorBottom() {
         setpoint = 0;
     }
