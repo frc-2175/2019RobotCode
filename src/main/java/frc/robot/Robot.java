@@ -167,11 +167,11 @@ public class Robot extends TimedRobot {
 		 *  cargo out: right trigger DONE
 		 *  cargo roller out: y DONE
 		 *  cargo roller in: a DONE
-		 *  floor hatch spin in: hat right DONE ISH, NO HAT THING
-		 *  floor hatch spin out: hat left DONE ISH, SAME^
-		 * floor hatch panel up/down: right stick ???
-		 *  preset panel heights for elevator: hold x and move left stick up/down
-		 * preset ??? cargo heights for elevator: hold b and move
+		 *  floor hatch spin in: hat right DONE I THINK
+		 *  floor hatch spin out: hat left DONE I THINK
+		 * floor hatch panel up/down: right stick
+		 *  preset panel heights for elevator: hold x and move left stick up/down DONE
+		 * preset ??? cargo heights for elevator: hold b and move DONE
 		 * left stick up/down ???
 		 */
 
@@ -244,6 +244,11 @@ public class Robot extends TimedRobot {
 			elevatorSubsystem.CargoPlaceElevatorMiddle();
 		} else if (elevatorCounter == 3 && gamepad.getRawButton(GAMEPAD_B)) {
 			elevatorSubsystem.CargoPlaceElevatorTop();
+		}
+		if (-gamepad.getRawAxis(3) > topline) {
+			hatchIntakeSubsystem.setBackIntakeUp();
+		} else if (-gamepad.getRawAxis(3) < bottomline) {
+			hatchIntakeSubsystem.setBackIntakeDown();
 		}
 		previousJoystickValue = gamepad.getY();
 		elevatorSubsystem.setElevator();

@@ -48,11 +48,15 @@ public class HatchIntakeSubsystem {
 		groundRollerBallMotor.set(0);
 		frontIntakeWheel.set(0);
 	}
-	public void setBackIntakeUp() { //????????????? is this also switched or no RIGHT STICK
+	public void setBackIntakeUp() {
 		double dt = Timer.getFPGATimestamp() - pidPreviousTime;
 		pidController.updateTime(dt);
 		pidController.pid(getGroundIntakeDegrees(), 90);
 	}
+	public void setBackIntakeDown() {
+
+	}
+
 	 public void setFrontIntakeOut() { //front intake moved out or "down"
 	 	actuatorHatchSolenoid.set(true);
 	 }
