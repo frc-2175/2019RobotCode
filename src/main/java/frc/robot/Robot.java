@@ -52,6 +52,15 @@ public class Robot extends TimedRobot {
 	public static final int GAMEPAD_LEFT_STICK_PRESS = 11;
 	public static final int GAMEPAD_RIGHT_STICK_PRESS = 12;
 
+	public static final int POV_UP = 0;
+	public static final int POV_UP_RIGHT = 45;
+	public static final int POV_RIGHT = 90;
+	public static final int POV_DOWN_RIGHT = 135;
+	public static final int POV_DOWN = 180;
+	public static final int POV_DOWN_LEFT = 225;
+	public static final int POV_LEFT = 270;
+	public static final int POV_UP_LEFT = 315;
+
 	private boolean hasAutoEnded;
 
 	private Joystick leftJoystick;
@@ -60,8 +69,8 @@ public class Robot extends TimedRobot {
 
 	private DrivetrainSubsystem drivetrainSubsystem;
 	private HatchIntakeSubsystem hatchIntakeSubsystem;
-  private ElevatorSubsystem elevatorSubsystem;
-  private CargoIntakeSubsystem cargoIntakeSubsystem;
+	private ElevatorSubsystem elevatorSubsystem;
+	private CargoIntakeSubsystem cargoIntakeSubsystem;
 
 	// WPI Lib Functions
 
@@ -136,23 +145,16 @@ public class Robot extends TimedRobot {
 		/*
 		 * Alayna's controls:
 		 *
-		 * manual driving: left and right joysticks
-		 * automatic driving: right trigger
+		 * manual driving: left and right joysticks automatic driving: right trigger
 		 *
-		 * panel in: left bumper DONE
-		 * panel out: left trigger DONE
-		 * panel mechanism out: back DONE
-     * panel mechanism in: start DONE
-		 * elevator: left stick ALREADY THERE ?
-		 * cargo in: right bumper DONE
-		 * cargo out: right trigger DONE
-		 * cargo roller out: y DONE
-		 * cargo roller in: a DONE
-		 * floor hatch spin in: hat right DONE ISH, NO HAT THING
-		 * floor hatch spin out: hat left DONE ISH, SAME^
-		 * floor hatch panel up/down: right stick ???
-		 * preset panel heights for elevator: hold x and move left stick up/down preset ???
-		 * cargo heights for elevator: hold b and move left stick up/down ???
+		 * panel in: left bumper DONE panel out: left trigger DONE panel mechanism out:
+		 * back DONE panel mechanism in: start DONE elevator: left stick ALREADY THERE ?
+		 * cargo in: right bumper DONE cargo out: right trigger DONE cargo roller out: y
+		 * DONE cargo roller in: a DONE floor hatch spin in: hat right DONE ISH, NO HAT
+		 * THING floor hatch spin out: hat left DONE ISH, SAME^ floor hatch panel
+		 * up/down: right stick ??? preset panel heights for elevator: hold x and move
+		 * left stick up/down preset ??? cargo heights for elevator: hold b and move
+		 * left stick up/down ???
 		 */
 
 		if (gamepad.getRawButton(GAMEPAD_BACK)) {
@@ -163,7 +165,7 @@ public class Robot extends TimedRobot {
 			drivetrainSubsystem.blendedDrive(leftJoystick.getY(), -rightJoystick.getX());
 		}
 
-		if (gamepad.getRawButton(GAMEPAD_LEFT_BUMPER)) { //left trigger out, left bumper in for hatch intake
+		if (gamepad.getRawButton(GAMEPAD_LEFT_BUMPER)) { // left trigger out, left bumper in for hatch intake
 			hatchIntakeSubsystem.spinOutFront();
 		} else if (gamepad.getRawButton(GAMEPAD_LEFT_TRIGGER)) {
 			hatchIntakeSubsystem.spinOutFront();
@@ -181,31 +183,31 @@ public class Robot extends TimedRobot {
 
 		if (gamepad.getRawButton(GAMEPAD_A)) { // bottom
 			elevatorSubsystem.placeElevatorBottom();
-    }
-    if(gamepad.getRawButton(GAMEPAD_START)) {
-      hatchIntakeSubsystem.setFrontIntakeOut();
-    }
-    if(gamepad.getRawButton(GAMEPAD_BACK)) {
-      hatchIntakeSubsystem.setFrontIntakeIn();
-    }
-    if(gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER)) {
-      cargoIntakeSubsystem.rollIn();
-    }
-    if(gamepad.getRawButton(GAMEPAD_RIGHT_TRIGGER)) {
-      cargoIntakeSubsystem.rollOut();
-    }
-    if(gamepad.getRawButton(GAMEPAD_Y)) {
-      cargoIntakeSubsystem.solenoidOut(); 
-    }
-    if(gamepad.getRawButton(GAMEPAD_A)) {
-      cargoIntakeSubsystem.solenoidIn();
-    }
-    if(gamepad.getRawButton(FILLERWORDSFORHAT)) { //hat right
-      hatchIntakeSubsystem.spinInBack();
-    }
-    if(gamepad.getRawButton(FILLERWORDSFORHAT)) { //hat left
-      hatchIntakeSubsystem.spinOutBack();
-    }
+		}
+		if (gamepad.getRawButton(GAMEPAD_START)) {
+			hatchIntakeSubsystem.setFrontIntakeOut();
+		}
+		if (gamepad.getRawButton(GAMEPAD_BACK)) {
+			hatchIntakeSubsystem.setFrontIntakeIn();
+		}
+		if (gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER)) {
+			cargoIntakeSubsystem.rollIn();
+		}
+		if (gamepad.getRawButton(GAMEPAD_RIGHT_TRIGGER)) {
+			cargoIntakeSubsystem.rollOut();
+		}
+		if (gamepad.getRawButton(GAMEPAD_Y)) {
+			cargoIntakeSubsystem.solenoidOut();
+		}
+		if (gamepad.getRawButton(GAMEPAD_A)) {
+			cargoIntakeSubsystem.solenoidIn();
+		}
+		if (gamepad.getPOV() == POV_RIGHT) { // hat right
+			hatchIntakeSubsystem.spinInBack();
+		}
+		if (gamepad.getPOV() == POV_LEFT) { // hat left
+			hatchIntakeSubsystem.spinOutBack();
+		}
 		elevatorSubsystem.setElevator();
 	}
 
