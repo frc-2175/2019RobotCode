@@ -45,6 +45,11 @@ The Fighting Calculators
 public class Robot extends TimedRobot {
 	public static final int JOYSTICK_TRIGGER = 1;
 
+	public int elevatorCounter = 1;
+	public double previousJoystickValue = 0;
+	public static final double topline = .6;
+	public static final double bottomline = -.6;
+
 	public static final int GAMEPAD_X = 1;
 	public static final int GAMEPAD_A = 2;
 	public static final int GAMEPAD_B = 3;
@@ -153,13 +158,20 @@ public class Robot extends TimedRobot {
 		 *
 		 * manual driving: left and right joysticks automatic driving: right trigger
 		 *
-		 * panel in: left bumper DONE panel out: left trigger DONE panel mechanism out:
-		 * back DONE panel mechanism in: start DONE elevator: left stick ALREADY THERE ?
-		 * cargo in: right bumper DONE cargo out: right trigger DONE cargo roller out: y
-		 * DONE cargo roller in: a DONE floor hatch spin in: hat right DONE ISH, NO HAT
-		 * THING floor hatch spin out: hat left DONE ISH, SAME^ floor hatch panel
-		 * up/down: right stick ??? preset panel heights for elevator: hold x and move
-		 * left stick up/down preset ??? cargo heights for elevator: hold b and move
+		 * panel in: left bumper DONE
+		 *  panel out: left trigger DONE
+		 *  panel mechanism out:
+		 * back DONE panel mechanism in: start DONE
+		 *  elevator: left stick ALREADY THERE ?
+		 * cargo in: right bumper DONE
+		 *  cargo out: right trigger DONE
+		 *  cargo roller out: y DONE
+		 *  cargo roller in: a DONE
+		 *  floor hatch spin in: hat right DONE ISH, NO HAT THING
+		 *  floor hatch spin out: hat left DONE ISH, SAME^
+		 * floor hatch panel up/down: right stick ???
+		 *  preset panel heights for elevator: hold x and move left stick up/down
+		 * preset ??? cargo heights for elevator: hold b and move
 		 * left stick up/down ???
 		 */
 
@@ -214,6 +226,37 @@ public class Robot extends TimedRobot {
 		if (gamepad.getPOV() == POV_LEFT) { // hat left
 			hatchIntakeSubsystem.spinOutBack();
 		}
+		if (gamepad.getRawButton(GAMEPAD_X)||gamepad.getRawButton(GAMEPAD_B)) {
+			elevatorSubsystem.setIsManual(false);
+		} else {
+			elevatorSubsystem.setIsManual(true);
+		}
+		if (-gamepad.getY() > topline && previousJoystickValue <= topline) {
+			elevatorCounter++;
+		} else if (-gamepad.getY() < bottomline && previousJoystickValue >= bottomline) {
+			elevatorCounter--;
+		}
+		if (elevatorCounter > 3) {
+			elevatorCounter = 3;
+		}
+		if (elevatorCounter < 1) {
+			elevatorCounter = 1;
+		}
+		//put elevator to hi, mid, or low level for cargo or plates depending on button pressed
+		if (elevatorCounter == 1 && gamepad.getRawButton(GAMEPAD_X)) {
+			elevatorSubsystem.HatchPlaceElevatorBottom();
+		} else if (elevatorCounter == 2 && gamepad.getRawButton(GAMEPAD_X)) {
+			elevatorSubsystem.HatchPlaceElevatorMiddle();
+		} else if (elevatorCounter == 3 && gamepad.getRawButton(GAMEPAD_X)) {
+			elevatorSubsystem.HatchPlaceElevatorTop();
+		} else if (elevatorCounter == 1 && gamepad.getRawButton(GAMEPAD_B)) {
+			elevatorSubsystem.CargoPlaceElevatorBottom();
+		} else if (elevatorCounter == 2 && gamepad.getRawButton(GAMEPAD_B)) {
+			elevatorSubsystem.CargoPlaceElevatorMiddle();
+		} else if (elevatorCounter == 3 && gamepad.getRawButton(GAMEPAD_B)) {
+			elevatorSubsystem.CargoPlaceElevatorTop();
+		}
+		previousJoystickValue = gamepad.getY();
 		elevatorSubsystem.setElevator();
 	}
 

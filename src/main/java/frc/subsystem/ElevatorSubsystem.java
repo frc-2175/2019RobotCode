@@ -25,7 +25,8 @@ public class ElevatorSubsystem {
     private final MotorWrapper elevatorMotor;
     private PIDController pidController;
     private double pidPreviousTime;
-    private double setpoint;
+	private double setpoint;
+	private boolean isManual; //
 
     public ElevatorSubsystem() {
         ServiceLocator.register(this);
@@ -34,10 +35,15 @@ public class ElevatorSubsystem {
 
         elevatorMotor = robotInfo.get(RobotInfo.ELEVATOR_MOTOR);
         elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-    }
+	}
+	public void setIsManual(boolean x) {
+		isManual = x;
+	}
 
     public void manualMove(double motorSpeed) {
-        elevatorMotor.set(motorSpeed);
+		if(isManual) {
+		elevatorMotor.set(motorSpeed);
+		}
     }
 
     public void setElevator() {
@@ -45,15 +51,26 @@ public class ElevatorSubsystem {
         elevatorMotor.set(output); //setting motor speed to speed needed to go to setpoint
     }
 
-    public void placeElevatorTop() {
+    public void CargoPlaceElevatorTop() {
         setpoint = 2;
     }
 
-    public void placeElevatorMiddle() {
+    public void CargoPlaceElevatorMiddle() {
         setpoint = 1;
     }
 
-    public void placeElevatorBottom() {
+    public void CargoPlaceElevatorBottom() {
+        setpoint = 0;
+	}
+	public void HatchPlaceElevatorTop() {
+        setpoint = 2;
+    }
+
+    public void HatchPlaceElevatorMiddle() {
+        setpoint = 1;
+    }
+
+    public void HatchPlaceElevatorBottom() {
         setpoint = 0;
     }
 
