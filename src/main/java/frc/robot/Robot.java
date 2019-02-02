@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
 
   private DrivetrainSubsystem drivetrainSubsystem;
   private HatchIntakeSubsystem hatchIntakeSubsystem;
-  private ElevatorSubsystem elevatorSubsystem; 
+  private ElevatorSubsystem elevatorSubsystem;
 
   // WPI Lib Functions
 
@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
    * code works with the Java SmartDashboard. If you prefer the LabVIEW Dashboard,
    * remove all of the chooser code and uncomment the getString line to get the
    * auto name from the text box below the Gyro
-   * 
+   *
    * <p>
    * You will need to initialize whatever autonomous command is selected inside
    * this method.
@@ -105,7 +105,7 @@ public class Robot extends TimedRobot {
   /**
    * This function is called periodically during autonomous. This is where the
    * autonomous commands must be executed.
-   * 
+   *
    * @see frc.robot.Robot#executeCommand(Command)
    */
   @Override
@@ -117,6 +117,28 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+	/*
+	Alayna's controls:
+
+	manual driving: left and right joysticks
+	automatic driving: right trigger
+
+	panel in: left bumper
+	panel out: left trigger
+	panel mechanism out: back
+	panel mechanism in: start
+	elevator: left stick
+	cargo in: right bumper
+	cargo out: right trigger
+	cargo roller out: y
+	cargo roller in: a
+	floor hatch spin in: hat right
+	floor hatch spin out: hat left
+	floor hatch panel up/down: right stick
+	preset panel heights for elevator: hold x and move left stick up/down
+	preset cargo heights for elevator: hold b and move left stick up/down
+	*/
+
     if (gamepad.getRawButton(9)) {
       if (VisionSubsystem.isTarget()) {
         drivetrainSubsystem.arcadeDrive(0, -Math.signum(VisionSubsystem.getTx()) / 5);
@@ -158,7 +180,7 @@ public class Robot extends TimedRobot {
    * finished, it'll call the end portion of the command once.
    * <p>
    * Note: this method will not call the initialize portion of the command.
-   * 
+   *
    * @param command the command to execute
    */
   public void executeCommand(Command command) {
@@ -180,7 +202,7 @@ public class Robot extends TimedRobot {
    * @return value with deadband
 =======
    * It applies a deadband to the joystick value
-   * 
+   *
    * @param value    the input value
    * @param deadband the threshold
    * @return deadbanded value
