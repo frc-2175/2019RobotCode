@@ -17,21 +17,18 @@ public class CargoIntakeSubsystem {
         boxMotor = robotInfo.get(RobotInfo.CARGO_BOX_MOTOR);
         rollerBarSolenoid = robotInfo.get(RobotInfo.CARGO_SOLENOID);
     }
-    public void rollIn() {
+    public void rollIn() { //cargo in
         rollerBarMotor.set(1);
         boxMotor.set(.75);
     }
-    public void rollOutElevator() { //roll it out fast to shoot out the ball !!!
-        boxMotor.set(-1);
-    }
-    public void rollOutBottom() { //roll it out softly if it's on the ground or something
+    public void rollOut() { //cargo out
         boxMotor.set(-.5);
         rollerBarMotor.set(-.5);
     }
-    public void solenoidOut() { // push out the solenoid
+    public void solenoidOut() { // push out the solenoid, cargo roller out, Y
         rollerBarSolenoid.set(true);
     }
-    public void solenoidIn() { // pull in the solenoid
+    public void solenoidIn() { // pull in the solenoid, cargo roller in, A
         rollerBarSolenoid.set(false);
     }
 }

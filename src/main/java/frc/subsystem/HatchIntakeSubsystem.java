@@ -10,7 +10,7 @@ import frc.ServiceLocator;
 import frc.info.RobotInfo;
 
 public class HatchIntakeSubsystem {
-	private MotorWrapper rollerBarMotor;
+	private MotorWrapper frontIntakeWheel;
 	private MotorWrapper groundRollerBallMotor;
 	private MotorWrapper groundActuationMotor;
 	private SolenoidWrapper actuatorHatchSolenoid;
@@ -22,7 +22,7 @@ public class HatchIntakeSubsystem {
 
 		RobotInfo robotInfo = ServiceLocator.get(RobotInfo.class);
 
-		rollerBarMotor = robotInfo.get(RobotInfo.HATCH_ROLLER_BAR_MOTOR);
+		frontIntakeWheel = robotInfo.get(RobotInfo.HATCH_ROLLER_BAR_MOTOR);
 		groundRollerBallMotor = robotInfo.get(RobotInfo.GROUND_ROLLER_BAR_MOTOR);
 		groundActuationMotor = robotInfo.get(RobotInfo.GROUND_ACTUATOR_MOTOR);
 		groundActuationMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
@@ -31,37 +31,37 @@ public class HatchIntakeSubsystem {
 		pidPreviousTime = 0;
 	}
 
-	public void spinIn() {
-		rollerBarMotor.set(0.3);
+	public void spinInFront() { //spin in front/main intake
+		frontIntakeWheel.set(0.3);
 	}
-	public void spinInGround() {
+	public void spinOutFront() { //spin out front/main intake
+		frontIntakeWheel.set(-0.3);
+	}
+	public void spinInBack() { //spin in back/ground intake HAT RIGHT
 		groundRollerBallMotor.set(.3);
  	}
-	public void spinOutGround() {
+	public void spinOutBack() { //spin out back/ground intake HAT LEFT
 		groundRollerBallMotor.set(-.3);
 	}
-	public void spinOut() {
-		rollerBarMotor.set(-0.3);
-	}
 
-	public void stopSpinning() {
+	public void stopSpinning() { // stops both front and back rolling
 		groundRollerBallMotor.set(0);
-		rollerBarMotor.set(0);
+		frontIntakeWheel.set(0);
 	}
-	public void setGroundIntakeUp() {
+	public void setBackIntakeUp() { //????????????? is this also switched or no RIGHT STICK
 		double dt = Timer.getFPGATimestamp() - pidPreviousTime;
 		pidController.updateTime(dt);
 		pidController.pid(getGroundIntakeDegrees(), 90);
 	}
-	 public void setHatchIntakeUp() {
+	 public void setFrontIntakeOut() { //front intake moved out or "down"
 	 	actuatorHatchSolenoid.set(true);
 	 }
 
-	public void setIntakeDown() {
+	public void setFrontIntakeIn() { // front intake moved in/retracted
 	 	actuatorHatchSolenoid.set(false);
 	}
 
-	public double getGroundIntakeDegrees() {
+	public double getGroundIntakeDegrees() { 
 		return (((groundActuationMotor.getSelectedSensorPosition(0) * 360.0) / 1024.0) / 200.0) * 4.0;
 	}
 
