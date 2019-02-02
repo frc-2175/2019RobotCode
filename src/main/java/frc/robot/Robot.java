@@ -191,17 +191,6 @@ public class Robot extends TimedRobot {
 			hatchIntakeSubsystem.stopSpinning();
 		}
 
-		if (gamepad.getRawButton(GAMEPAD_Y)) { // top
-			elevatorSubsystem.placeElevatorTop();
-		}
-
-		if (gamepad.getRawButton(GAMEPAD_X)) { // middle
-			elevatorSubsystem.placeElevatorMiddle();
-		}
-
-		if (gamepad.getRawButton(GAMEPAD_A)) { // bottom
-			elevatorSubsystem.placeElevatorBottom();
-		}
 		if (gamepad.getRawButton(GAMEPAD_START)) {
 			hatchIntakeSubsystem.setFrontIntakeOut();
 		}
