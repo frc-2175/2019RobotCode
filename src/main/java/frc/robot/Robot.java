@@ -134,42 +134,54 @@ public class Robot extends TimedRobot {
 		/*
 		 * Alayna's controls:
 		 *
-		 * manual driving: left and right joysticks automatic driving: right trigger
+		 * manual driving: left and right joysticks
+		 * automatic driving: right trigger
 		 *
-		 * panel in: left bumper panel out: left trigger panel mechanism out: back panel
-		 * mechanism in: start elevator: left stick cargo in: right bumper cargo out:
-		 * right trigger cargo roller out: y cargo roller in: a floor hatch spin in: hat
-		 * right floor hatch spin out: hat left floor hatch panel up/down: right stick
+		 * panel in: left bumper
+		 * panel out: left trigger
+		 * panel mechanism out: back panel
+		 * mechanism in: start
+		 * elevator: left stick
+		 * cargo in: right bumper
+		 * cargo out: right trigger
+		 * cargo roller out: y
+		 * cargo roller in: a
+		 * floor hatch spin in: hat right
+		 * floor hatch spin out: hat left
+		 * floor hatch panel up/down: right stick
 		 * preset panel heights for elevator: hold x and move left stick up/down preset
 		 * cargo heights for elevator: hold b and move left stick up/down
 		 */
 
-		if (gamepad.getRawButton(9)) {
+		if (gamepad.getRawButton(GAMEPAD_BACK)) {
 			if (VisionSubsystem.isTarget()) {
 				drivetrainSubsystem.arcadeDrive(0, -Math.signum(VisionSubsystem.getTx()) / 5);
 			}
 		} else {
 			drivetrainSubsystem.blendedDrive(leftJoystick.getY(), -rightJoystick.getX());
 		}
-		if (leftJoystick.getRawButton(1)) {
+
+		if (leftJoystick.getRawButton(JOYSTICK_TRIGGER)) {
 			hatchIntakeSubsystem.spinIn();
-		} else if (rightJoystick.getRawButton(1)) {
+		} else if (rightJoystick.getRawButton(JOYSTICK_TRIGGER)) {
 			hatchIntakeSubsystem.spinOut();
 		} else {
 			hatchIntakeSubsystem.stopSpinning();
 		}
 
-		if (gamepad.getRawButton(4)) { // top
+		if (gamepad.getRawButton(GAMEPAD_Y)) { // top
 			elevatorSubsystem.placeElevatorTop();
 		}
-		if (gamepad.getRawButton(1)) { // middle
+
+		if (gamepad.getRawButton(GAMEPAD_X)) { // middle
 			elevatorSubsystem.placeElevatorMiddle();
 		}
-		if (gamepad.getRawButton(2)) { // bottom
+
+		if (gamepad.getRawButton(GAMEPAD_A)) { // bottom
 			elevatorSubsystem.placeElevatorBottom();
 		}
-		elevatorSubsystem.setElevator();
 
+		elevatorSubsystem.setElevator();
 	}
 
 	/**
