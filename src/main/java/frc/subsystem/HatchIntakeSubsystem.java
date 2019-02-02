@@ -61,12 +61,12 @@ public class HatchIntakeSubsystem {
 	 	actuatorHatchSolenoid.set(false);
 	}
 
-	public double getGroundIntakeDegrees() { 
+	public double getGroundIntakeDegrees() {
 		return (((groundActuationMotor.getSelectedSensorPosition(0) * 360.0) / 1024.0) / 200.0) * 4.0;
 	}
 
 	public void resetPID() {
-		pidController.clear();
+		pidController.clear(0);
 		pidPreviousTime = Timer.getFPGATimestamp();
 	}
 }

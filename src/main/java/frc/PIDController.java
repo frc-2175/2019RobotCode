@@ -1,7 +1,9 @@
 package frc;
 
+import edu.wpi.first.wpilibj.Timer;
+
 public class PIDController {
-    double kp, ki, kd, integral, previousError, dt;
+    double kp, ki, kd, integral, previousError, previousTime, dt;
 
     /**
      * Constructs a new pid controller with constants
@@ -14,16 +16,18 @@ public class PIDController {
         this.ki = i;
         this.kd = d;
         integral = 0;
-        previousError = Double.NaN;
+		previousError = Double.NaN;
         dt = 0;
     }
 
     /**
      * At any time you want to re-use a PID controller with new
      * constants, call this method.
+	 * @param time the time that this clear is being called at
      */
-    public void clear() {
-        dt = 0;
+    public void clear(double time) {
+		dt = 0;
+		previousTime = time;
         integral = 0;
         previousError = Double.NaN;
     }
@@ -52,10 +56,10 @@ public class PIDController {
     /**
      * Every time the loop goes forward by one interation, call this
      * method with a new dt.
-     * @param dt change in time from the last time this PID controller
-     * was run
+     * @param time the current time
      */
-    public void updateTime(double dt) {
-        this.dt = dt;
-    }
+    public void updateTime(double time) {
+		this.dt = time - previousTime;
+		previousTime = time;
+	}
 }
