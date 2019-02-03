@@ -3,6 +3,7 @@ package frc.info;
 import java.util.Properties;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.ServiceLocator;
 
 public class SmartDashboardInfo {
     private static final String PREFIX = "AutoPopulate/";
@@ -24,6 +25,7 @@ public class SmartDashboardInfo {
 
 
     public SmartDashboardInfo() {
+		ServiceLocator.register(this);
         Properties properties = RobotInfo.loadProperties("/home/lvuser/bot.properties");
         isComp = Boolean.parseBoolean((String) properties.get("isComp"));
         populate();
