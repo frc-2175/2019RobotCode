@@ -94,6 +94,7 @@ public class Robot extends TimedRobot {
 		hasAutoEnded = false;
 
 		new RobotInfo();
+		new SmartDashboardInfo();
 
 		drivetrainSubsystem = new DrivetrainSubsystem();
 		hatchIntakeSubsystem = new HatchIntakeSubsystem();
@@ -159,20 +160,19 @@ public class Robot extends TimedRobot {
 		 * manual driving: left and right joysticks automatic driving: right trigger
 		 *
 		 * panel in: left bumper DONE
-		 *  panel out: left trigger DONE
-		 *  panel mechanism out:
-		 * back DONE panel mechanism in: start DONE
-		 *  elevator: left stick ALREADY THERE ?
+		 * panel out: left trigger DONE
+		 * panel mechanism out:back DONE
+		 * panel mechanism in: start DONE
 		 * cargo in: right bumper DONE
-		 *  cargo out: right trigger DONE
-		 *  cargo roller out: y DONE
-		 *  cargo roller in: a DONE
-		 *  floor hatch spin in: hat right DONE I THINK
-		 *  floor hatch spin out: hat left DONE I THINK
-		 * floor hatch panel up/down: right stick
-		 *  preset panel heights for elevator: hold x and move left stick up/down DONE
-		 * preset ??? cargo heights for elevator: hold b and move DONE
-		 * left stick up/down ???
+		 * cargo out: right trigger DONE
+		 * cargo roller out: y DONE
+		 * cargo roller in: a DONE
+		 * floor hatch spin in: hat right DONE I THINK
+		 * floor hatch spin out: hat left DONE I THINK
+		 * floor hatch panel up/down: right stick DONE
+		 * preset panel heights for elevator: hold x and move left stick up/down DONE
+		 * preset cargo heights for elevator: hold b and move DONE
+		 * left stick up/down DONE I THINK
 		 */
 
 		if (gamepad.getRawButton(GAMEPAD_BACK)) {

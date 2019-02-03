@@ -8,6 +8,7 @@ import frc.PIDController;
 import frc.SolenoidWrapper;
 import frc.ServiceLocator;
 import frc.info.RobotInfo;
+import frc.info.SmartDashboardInfo;
 
 public class HatchIntakeSubsystem {
 	private MotorWrapper frontIntakeWheel;
@@ -16,11 +17,13 @@ public class HatchIntakeSubsystem {
 	private SolenoidWrapper actuatorHatchSolenoid;
 	private PIDController pidController;
 	private double pidPreviousTime;
+	private final SmartDashboardInfo smartDashboardInfo;
 
 	public HatchIntakeSubsystem() {
 		ServiceLocator.register(this);
 
 		RobotInfo robotInfo = ServiceLocator.get(RobotInfo.class);
+		smartDashboardInfo = ServiceLocator.get(SmartDashboardInfo.class);
 
 		frontIntakeWheel = robotInfo.get(RobotInfo.HATCH_ROLLER_BAR_MOTOR);
 		groundRollerBallMotor = robotInfo.get(RobotInfo.GROUND_ROLLER_BAR_MOTOR);
@@ -32,16 +35,16 @@ public class HatchIntakeSubsystem {
 	}
 
 	public void spinInFront() { //spin in front/main intake
-		frontIntakeWheel.set(0.3);
+		frontIntakeWheel.set(smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_INTAKE_SPIN_IN_FRONT));
 	}
 	public void spinOutFront() { //spin out front/main intake
-		frontIntakeWheel.set(-0.3);
+		frontIntakeWheel.set(smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_INTAKE_SPIN_OUT_FRONT));
 	}
 	public void spinInBack() { //spin in back/ground intake HAT RIGHT
-		groundRollerBallMotor.set(.3);
+		groundRollerBallMotor.set(smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_INTAKE_SPIN_IN_BACK));
  	}
 	public void spinOutBack() { //spin out back/ground intake HAT LEFT
-		groundRollerBallMotor.set(-.3);
+		groundRollerBallMotor.set(smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_INTAKE_SPIN_OUT_BACK));
 	}
 
 	public void stopSpinning() { // stops both front and back rolling

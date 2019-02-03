@@ -6,8 +6,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SmartDashboardInfo {
     private static final String PREFIX = "AutoPopulate/";
-    private final boolean isComp;
-    
+	private final boolean isComp;
+	public static final String CARGO_BOTTOM_SETPOINT = "elevator.setpoint.cargo.bottom";
+	public static final String CARGO_MIDDLE_SETPOINT = "elevator.setpoint.cargo.middle";
+	public static final String CARGO_TOP_SETPOINT = "elevator.setpoint.cargo.top";
+	public static final String HATCH_BOTTOM_SETPOINT = "elevator.setpoint.hatch.bottom";
+	public static final String	HATCH_MIDDLE_SETPOINT = "elevator.setpoint.hatch.middle";
+	public static final String HATCH_TOP_SETPOINT = "elevator.setpoint.hatch.top";
+	public static final String CARGO_INTAKE_ROLL_IN_ROLLERBAR_SPEED = "intake.cargo.in.rollerbar";
+	public static final String CARGO_INTAKE_ROLL_IN_BOX_MOTOR_SPEED = "intake.cargo.in.boxmotor";
+	public static final String CARGO_INTAKE_ROLL_OUT_ROLLERBAR_SPEED = "intake.cargo.out.rollerbar";
+	public static final String CARGO_INTAKE_ROLL_OUT_BOX_MOTOR_SPEED = "intake.cargo.out.boxmotor";
+	public static final String HATCH_INTAKE_SPIN_IN_FRONT = "intake.hatch.front.in";
+	public static final String HATCH_INTAKE_SPIN_OUT_FRONT = "intake.hatch.front.out";
+	public static final String HATCH_INTAKE_SPIN_IN_BACK = "intake.hatch.back.in";
+	public static final String HATCH_INTAKE_SPIN_OUT_BACK = "intake.hatch.back.out";
+
+
     public SmartDashboardInfo() {
         Properties properties = RobotInfo.loadProperties("/home/lvuser/bot.properties");
         isComp = Boolean.parseBoolean((String) properties.get("isComp"));
@@ -19,7 +34,20 @@ public class SmartDashboardInfo {
      * using the put methods. See below in {@link SmartDashboardInfo}
      */
     public void populate() {
-
+		putNumber(CARGO_BOTTOM_SETPOINT, 1, 1);
+		putNumber(CARGO_MIDDLE_SETPOINT, 2, 2);
+		putNumber(CARGO_TOP_SETPOINT, 3, 3);
+		putNumber(HATCH_BOTTOM_SETPOINT, 1, 1);
+		putNumber(HATCH_MIDDLE_SETPOINT, 2, 2);
+		putNumber(HATCH_TOP_SETPOINT, 3, 3);
+		putNumber(CARGO_INTAKE_ROLL_IN_ROLLERBAR_SPEED, 1, 1);
+		putNumber(CARGO_INTAKE_ROLL_IN_BOX_MOTOR_SPEED, .75, .75);
+		putNumber(CARGO_INTAKE_ROLL_OUT_ROLLERBAR_SPEED, -.5, -.5);
+		putNumber(CARGO_INTAKE_ROLL_OUT_BOX_MOTOR_SPEED, -.5, -.5);
+		putNumber(HATCH_INTAKE_SPIN_IN_FRONT, .3, .3);
+		putNumber(HATCH_INTAKE_SPIN_OUT_FRONT, -.3, -.3);
+		putNumber(HATCH_INTAKE_SPIN_IN_BACK, .3, .3);
+		putNumber(HATCH_INTAKE_SPIN_OUT_BACK, -.3, -.3);
     }
 
     public void putBoolean(String key, boolean comp, boolean practice) {

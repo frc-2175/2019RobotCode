@@ -4,9 +4,10 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.MotorWrapper;
+import frc.PIDController;
 import frc.ServiceLocator;
 import frc.info.RobotInfo;
-import frc.PIDController;
+import frc.info.SmartDashboardInfo;
 
 /*
 goToBottomPanel
@@ -22,6 +23,7 @@ manualMove
 */
 
 public class ElevatorSubsystem {
+	private final SmartDashboardInfo smartDashboardInfo;
     private final MotorWrapper elevatorMotor;
     private PIDController pidController;
     private double pidPreviousTime;
@@ -31,7 +33,8 @@ public class ElevatorSubsystem {
     public ElevatorSubsystem() {
         ServiceLocator.register(this);
 
-        RobotInfo robotInfo = ServiceLocator.get(RobotInfo.class);
+		RobotInfo robotInfo = ServiceLocator.get(RobotInfo.class);
+		smartDashboardInfo = ServiceLocator.get(SmartDashboardInfo.class);
 
         elevatorMotor = robotInfo.get(RobotInfo.ELEVATOR_MOTOR);
         elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
@@ -52,26 +55,26 @@ public class ElevatorSubsystem {
     }
 
     public void CargoPlaceElevatorTop() {
-        setpoint = 2;
+        setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_TOP_SETPOINT);
     }
 
     public void CargoPlaceElevatorMiddle() {
-        setpoint = 1;
+        setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_MIDDLE_SETPOINT);
     }
 
     public void CargoPlaceElevatorBottom() {
-        setpoint = 0;
+        setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_BOTTOM_SETPOINT);
 	}
 	public void HatchPlaceElevatorTop() {
-        setpoint = 2;
+        setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_TOP_SETPOINT);
     }
 
     public void HatchPlaceElevatorMiddle() {
-        setpoint = 1;
+        setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_MIDDLE_SETPOINT);
     }
 
     public void HatchPlaceElevatorBottom() {
-        setpoint = 0;
+        setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_BOTTOM_SETPOINT);
     }
 
     public void teleopPeriodic() {
