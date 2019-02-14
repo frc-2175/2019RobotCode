@@ -15,21 +15,24 @@ import frc.SolenoidWrapper;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class RobotInfo {
-	
+
 	public static final String LEFT_MOTOR_MASTER = "drivetrain.motor.left";
 	public static final String RIGHT_MOTOR_MASTER = "drivetrain.motor.right";
 	public static final String CARGO_ROLLER_BAR_MOTOR = "intake.cargo.motor.rollerbar";
 	public static final String CARGO_BOX_MOTOR = "intake.cargo.motor.box";
 	public static final String CARGO_SOLENOID = "intake.cargo.solenoid";
 	public static final String HATCH_ROLLER_BAR_MOTOR = "intake.hatch.motor.rollerbar";
-	public static final String GROUND_ROLLER_BAR_MOTOR = "intake.hatch.ground.motor.rollerbar"; 
+	public static final String GROUND_ROLLER_BAR_MOTOR = "intake.hatch.ground.motor.rollerbar";
 	public static final String GROUND_ACTUATOR_MOTOR = "intake.hatch.ground.actuator";
 	public static final String HATCH_ACTUATOR_SOLENOID = "intake.hatch.solenoid.actuator";
-	public static final String ELEVATOR_MOTOR = "elevator.motor"; 
+	public static final String ELEVATOR_MOTOR = "elevator.motor";
+	public static final String ELEVATOR_PID_P = "elevator.pid.p";
+	public static final String ELEVATOR_PID_I = "elevator.pid.i";
+	public static final String ELEVATOR_PID_D = "elevator.pid.d";
 	public static interface ValueContainer {
 		public Object get();
 	}
-    
+
     private static final String CAN_T_CONTINUE_MSG = "; can't continue";
     private final boolean isComp;
     private HashMap<String, Object> info;
@@ -42,10 +45,10 @@ public class RobotInfo {
         populate();
     }
 
-    /** 
+    /**
      * This is where all of the information is put into the hash map.
      * @see frc.info.RobotInfo#put(String, Object)
-     * */ 
+     * */
     public void populate() {
 		put(CARGO_ROLLER_BAR_MOTOR, talon(new WPI_TalonSRX(0)));
 		put(CARGO_BOX_MOTOR, talon(new WPI_TalonSRX(3)));
@@ -56,8 +59,11 @@ public class RobotInfo {
 		put(HATCH_ROLLER_BAR_MOTOR, talon(new WPI_TalonSRX(2)));
 		put(HATCH_ACTUATOR_SOLENOID, new SolenoidWrapper(0));
 		put(ELEVATOR_MOTOR, talon(new WPI_TalonSRX(11)));
+		put(ELEVATOR_PID_P, 0);
+		put(ELEVATOR_PID_I, 0);
+		put(ELEVATOR_PID_D, 0);
 	}
-	
+
 	private MotorWrapper talon(WPI_TalonSRX talon) {
 		return new MotorWrapper(talon);
 	}
@@ -69,7 +75,7 @@ public class RobotInfo {
     /**
      * Puts an object in the hash map
      * @param key the key by which the object is referred to
-     * @param comp will be put in the hash map if the robot the code is 
+     * @param comp will be put in the hash map if the robot the code is
      * being run on is the competition robot
      * @param practice will be put in the has map if the robot the code is
      * being run on is the practice robot
@@ -81,7 +87,7 @@ public class RobotInfo {
     /**
      * Puts an object in the hash map
      * @param key the key by which the object is referred to
-     * @param value the object to put into the hash map (regardless of 
+     * @param value the object to put into the hash map (regardless of
      * competition/practice robot)
      */
 	private void put(String key, Object value) {
@@ -89,9 +95,9 @@ public class RobotInfo {
     }
 
     /**
-     * Puts an object in the hash map. This is used for solenoids to 
+     * Puts an object in the hash map. This is used for solenoids to
      * make sure only one solenoid is initialized.
-     * <p>Format: put(KEY_VARIABLE, () -> WhateverSolenoidThing(port1, port2), 
+     * <p>Format: put(KEY_VARIABLE, () -> WhateverSolenoidThing(port1, port2),
      * () -> WhateverSolenoidThing(port1, port2))
      * @param key the key by which the object is referred to
      * @param comp
@@ -101,7 +107,7 @@ public class RobotInfo {
 		Object choice = isComp ? comp.get() : practice.get();
 		info.put(key, choice);
 	}
-    
+
     /**
      * Gets an object from the hash map
      * @param key the key which refers to the object

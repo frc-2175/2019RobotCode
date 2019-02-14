@@ -8,6 +8,7 @@ import frc.PIDController;
 import frc.ServiceLocator;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
+import sun.java2d.pipe.PixelDrawPipe;
 
 /*
 goToBottomPanel
@@ -28,7 +29,10 @@ public class ElevatorSubsystem {
     private PIDController pidController;
     private double pidPreviousTime;
 	private double setpoint;
-	private boolean isManual; //
+	private boolean isManual;
+	private final int elevatorKP;
+	private final int elevatorKI;
+	private final int elevatorKD;
 
     public ElevatorSubsystem() {
         ServiceLocator.register(this);
@@ -37,7 +41,12 @@ public class ElevatorSubsystem {
 		smartDashboardInfo = ServiceLocator.get(SmartDashboardInfo.class);
 
         elevatorMotor = robotInfo.get(RobotInfo.ELEVATOR_MOTOR);
-        elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+
+		elevatorKP = robotInfo.get(RobotInfo.ELEVATOR_PID_P);
+		elevatorKI = robotInfo.get(RobotInfo.ELEVATOR_PID_I);
+		elevatorKD = robotInfo.get(RobotInfo.ELEVATOR_PID_D);
+		PIDController pidControl = new PIDController(elevatorKP, elevatorKI, elevatorKD); //?????????????????
 	}
 	public void setIsManual(boolean x) {
 		isManual = x;
@@ -49,10 +58,13 @@ public class ElevatorSubsystem {
 		}
     }
 
-    public void setElevator() {
-        double output = pidController.pid(elevatorMotor.getSelectedSensorPosition(0), setpoint); //what to set motor speed to
-        elevatorMotor.set(output); //setting motor speed to speed needed to go to setpoint
-    }
+
+    	public void setElevator() {
+			if (!isManual) {
+        		double output = pidController.pid(elevatorMotor.getSelectedSensorPosition(0), setpoint); //what to set motor speed to
+        		elevatorMotor.set(output); //setting motor speed to speed needed to go to setpoint
+    		}
+		}
 
     public void CargoPlaceElevatorTop() {
         setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_TOP_SETPOINT);

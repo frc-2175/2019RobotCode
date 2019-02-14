@@ -252,6 +252,7 @@ public class Robot extends TimedRobot {
 		}
 		previousJoystickValue = gamepad.getY();
 		elevatorSubsystem.setElevator();
+		elevatorSubsystem.manualMove(deadband(-gamepad.getRawAxis(1), .05));
 	}
 
 	/**
