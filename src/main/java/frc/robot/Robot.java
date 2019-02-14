@@ -215,9 +215,9 @@ public class Robot extends TimedRobot {
 		} else {
 			elevatorSubsystem.setIsManual(true);
 		}
-		if (-gamepad.getY() > topline && previousJoystickValue <= topline) {
+		if (-gamepad.getRawAxis(1) > topline && previousJoystickValue <= topline) {
 			elevatorCounter++;
-		} else if (-gamepad.getY() < bottomline && previousJoystickValue >= bottomline) {
+		} else if (-gamepad.getRawAxis(1) < bottomline && previousJoystickValue >= bottomline) {
 			elevatorCounter--;
 		}
 		if (elevatorCounter > 3) {
@@ -245,7 +245,7 @@ public class Robot extends TimedRobot {
 		} else if (-gamepad.getRawAxis(3) < bottomline) {
 			hatchIntakeSubsystem.setBackIntakeDown();
 		}
-		previousJoystickValue = gamepad.getY();
+		previousJoystickValue = gamepad.getRawAxis(1);
 		elevatorSubsystem.setElevator();
 		elevatorSubsystem.manualMove(deadband(-gamepad.getRawAxis(1), .05));
 	}
