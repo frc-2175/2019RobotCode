@@ -99,6 +99,7 @@ public class Robot extends TimedRobot {
 		drivetrainSubsystem = new DrivetrainSubsystem();
 		hatchIntakeSubsystem = new HatchIntakeSubsystem();
 		elevatorSubsystem = new ElevatorSubsystem();
+		cargoIntakeSubsystem = new CargoIntakeSubsystem();
 
 		leftJoystick = new Joystick(0);
 		rightJoystick = new Joystick(1);
@@ -175,16 +176,10 @@ public class Robot extends TimedRobot {
 		 * left stick up/down DONE I THINK
 		 */
 
-		if (gamepad.getRawButton(GAMEPAD_BACK)) {
-			if (VisionSubsystem.isTarget()) {
-				drivetrainSubsystem.arcadeDrive(0, -Math.signum(VisionSubsystem.getTx()) / 5);
-			}
-		} else {
-			drivetrainSubsystem.blendedDrive(leftJoystick.getY(), -rightJoystick.getX());
-		}
+		drivetrainSubsystem.blendedDrive(leftJoystick.getY(), -rightJoystick.getX());
 
 		if (gamepad.getRawButton(GAMEPAD_LEFT_BUMPER)) { // left trigger out, left bumper in for hatch intake
-			hatchIntakeSubsystem.spinOutFront();
+			hatchIntakeSubsystem.spinInFront();
 		} else if (gamepad.getRawButton(GAMEPAD_LEFT_TRIGGER)) {
 			hatchIntakeSubsystem.spinOutFront();
 		} else {
@@ -215,7 +210,7 @@ public class Robot extends TimedRobot {
 		if (gamepad.getPOV() == POV_LEFT) { // hat left
 			hatchIntakeSubsystem.spinOutBack();
 		}
-		if (gamepad.getRawButton(GAMEPAD_X)||gamepad.getRawButton(GAMEPAD_B)) {
+		if (gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B)) {
 			elevatorSubsystem.setIsManual(false);
 		} else {
 			elevatorSubsystem.setIsManual(true);
@@ -283,16 +278,10 @@ public class Robot extends TimedRobot {
 	}
 
 	/**
-	 * <<<<<<< Updated upstream Applies deadband onto input value
-	 *
-	 * @param value    input for value
+	 * Applies a deadband with ramping onto an input value
+	 * @param value input for value
 	 * @param deadband threshold for deadband
-	 * @return value with deadband ======= It applies a deadband to the joystick
-	 *         value
-	 *
-	 * @param value    the input value
-	 * @param deadband the threshold
-	 * @return deadbanded value >>>>>>> Stashed changes
+	 * @return value with deadband
 	 */
 	public static double deadband(double value, double deadband) {
 		if (Math.abs(value) > deadband) {

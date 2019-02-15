@@ -26,9 +26,11 @@ public class PIDControllerTest {
         PIDController pidControllerI = new PIDController(0, ki, 0);
 		pidControllerI.clear(0);
         pidControllerI.updateTime(0.05);
-		assertEquals(0.4, pidControllerI.pid(2, 10), 0.0001);
+		assertEquals(0, pidControllerI.pid(2, 10), 0.0001);
         pidControllerI.updateTime(0.15);
-        assertEquals(0.8, pidControllerI.pid(6, 10), 0.0001);
+		assertEquals(0.4, pidControllerI.pid(6, 10), 0.0001);
+		pidControllerI.updateTime(0.2);
+		assertEquals(0.45, pidControllerI.pid(9, 10), 0.0001);
 	}
 
 	@Test

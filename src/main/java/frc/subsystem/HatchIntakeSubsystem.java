@@ -16,7 +16,6 @@ public class HatchIntakeSubsystem {
 	private MotorWrapper groundActuationMotor;
 	private SolenoidWrapper actuatorHatchSolenoid;
 	private PIDController pidController;
-	private double pidPreviousTime;
 	private final SmartDashboardInfo smartDashboardInfo;
 
 	public HatchIntakeSubsystem() {
@@ -31,7 +30,7 @@ public class HatchIntakeSubsystem {
 		groundActuationMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		actuatorHatchSolenoid = robotInfo.get(RobotInfo.HATCH_ACTUATOR_SOLENOID);
 		pidController = new PIDController(1/90, 0, 0);
-		pidPreviousTime = 0;
+		pidController.clear(Timer.getFPGATimestamp());
 	}
 
 	public void spinInFront() { //spin in front/main intake
@@ -52,8 +51,6 @@ public class HatchIntakeSubsystem {
 		frontIntakeWheel.set(0);
 	}
 	public void setBackIntakeUp() {
-		double dt = Timer.getFPGATimestamp() - pidPreviousTime;
-		pidController.updateTime(dt);
 		pidController.pid(getGroundIntakeDegrees(), 90);
 	}
 	public void setBackIntakeDown() {
@@ -72,8 +69,7 @@ public class HatchIntakeSubsystem {
 		return (((groundActuationMotor.getSelectedSensorPosition(0) * 360.0) / 1024.0) / 200.0) * 4.0;
 	}
 
-	public void resetPID() {
-		pidController.clear(0);
-		pidPreviousTime = Timer.getFPGATimestamp();
+	public void teleopPeriodic() {
+		pidController.updateTime(Timer.getFPGATimestamp());
 	}
 }

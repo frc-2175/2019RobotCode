@@ -8,7 +8,6 @@ import frc.PIDController;
 import frc.ServiceLocator;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
-import sun.java2d.pipe.PixelDrawPipe;
 
 /*
 goToBottomPanel
@@ -27,7 +26,6 @@ public class ElevatorSubsystem {
 	private final SmartDashboardInfo smartDashboardInfo;
     private final MotorWrapper elevatorMotor;
     private PIDController pidController;
-    private double pidPreviousTime;
 	private double setpoint;
 	private boolean isManual;
 	private final int elevatorKP;
@@ -46,7 +44,7 @@ public class ElevatorSubsystem {
 		elevatorKP = robotInfo.get(RobotInfo.ELEVATOR_PID_P);
 		elevatorKI = robotInfo.get(RobotInfo.ELEVATOR_PID_I);
 		elevatorKD = robotInfo.get(RobotInfo.ELEVATOR_PID_D);
-		PIDController pidControl = new PIDController(elevatorKP, elevatorKI, elevatorKD); //?????????????????
+		pidController = new PIDController(elevatorKP, elevatorKI, elevatorKD); //?????????????????
 	}
 	public void setIsManual(boolean x) {
 		isManual = x;
@@ -54,7 +52,7 @@ public class ElevatorSubsystem {
 
     public void manualMove(double motorSpeed) {
 		if(isManual) {
-		elevatorMotor.set(motorSpeed);
+			elevatorMotor.set(motorSpeed);
 		}
     }
 
@@ -90,7 +88,6 @@ public class ElevatorSubsystem {
     }
 
     public void teleopPeriodic() {
-        double dt = Timer.getFPGATimestamp() - pidPreviousTime;
-        pidController.updateTime(dt);
+        pidController.updateTime(Timer.getFPGATimestamp());
     }
 }

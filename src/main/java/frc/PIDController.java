@@ -1,9 +1,8 @@
 package frc;
 
-import edu.wpi.first.wpilibj.Timer;
-
 public class PIDController {
-    double kp, ki, kd, integral, previousError, previousTime, dt;
+	double kp, ki, kd, integral, previousError, previousTime, dt;
+	boolean shouldRunIntegral = false;
 
     /**
      * Constructs a new pid controller with constants
@@ -17,7 +16,7 @@ public class PIDController {
         this.kd = d;
         integral = 0;
 		previousError = Double.NaN;
-        dt = 0;
+		dt = 0;
     }
 
     /**
@@ -29,7 +28,8 @@ public class PIDController {
 		dt = 0;
 		previousTime = time;
         integral = 0;
-        previousError = Double.NaN;
+		previousError = Double.NaN;
+		shouldRunIntegral = false;
     }
 
     /**
@@ -40,9 +40,14 @@ public class PIDController {
      */
     public double pid(double input, double setpoint) {
         double error = setpoint - input;
-        double p = error * kp;
-        integral += dt * error;
-		double i = integral * ki;
+		double p = error * kp;
+		double i = 0;
+		if(shouldRunIntegral) {
+			integral += dt * error;
+			i = integral * ki;
+		} else {
+			shouldRunIntegral = true;
+		}
 		double d;
 		if(Double.isNaN(previousError) || dt == 0) {
 			d = 0;
