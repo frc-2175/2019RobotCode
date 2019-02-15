@@ -13,9 +13,9 @@ public class DrivetrainSubsystem {
 
 	private final RobotInfo robotInfo;
 	private final MotorWrapper leftMaster;
-	// private final MotorWrapper leftSlave;
+	private final MotorWrapper leftSlave;
 	private final MotorWrapper rightMaster;
-	// private final MotorWrapper rightSlave;
+	private final MotorWrapper rightSlave;
 	// private final SolenoidWrapper driveShifters;
 	private final DifferentialDrive robotDrive;
 	private static VirtualSpeedController leftVirtualSpeedController = new VirtualSpeedController();
@@ -28,13 +28,13 @@ public class DrivetrainSubsystem {
 
 		robotInfo = ServiceLocator.get(RobotInfo.class);
 		leftMaster = robotInfo.get(RobotInfo.LEFT_MOTOR_MASTER);
-		// leftSlave = robotInfo.get(RobotInfo.LEFT_MOTOR_SLAVE);
+		leftSlave = robotInfo.get(RobotInfo.LEFT_MOTOR_FOLLOWER);
 		rightMaster = robotInfo.get(RobotInfo.RIGHT_MOTOR_MASTER);
-		// rightSlave = robotInfo.get(RobotInfo.RIGHT_MOTOR_SLAVE);
+		rightSlave = robotInfo.get(RobotInfo.RIGHT_MOTOR_FOLLOWER);
 		// driveShifters = robotInfo.get(RobotInfo.DRIVE_SHIFTERS);
 
-		// leftSlave.follow(leftMaster);
-		// rightSlave.follow(rightMaster);
+		leftSlave.follow(leftMaster);
+		rightSlave.follow(rightMaster);
 
 		robotDrive = new DifferentialDrive(leftMaster.getMotor(), rightMaster.getMotor());
 

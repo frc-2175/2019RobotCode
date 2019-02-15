@@ -2,11 +2,12 @@ package frc.subsystem;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import frc.MotorWrapper;
 import frc.PIDController;
-import frc.SolenoidWrapper;
 import frc.ServiceLocator;
+import frc.SolenoidWrapper;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
 
@@ -14,7 +15,7 @@ public class HatchIntakeSubsystem {
 	private MotorWrapper frontIntakeWheel;
 	private MotorWrapper groundRollerBallMotor;
 	private MotorWrapper groundActuationMotor;
-	private SolenoidWrapper actuatorHatchSolenoid;
+	private Solenoid actuatorHatchSolenoid;
 	private PIDController pidController;
 	private final SmartDashboardInfo smartDashboardInfo;
 
@@ -24,11 +25,12 @@ public class HatchIntakeSubsystem {
 		RobotInfo robotInfo = ServiceLocator.get(RobotInfo.class);
 		smartDashboardInfo = ServiceLocator.get(SmartDashboardInfo.class);
 
-		frontIntakeWheel = robotInfo.get(RobotInfo.HATCH_ROLLER_BAR_MOTOR);
+		frontIntakeWheel = robotInfo.get(RobotInfo.SWAN);
 		groundRollerBallMotor = robotInfo.get(RobotInfo.GROUND_ROLLER_BAR_MOTOR);
 		groundActuationMotor = robotInfo.get(RobotInfo.GROUND_ACTUATOR_MOTOR);
 		groundActuationMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		actuatorHatchSolenoid = robotInfo.get(RobotInfo.HATCH_ACTUATOR_SOLENOID);
+		actuatorHatchSolenoid = new Solenoid(4);
+		// actuatorHatchSolenoid = robotInfo.get(RobotInfo.HATCH_ACTUATOR_SOLENOID);
 		pidController = new PIDController(1/90, 0, 0);
 		pidController.clear(Timer.getFPGATimestamp());
 	}

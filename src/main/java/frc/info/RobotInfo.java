@@ -16,16 +16,19 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class RobotInfo {
 
-	public static final String LEFT_MOTOR_MASTER = "drivetrain.motor.left";
-	public static final String RIGHT_MOTOR_MASTER = "drivetrain.motor.right";
+	public static final String LEFT_MOTOR_MASTER = "drivetrain.motor.left.master";
+	public static final String LEFT_MOTOR_FOLLOWER = "drivetrain.motor.left.follower";
+	public static final String RIGHT_MOTOR_MASTER = "drivetrain.motor.right.master";
+	public static final String RIGHT_MOTOR_FOLLOWER = "drivetrain.motor.right.follower";
 	public static final String CARGO_ROLLER_BAR_MOTOR = "intake.cargo.motor.rollerbar";
 	public static final String CARGO_BOX_MOTOR = "intake.cargo.motor.box";
 	public static final String CARGO_SOLENOID = "intake.cargo.solenoid";
-	public static final String HATCH_ROLLER_BAR_MOTOR = "intake.hatch.motor.rollerbar";
+	public static final String SWAN = "intake.hatch.motor.swan";
 	public static final String GROUND_ROLLER_BAR_MOTOR = "intake.hatch.ground.motor.rollerbar";
 	public static final String GROUND_ACTUATOR_MOTOR = "intake.hatch.ground.actuator";
 	public static final String HATCH_ACTUATOR_SOLENOID = "intake.hatch.solenoid.actuator";
-	public static final String ELEVATOR_MOTOR = "elevator.motor";
+	public static final String ELEVATOR_MOTOR_MASTER = "elevator.motor.master";
+	public static final String ELEVATOR_MOTOR_FOLLOWER = "elevator.motor.follower";
 	public static final String ELEVATOR_PID_P = "elevator.pid.p";
 	public static final String ELEVATOR_PID_I = "elevator.pid.i";
 	public static final String ELEVATOR_PID_D = "elevator.pid.d";
@@ -50,15 +53,17 @@ public class RobotInfo {
      * @see frc.info.RobotInfo#put(String, Object)
      * */
     public void populate() {
-		put(CARGO_ROLLER_BAR_MOTOR, talon(new WPI_TalonSRX(0)));
-		put(CARGO_BOX_MOTOR, talon(new WPI_TalonSRX(3)));
-		put(GROUND_ROLLER_BAR_MOTOR,talon(new WPI_TalonSRX(3)));
-		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(1)));
-		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(6)));
-		put(GROUND_ACTUATOR_MOTOR, talon(new WPI_TalonSRX(5)));
-		put(HATCH_ROLLER_BAR_MOTOR, talon(new WPI_TalonSRX(2)));
-		put(HATCH_ACTUATOR_SOLENOID, new SolenoidWrapper(0));
-		put(ELEVATOR_MOTOR, talon(new WPI_TalonSRX(11)));
+		put(CARGO_ROLLER_BAR_MOTOR, victor(new WPI_VictorSPX(4)));
+		put(CARGO_BOX_MOTOR, victor(new WPI_VictorSPX(6)));
+		put(LEFT_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(1)));
+		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(8)));
+		put(RIGHT_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(5)));
+		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(9)));
+		put(GROUND_ACTUATOR_MOTOR, talon(new WPI_TalonSRX(11)));
+		put(GROUND_ROLLER_BAR_MOTOR, victor(new WPI_VictorSPX(3)));
+		put(ELEVATOR_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(2)));
+		put(ELEVATOR_MOTOR_MASTER, talon(new WPI_TalonSRX(10)));
+		put(SWAN, victor(new WPI_VictorSPX(7)));
 		put(ELEVATOR_PID_P, 0);
 		put(ELEVATOR_PID_I, 0);
 		put(ELEVATOR_PID_D, 0);

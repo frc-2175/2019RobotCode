@@ -176,7 +176,7 @@ public class Robot extends TimedRobot {
 		 * left stick up/down DONE I THINK
 		 */
 
-		drivetrainSubsystem.blendedDrive(leftJoystick.getY(), -rightJoystick.getX());
+		drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), -rightJoystick.getX());
 
 		if (gamepad.getRawButton(GAMEPAD_LEFT_BUMPER)) { // left trigger out, left bumper in for hatch intake
 			hatchIntakeSubsystem.spinInFront();
@@ -194,9 +194,10 @@ public class Robot extends TimedRobot {
 		}
 		if (gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER)) {
 			cargoIntakeSubsystem.rollIn();
-		}
-		if (gamepad.getRawButton(GAMEPAD_RIGHT_TRIGGER)) {
+		} else if (gamepad.getRawButton(GAMEPAD_RIGHT_TRIGGER)) {
 			cargoIntakeSubsystem.rollOut();
+		} else {
+			cargoIntakeSubsystem.stopAllMotors();
 		}
 		if (gamepad.getRawButton(GAMEPAD_Y)) {
 			cargoIntakeSubsystem.solenoidOut();
@@ -247,7 +248,8 @@ public class Robot extends TimedRobot {
 		}
 		previousJoystickValue = gamepad.getRawAxis(1);
 		elevatorSubsystem.setElevator();
-		elevatorSubsystem.manualMove(deadband(-gamepad.getRawAxis(1), .05));
+		elevatorSubsystem.manualMove((deadband(-gamepad.getRawAxis(1), .05)) *.5);
+		System.out.println(elevatorSubsystem.getCurrentDraw());
 	}
 
 	/**

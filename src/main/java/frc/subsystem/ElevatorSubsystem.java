@@ -1,6 +1,7 @@
 package frc.subsystem;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.MotorWrapper;
@@ -24,7 +25,8 @@ manualMove
 
 public class ElevatorSubsystem {
 	private final SmartDashboardInfo smartDashboardInfo;
-    private final MotorWrapper elevatorMotor;
+	private final MotorWrapper elevatorMotor;
+	private final MotorWrapper elevatorMotorFollower;
     private PIDController pidController;
 	private double setpoint;
 	private boolean isManual;
@@ -38,7 +40,9 @@ public class ElevatorSubsystem {
 		RobotInfo robotInfo = ServiceLocator.get(RobotInfo.class);
 		smartDashboardInfo = ServiceLocator.get(SmartDashboardInfo.class);
 
-        elevatorMotor = robotInfo.get(RobotInfo.ELEVATOR_MOTOR);
+		elevatorMotor = robotInfo.get(RobotInfo.ELEVATOR_MOTOR_MASTER);
+		elevatorMotorFollower = robotInfo.get(RobotInfo.ELEVATOR_MOTOR_FOLLOWER);
+		elevatorMotorFollower.follow(elevatorMotor);
 		elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 
 		elevatorKP = robotInfo.get(RobotInfo.ELEVATOR_PID_P);
@@ -89,5 +93,13 @@ public class ElevatorSubsystem {
 
     public void teleopPeriodic() {
         pidController.updateTime(Timer.getFPGATimestamp());
-    }
+	}
+
+	public double getCurrentDraw() {
+		if(elevatorMotor.isTalon) {
+			return ((WPI_TalonSRX)(elevatorMotor.getMotor())).getOutputCurrent();
+		} else {
+			return 0;
+		}
+	}
 }
