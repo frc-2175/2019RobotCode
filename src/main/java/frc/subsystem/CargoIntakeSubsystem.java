@@ -38,5 +38,9 @@ public class CargoIntakeSubsystem {
 	public void stopAllMotors() {
 		boxMotor.set(0);
 		rollerBarMotor.set(0);
-	}
+    }
+    
+    public void spinRollerbarForElevator() {
+        rollerBarMotor.set(0.4);
+    }
 }

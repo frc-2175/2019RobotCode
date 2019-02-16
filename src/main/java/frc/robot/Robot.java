@@ -138,7 +138,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
-		hasAutoEnded = false;
+		// hasAutoEnded = false;
 	}
 
 	/**
@@ -149,13 +149,11 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
+		teleopPeriodic();
 	}
 
 	@Override
 	public void teleopInit() {
-		elevatorSubsystem.zeroEncoder();
-		elevatorCounter = 1;
-		hatchIntakeSubsystem.zeroEncoder();
 	}
 
 	/**
@@ -186,10 +184,10 @@ public class Robot extends TimedRobot {
 
 		drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
 
-		if (gamepad.getRawButton(GAMEPAD_LEFT_BUMPER)) { // left trigger out, left bumper in for hatch intake
-			hatchIntakeSubsystem.spinInFront();
-		} else if (gamepad.getRawButton(GAMEPAD_LEFT_TRIGGER)) {
+		if (gamepad.getRawButton(GAMEPAD_LEFT_BUMPER) || leftJoystick.getRawButton(1)) { // left trigger out, left bumper in for hatch intake
 			hatchIntakeSubsystem.spinOutFront();
+		} else if (gamepad.getRawButton(GAMEPAD_LEFT_TRIGGER)) {
+			hatchIntakeSubsystem.spinInFront();
 		} else {
 			hatchIntakeSubsystem.stopSpinning();
 		}
@@ -200,18 +198,24 @@ public class Robot extends TimedRobot {
 		if (gamepad.getRawButton(GAMEPAD_BACK)) {
 			hatchIntakeSubsystem.setFrontIntakeIn();
 		}
-		if (gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER)) {
-			cargoIntakeSubsystem.rollIn();
-		} else if (gamepad.getRawButton(GAMEPAD_RIGHT_TRIGGER)) {
+		if (gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER) || rightJoystick.getRawButton(1)) {
 			cargoIntakeSubsystem.rollOut();
+		} else if (gamepad.getRawButton(GAMEPAD_RIGHT_TRIGGER)) {
+			cargoIntakeSubsystem.rollIn();
 		} else {
 			cargoIntakeSubsystem.stopAllMotors();
 		}
-		if (gamepad.getRawButton(GAMEPAD_Y)) {
+		if(gamepad.getRawButtonPressed(GAMEPAD_RIGHT_TRIGGER)) {
 			cargoIntakeSubsystem.solenoidOut();
 		}
-		if (gamepad.getRawButton(GAMEPAD_A)) {
+		if(gamepad.getRawButtonReleased(GAMEPAD_RIGHT_TRIGGER)) {
 			cargoIntakeSubsystem.solenoidIn();
+		}
+		if (gamepad.getRawButton(GAMEPAD_Y)) {
+			cargoIntakeSubsystem.solenoidIn();
+		}
+		if (gamepad.getRawButton(GAMEPAD_A)) {
+			cargoIntakeSubsystem.solenoidOut();
 		}
 		if (gamepad.getPOV() == POV_RIGHT) { // hat right
 			hatchIntakeSubsystem.spinInBack();
@@ -261,11 +265,21 @@ public class Robot extends TimedRobot {
 			}
 		} */
 
+		
+		elevatorSubsystem.setIsManual(true);
 		hatchIntakeSubsystem.setBackIntakeSpeed(-gamepad.getRawAxis(3) * 0.5);
+		if(leftJoystick.getRawButton(2)) {
+			hatchIntakeSubsystem.setBackIntakeSpeed(-0.5);
+			hatchIntakeSubsystem.spinOutBack();
+		}
 		// hatchIntakeSubsystem.goToSetpoint();
 		previousJoystickValue = -gamepad.getRawAxis(1);
-		elevatorSubsystem.setElevator();
-		elevatorSubsystem.manualMove(deadband(-gamepad.getRawAxis(1), .05) * 0.7);
+		// elevatorSubsystem.setElevator();
+		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ? deadband(-gamepad.getRawAxis(1), 0.05) * 0.7 : deadband(-gamepad.getRawAxis(1), 0.05) * 0.5;
+		if(elevatorSpeed > 0) {
+			cargoIntakeSubsystem.spinRollerbarForElevator();
+		}
+		elevatorSubsystem.manualMove(elevatorSpeed);
 		// System.out.println(elevatorSubsystem.getCurrentDraw());
 		SmartDashboard.putNumber("AutoPopulate/ElevatorCurrentDraw", elevatorSubsystem.getCurrentDraw());
 		SmartDashboard.putNumber("AutoPopulate/ElevatorPosition", elevatorSubsystem.getElevatorPosition());
