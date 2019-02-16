@@ -22,6 +22,13 @@ public class SmartDashboardInfo {
 	public static final String HATCH_INTAKE_SPIN_OUT_FRONT = "intake.hatch.front.out";
 	public static final String HATCH_INTAKE_SPIN_IN_BACK = "intake.hatch.back.in";
 	public static final String HATCH_INTAKE_SPIN_OUT_BACK = "intake.hatch.back.out";
+	public static final String ELEVATOR_PID_P = "elevator.pid.p";
+	public static final String ELEVATOR_PID_I = "elevator.pid.i";
+	public static final String ELEVATOR_PID_D = "elevator.pid.d";
+	public static final String HATCH_PID_P = "hatch.pid.p";
+	public static final String HATCH_PID_I = "hatch.pid.i";
+	public static final String HATCH_PID_D = "hatch.pid.d";
+
 
 
     public SmartDashboardInfo() {
@@ -36,20 +43,26 @@ public class SmartDashboardInfo {
      * using the put methods. See below in {@link SmartDashboardInfo}
      */
     public void populate() {
-		putNumber(CARGO_BOTTOM_SETPOINT, 1, 1);
-		putNumber(CARGO_MIDDLE_SETPOINT, 2, 2);
-		putNumber(CARGO_TOP_SETPOINT, 3, 3);
-		putNumber(HATCH_BOTTOM_SETPOINT, 1, 1);
-		putNumber(HATCH_MIDDLE_SETPOINT, 2, 2);
-		putNumber(HATCH_TOP_SETPOINT, 3, 3);
-		putNumber(CARGO_INTAKE_ROLL_IN_ROLLERBAR_SPEED, 1, 1);
-		putNumber(CARGO_INTAKE_ROLL_IN_BOX_MOTOR_SPEED, .75, .75);
+		putNumber(CARGO_BOTTOM_SETPOINT, 8, 8);
+		putNumber(CARGO_MIDDLE_SETPOINT, 36, 36);
+		putNumber(CARGO_TOP_SETPOINT, 64, 64);
+		putNumber(HATCH_BOTTOM_SETPOINT, 5, 5);
+		putNumber(HATCH_MIDDLE_SETPOINT, 28, 28);
+		putNumber(HATCH_TOP_SETPOINT, 56, 56);
+		putNumber(CARGO_INTAKE_ROLL_IN_ROLLERBAR_SPEED, 0.65, 0.65);
+		putNumber(CARGO_INTAKE_ROLL_IN_BOX_MOTOR_SPEED, .5, .5);
 		putNumber(CARGO_INTAKE_ROLL_OUT_ROLLERBAR_SPEED, -1, -1);
 		putNumber(CARGO_INTAKE_ROLL_OUT_BOX_MOTOR_SPEED, -1, -1);
-		putNumber(HATCH_INTAKE_SPIN_IN_FRONT, .3, .3);
-		putNumber(HATCH_INTAKE_SPIN_OUT_FRONT, -.3, -.3);
-		putNumber(HATCH_INTAKE_SPIN_IN_BACK, .3, .3);
-		putNumber(HATCH_INTAKE_SPIN_OUT_BACK, -.3, -.3);
+		putNumber(HATCH_INTAKE_SPIN_IN_FRONT, 1, 1);
+		putNumber(HATCH_INTAKE_SPIN_OUT_FRONT, -1, -1);
+		putNumber(HATCH_INTAKE_SPIN_IN_BACK, 1, 1);
+		putNumber(HATCH_INTAKE_SPIN_OUT_BACK, -1, -1);
+		putNumber(ELEVATOR_PID_P, 1.0 / 24.0, 1.0 / 24.0);
+		putNumber(ELEVATOR_PID_I, 0, 0);
+		putNumber(ELEVATOR_PID_D, 0, 0);
+		putNumber(HATCH_PID_P, 0.0222222, 0.0222222);
+		putNumber(HATCH_PID_I, 0, 0);
+		putNumber(HATCH_PID_D, 0, 0);
     }
 
     public void putBoolean(String key, boolean comp, boolean practice) {

@@ -29,9 +29,7 @@ public class RobotInfo {
 	public static final String HATCH_ACTUATOR_SOLENOID = "intake.hatch.solenoid.actuator";
 	public static final String ELEVATOR_MOTOR_MASTER = "elevator.motor.master";
 	public static final String ELEVATOR_MOTOR_FOLLOWER = "elevator.motor.follower";
-	public static final String ELEVATOR_PID_P = "elevator.pid.p";
-	public static final String ELEVATOR_PID_I = "elevator.pid.i";
-	public static final String ELEVATOR_PID_D = "elevator.pid.d";
+	public static final String HATCH_SOLENOID = "intake.hatch.solenoid";
 	public static interface ValueContainer {
 		public Object get();
 	}
@@ -55,18 +53,17 @@ public class RobotInfo {
     public void populate() {
 		put(CARGO_ROLLER_BAR_MOTOR, victor(new WPI_VictorSPX(4)));
 		put(CARGO_BOX_MOTOR, victor(new WPI_VictorSPX(6)));
-		put(LEFT_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(1)));
-		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(8)));
-		put(RIGHT_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(5)));
-		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(9)));
+		put(LEFT_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(5)));
+		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(9)));
+		put(RIGHT_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(1)));
+		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(8)));
 		put(GROUND_ACTUATOR_MOTOR, talon(new WPI_TalonSRX(11)));
 		put(GROUND_ROLLER_BAR_MOTOR, victor(new WPI_VictorSPX(3)));
 		put(ELEVATOR_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(2)));
 		put(ELEVATOR_MOTOR_MASTER, talon(new WPI_TalonSRX(10)));
 		put(SWAN, victor(new WPI_VictorSPX(7)));
-		put(ELEVATOR_PID_P, 0);
-		put(ELEVATOR_PID_I, 0);
-		put(ELEVATOR_PID_D, 0);
+		put(CARGO_SOLENOID, () -> new SolenoidWrapper(2, 3), () -> new SolenoidWrapper(2, 3));
+		put(HATCH_ACTUATOR_SOLENOID, () -> new SolenoidWrapper(4), () -> new SolenoidWrapper(4));
 	}
 
 	private MotorWrapper talon(WPI_TalonSRX talon) {

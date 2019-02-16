@@ -23,6 +23,18 @@ public class MotorWrapper {
 		isTalon = false;
 	}
 
+	public MotorWrapper(WPI_TalonSRX talon, boolean inverted) {
+		this.talon = talon;
+		this.talon.setInverted(inverted);
+		isTalon = true;
+	}
+
+	public MotorWrapper(WPI_VictorSPX victor, boolean inverted) {
+		this.victor = victor;
+		this.victor.setInverted(inverted);
+		isTalon = false;
+	}
+
 	public void set(double number) {
 		if (isTalon) {
 			talon.set(number);

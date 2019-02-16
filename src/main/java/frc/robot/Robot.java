@@ -7,15 +7,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.command.Command;
+import frc.info.RobotInfo;
+import frc.info.SmartDashboardInfo;
 import frc.subsystem.CargoIntakeSubsystem;
 import frc.subsystem.DrivetrainSubsystem;
 import frc.subsystem.ElevatorSubsystem;
 import frc.subsystem.HatchIntakeSubsystem;
-import frc.subsystem.VisionSubsystem;
-import frc.info.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -150,6 +151,13 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 	}
 
+	@Override
+	public void teleopInit() {
+		elevatorSubsystem.zeroEncoder();
+		elevatorCounter = 1;
+		hatchIntakeSubsystem.zeroEncoder();
+	}
+
 	/**
 	 * This function is called periodically during operator control.
 	 */
@@ -176,7 +184,7 @@ public class Robot extends TimedRobot {
 		 * left stick up/down DONE I THINK
 		 */
 
-		drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), -rightJoystick.getX());
+		drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
 
 		if (gamepad.getRawButton(GAMEPAD_LEFT_BUMPER)) { // left trigger out, left bumper in for hatch intake
 			hatchIntakeSubsystem.spinInFront();
@@ -241,15 +249,30 @@ public class Robot extends TimedRobot {
 		} else if (elevatorCounter == 3 && gamepad.getRawButton(GAMEPAD_B)) {
 			elevatorSubsystem.CargoPlaceElevatorTop();
 		}
-		if (-gamepad.getRawAxis(3) > topline) {
-			hatchIntakeSubsystem.setBackIntakeUp();
-		} else if (-gamepad.getRawAxis(3) < bottomline) {
-			hatchIntakeSubsystem.setBackIntakeDown();
-		}
-		previousJoystickValue = gamepad.getRawAxis(1);
+
+		/* if(gamepad.getPOV() == POV_UP) {
+			hatchIntakeSubsystem.setIsManual(true);
+		} else {
+			hatchIntakeSubsystem.setIsManual(false);
+			if (-gamepad.getRawAxis(3) > topline) {
+				hatchIntakeSubsystem.setBackIntakeUp();
+			} else if (-gamepad.getRawAxis(3) < bottomline) {
+				hatchIntakeSubsystem.setBackIntakeDown();
+			}
+		} */
+
+		hatchIntakeSubsystem.setBackIntakeSpeed(-gamepad.getRawAxis(3) * 0.5);
+		// hatchIntakeSubsystem.goToSetpoint();
+		previousJoystickValue = -gamepad.getRawAxis(1);
 		elevatorSubsystem.setElevator();
-		elevatorSubsystem.manualMove((deadband(-gamepad.getRawAxis(1), .05)) *.5);
-		System.out.println(elevatorSubsystem.getCurrentDraw());
+		elevatorSubsystem.manualMove(deadband(-gamepad.getRawAxis(1), .05) * 0.7);
+		// System.out.println(elevatorSubsystem.getCurrentDraw());
+		SmartDashboard.putNumber("AutoPopulate/ElevatorCurrentDraw", elevatorSubsystem.getCurrentDraw());
+		SmartDashboard.putNumber("AutoPopulate/ElevatorPosition", elevatorSubsystem.getElevatorPosition());
+		SmartDashboard.putNumber("AutoPopulate/ElevatorPresetCurrent", elevatorCounter);
+		SmartDashboard.putBoolean("AutoPopulate/IsManual", elevatorSubsystem.getIsManual());
+		hatchIntakeSubsystem.teleopPeriodic();
+		elevatorSubsystem.teleopPeriodic();
 	}
 
 	/**

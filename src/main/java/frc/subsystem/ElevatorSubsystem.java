@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.MotorWrapper;
 import frc.PIDController;
 import frc.ServiceLocator;
@@ -30,9 +31,9 @@ public class ElevatorSubsystem {
     private PIDController pidController;
 	private double setpoint;
 	private boolean isManual;
-	private final int elevatorKP;
-	private final int elevatorKI;
-	private final int elevatorKD;
+	private final double elevatorKP;
+	private final double elevatorKI;
+	private final double elevatorKD;
 
     public ElevatorSubsystem() {
         ServiceLocator.register(this);
@@ -44,11 +45,12 @@ public class ElevatorSubsystem {
 		elevatorMotorFollower = robotInfo.get(RobotInfo.ELEVATOR_MOTOR_FOLLOWER);
 		elevatorMotorFollower.follow(elevatorMotor);
 		elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
+		elevatorMotor.setSelectedSensorPosition(0, 0, 0);
 
-		elevatorKP = robotInfo.get(RobotInfo.ELEVATOR_PID_P);
-		elevatorKI = robotInfo.get(RobotInfo.ELEVATOR_PID_I);
-		elevatorKD = robotInfo.get(RobotInfo.ELEVATOR_PID_D);
-		pidController = new PIDController(elevatorKP, elevatorKI, elevatorKD); //?????????????????
+		elevatorKP = smartDashboardInfo.getNumber(smartDashboardInfo.ELEVATOR_PID_P);
+		elevatorKI = smartDashboardInfo.getNumber(smartDashboardInfo.ELEVATOR_PID_I);
+		elevatorKD = smartDashboardInfo.getNumber(smartDashboardInfo.ELEVATOR_PID_D);
+		pidController = new PIDController(elevatorKP, elevatorKI, elevatorKD);
 	}
 	public void setIsManual(boolean x) {
 		isManual = x;
@@ -61,12 +63,13 @@ public class ElevatorSubsystem {
     }
 
 
-    	public void setElevator() {
-			if (!isManual) {
-        		double output = pidController.pid(elevatorMotor.getSelectedSensorPosition(0), setpoint); //what to set motor speed to
-        		elevatorMotor.set(output); //setting motor speed to speed needed to go to setpoint
-    		}
+	public void setElevator() {
+		if (!isManual) {
+			double output = pidController.pid(getElevatorPosition(), setpoint); //what to set motor speed to
+			elevatorMotor.set(output); //setting motor speed to speed needed to go to setpoint
+			SmartDashboard.putNumber("AutoPopulate/ElevatorOutput", output);
 		}
+	}
 
     public void CargoPlaceElevatorTop() {
         setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_TOP_SETPOINT);
@@ -101,5 +104,17 @@ public class ElevatorSubsystem {
 		} else {
 			return 0;
 		}
+	}
+
+	public double getElevatorPosition() {
+		return 3 * -elevatorMotor.getSelectedSensorPosition(0) * 1.273 * Math.PI / 4096;
+	}
+
+	public void zeroEncoder() {
+		elevatorMotor.setSelectedSensorPosition(0, 0, 0);
+	}
+
+	public boolean getIsManual() {
+		return isManual;
 	}
 }

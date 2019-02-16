@@ -32,6 +32,8 @@ public class DrivetrainSubsystem {
 		rightMaster = robotInfo.get(RobotInfo.RIGHT_MOTOR_MASTER);
 		rightSlave = robotInfo.get(RobotInfo.RIGHT_MOTOR_FOLLOWER);
 		// driveShifters = robotInfo.get(RobotInfo.DRIVE_SHIFTERS);
+		leftMaster.setInverted(false);
+		rightMaster.setInverted(false);
 
 		leftSlave.follow(leftMaster);
 		rightSlave.follow(rightMaster);
@@ -80,7 +82,7 @@ public class DrivetrainSubsystem {
 	}
 
 	public void blendedDrive(double xSpeed, double zRotation) {
-		double[] blendedValues = getBlendedMotorValues(-xSpeed, -zRotation);
+		double[] blendedValues = getBlendedMotorValues(xSpeed, zRotation);
 		robotDrive.tankDrive(blendedValues[0], blendedValues[1]);
 	}
 

@@ -2,8 +2,8 @@ package frc.subsystem;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.MotorWrapper;
 import frc.PIDController;
 import frc.ServiceLocator;
@@ -15,9 +15,11 @@ public class HatchIntakeSubsystem {
 	private MotorWrapper frontIntakeWheel;
 	private MotorWrapper groundRollerBallMotor;
 	private MotorWrapper groundActuationMotor;
-	private Solenoid actuatorHatchSolenoid;
+	private SolenoidWrapper actuatorHatchSolenoid;
 	private PIDController pidController;
 	private final SmartDashboardInfo smartDashboardInfo;
+	private boolean isManual;
+	private double setpoint;
 
 	public HatchIntakeSubsystem() {
 		ServiceLocator.register(this);
@@ -29,10 +31,18 @@ public class HatchIntakeSubsystem {
 		groundRollerBallMotor = robotInfo.get(RobotInfo.GROUND_ROLLER_BAR_MOTOR);
 		groundActuationMotor = robotInfo.get(RobotInfo.GROUND_ACTUATOR_MOTOR);
 		groundActuationMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
-		actuatorHatchSolenoid = new Solenoid(4);
+		actuatorHatchSolenoid = robotInfo.get(RobotInfo.HATCH_ACTUATOR_SOLENOID);
 		// actuatorHatchSolenoid = robotInfo.get(RobotInfo.HATCH_ACTUATOR_SOLENOID);
-		pidController = new PIDController(1/90, 0, 0);
+		double kp = smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_PID_P);
+		double ki = smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_PID_I);
+		double kd = smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_PID_D);
+		pidController = new PIDController(kp, ki, kd);
 		pidController.clear(Timer.getFPGATimestamp());
+		isManual = false;
+	}
+
+	public void setIsManual(boolean isManual) {
+		this.isManual = isManual;
 	}
 
 	public void spinInFront() { //spin in front/main intake
@@ -53,10 +63,25 @@ public class HatchIntakeSubsystem {
 		frontIntakeWheel.set(0);
 	}
 	public void setBackIntakeUp() {
-		pidController.pid(getGroundIntakeDegrees(), 90);
+		setpoint = 90;
 	}
 	public void setBackIntakeDown() {
+		setpoint = 0;
+	}
 
+	public void goToSetpoint() {
+		/* if(!isManual) {
+			groundActuationMotor.set(pidController.pid(getGroundIntakeDegrees(), setpoint));
+		} */
+	}
+
+	public void setBackIntakeSpeed(double speed) {
+		// if(isManual) {
+		groundActuationMotor.set(speed);
+		// }
+	}
+	public void zeroEncoder() {
+		groundActuationMotor.setSelectedSensorPosition(0, 0, 0);
 	}
 
 	 public void setFrontIntakeOut() { //front intake moved out or "down"
@@ -68,10 +93,12 @@ public class HatchIntakeSubsystem {
 	}
 
 	public double getGroundIntakeDegrees() {
-		return (((groundActuationMotor.getSelectedSensorPosition(0) * 360.0) / 1024.0) / 200.0) * 4.0;
+		return (((groundActuationMotor.getSelectedSensorPosition(0) * 360.0) / 4096.0) / 200.0);
 	}
 
 	public void teleopPeriodic() {
 		pidController.updateTime(Timer.getFPGATimestamp());
+		SmartDashboard.putNumber("AutoPopulate/HatchTicks", groundActuationMotor.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("AutoPopulate/HatchDegrees", getGroundIntakeDegrees());
 	}
 }
