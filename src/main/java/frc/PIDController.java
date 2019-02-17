@@ -38,13 +38,17 @@ public class PIDController {
      * @param setpoint the desired setpoint
      * @return the output of the loop
      */
-    public double pid(double input, double setpoint) {
+    public double pid(double input, double setpoint, double threshold) {
         double error = setpoint - input;
 		double p = error * kp;
 		double i = 0;
 		if(shouldRunIntegral) {
-			integral += dt * error;
-			i = integral * ki;
+            if(((input < threshold + setpoint) && (input > setpoint - threshold)) || (threshold == 0)) {
+                integral += dt * error;
+            } else {
+                integral = 0; 
+            }
+            i = integral * ki;
 		} else {
 			shouldRunIntegral = true;
 		}
@@ -58,6 +62,9 @@ public class PIDController {
         return p + i + d;
     }
 
+    public double pid(double input, double setpoint) {
+        return pid(input, setpoint, 0);
+    }
     /**
      * Every time the loop goes forward by one interation, call this
      * method with a new dt.
