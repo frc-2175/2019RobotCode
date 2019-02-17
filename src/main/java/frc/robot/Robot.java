@@ -154,6 +154,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
+		elevatorSubsystem.zeroEncoder();
 	}
 
 	/**
@@ -253,7 +254,7 @@ public class Robot extends TimedRobot {
 		} else if (elevatorCounter == 3 && gamepad.getRawButton(GAMEPAD_B)) {
 			elevatorSubsystem.CargoPlaceElevatorTop();
 		}
-
+		SmartDashboard.putNumber("ElevatorCounter", elevatorCounter);
 		/* if(gamepad.getPOV() == POV_UP) {
 			hatchIntakeSubsystem.setIsManual(true);
 		} else {
@@ -274,9 +275,9 @@ public class Robot extends TimedRobot {
 		}
 		// hatchIntakeSubsystem.goToSetpoint();
 		previousJoystickValue = -gamepad.getRawAxis(1);
-		// elevatorSubsystem.setElevator();
-		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ? deadband(-gamepad.getRawAxis(1), 0.05) * 0.7 : deadband(-gamepad.getRawAxis(1), 0.05) * 0.5;
-		if(elevatorSpeed > 0) {
+		elevatorSubsystem.setElevator();
+		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ? deadband(-gamepad.getRawAxis(1), 0.05) * 0.7 : deadband(-gamepad.getRawAxis(1), 0.05) * 0.3;
+		if(elevatorSpeed > 0.05) {
 			cargoIntakeSubsystem.spinRollerbarForElevator();
 		}
 		elevatorSubsystem.manualMove(elevatorSpeed);

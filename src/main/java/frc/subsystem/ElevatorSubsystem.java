@@ -46,6 +46,7 @@ public class ElevatorSubsystem {
 		elevatorMotorFollower.follow(elevatorMotor);
 		elevatorMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		elevatorMotor.setSelectedSensorPosition(0, 0, 0);
+		zeroEncoder();
 
 		elevatorKP = smartDashboardInfo.getNumber(smartDashboardInfo.ELEVATOR_PID_P);
 		elevatorKI = smartDashboardInfo.getNumber(smartDashboardInfo.ELEVATOR_PID_I);
@@ -65,7 +66,9 @@ public class ElevatorSubsystem {
 
 	public void setElevator() {
 		if (!isManual) {
-			double output = pidController.pid(getElevatorPosition(), setpoint); //what to set motor speed to
+			double output = pidController.pid(getElevatorPosition(), setpoint, 4); //what to set motor speed to
+			output += 0.125;
+			output = clamp(output, -0.4, 0.5);
 			elevatorMotor.set(output); //setting motor speed to speed needed to go to setpoint
 			SmartDashboard.putNumber("AutoPopulate/ElevatorOutput", output);
 		}
@@ -116,5 +119,9 @@ public class ElevatorSubsystem {
 
 	public boolean getIsManual() {
 		return isManual;
+	}
+
+	public static double clamp(double val, double min, double max) {
+		return val >= min && val <= max ? val : (val < min ? min : max);
 	}
 }

@@ -43,10 +43,10 @@ public class SmartDashboardInfo {
      * using the put methods. See below in {@link SmartDashboardInfo}
      */
     public void populate() {
-		putNumber(CARGO_BOTTOM_SETPOINT, 8, 8);
-		putNumber(CARGO_MIDDLE_SETPOINT, 36, 36);
-		putNumber(CARGO_TOP_SETPOINT, 64, 64);
-		putNumber(HATCH_BOTTOM_SETPOINT, 5, 5);
+		putNumber(CARGO_BOTTOM_SETPOINT, 16, 16);
+		putNumber(CARGO_MIDDLE_SETPOINT, 44, 44);
+		putNumber(CARGO_TOP_SETPOINT, 72, 72);
+		putNumber(HATCH_BOTTOM_SETPOINT, 1, 1);
 		putNumber(HATCH_MIDDLE_SETPOINT, 28, 28);
 		putNumber(HATCH_TOP_SETPOINT, 56, 56);
 		putNumber(CARGO_INTAKE_ROLL_IN_ROLLERBAR_SPEED, 0.65, 0.65);
@@ -57,10 +57,11 @@ public class SmartDashboardInfo {
 		putNumber(HATCH_INTAKE_SPIN_OUT_FRONT, -1, -1);
 		putNumber(HATCH_INTAKE_SPIN_IN_BACK, 0.75, 0.75);
 		putNumber(HATCH_INTAKE_SPIN_OUT_BACK, -0.4, -0.4);
-		putNumber(ELEVATOR_PID_P, 1.0 / 24.0, 1.0 / 24.0);
-		putNumber(ELEVATOR_PID_I, 0, 0);
+		// 24 originally
+		putNumber(ELEVATOR_PID_P, 1.0 / 36.0, 1.0 / 36.0);
+		putNumber(ELEVATOR_PID_I, 1.0 / 30.0, 1.0 / 30.0);
 		putNumber(ELEVATOR_PID_D, 0, 0);
-		putNumber(HATCH_PID_P, 0.0222222, 0.0222222);
+		putNumber(HATCH_PID_P, 1.0 / 45.0, 1.0 / 45.0);
 		putNumber(HATCH_PID_I, 0, 0);
 		putNumber(HATCH_PID_D, 0, 0);
     }
