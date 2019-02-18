@@ -10,6 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.cscore.*;
 import frc.command.Command;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
@@ -17,6 +19,9 @@ import frc.subsystem.CargoIntakeSubsystem;
 import frc.subsystem.DrivetrainSubsystem;
 import frc.subsystem.ElevatorSubsystem;
 import frc.subsystem.HatchIntakeSubsystem;
+
+import org.opencv.core.Mat;
+import org.opencv.core.Core;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -105,6 +110,23 @@ public class Robot extends TimedRobot {
 		leftJoystick = new Joystick(0);
 		rightJoystick = new Joystick(1);
 		gamepad = new Joystick(2);
+
+		// new Thread(() -> {
+		// 	UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+		// 	camera.setResolution(320, 240);
+			
+		// 	CvSink cvSink = CameraServer.getInstance().getVideo();
+		// 	CvSource outputStream = CameraServer.getInstance().putVideo("FlippedCamera", 320, 240);
+			
+		// 	Mat source = new Mat();
+		// 	Mat output = new Mat();
+			
+		// 	while(!Thread.interrupted()) {
+		// 		cvSink.grabFrame(source);
+		// 		Core.rotate(source, output, Core.ROTATE_180);
+		// 		outputStream.putFrame(output);
+		// 	}
+		// }).start();
 	}
 
 	/**
@@ -276,7 +298,7 @@ public class Robot extends TimedRobot {
 		// hatchIntakeSubsystem.goToSetpoint();
 		previousJoystickValue = -gamepad.getRawAxis(1);
 		elevatorSubsystem.setElevator();
-		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ? deadband(-gamepad.getRawAxis(1), 0.05) * 0.7 : deadband(-gamepad.getRawAxis(1), 0.05) * 0.3;
+		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ? deadband(-gamepad.getRawAxis(1), 0.05) * 0.8 : deadband(-gamepad.getRawAxis(1), 0.05) * 0.5;
 		if(elevatorSpeed > 0.05) {
 			cargoIntakeSubsystem.spinRollerbarForElevator();
 		}
