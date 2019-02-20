@@ -28,6 +28,9 @@ public class SmartDashboardInfo {
 	public static final String HATCH_PID_P = "hatch.pid.p";
 	public static final String HATCH_PID_I = "hatch.pid.i";
 	public static final String HATCH_PID_D = "hatch.pid.d";
+	public static final String VISION_PID_P = "vision.pid.p";
+	public static final String VISION_PID_I = "vision.pid.i";
+	public static final String VISION_PID_D = "vision.pid.d";
 
 
 
@@ -53,8 +56,8 @@ public class SmartDashboardInfo {
 		putNumber(CARGO_INTAKE_ROLL_IN_BOX_MOTOR_SPEED, .5, .5);
 		putNumber(CARGO_INTAKE_ROLL_OUT_ROLLERBAR_SPEED, -1, -1);
 		putNumber(CARGO_INTAKE_ROLL_OUT_BOX_MOTOR_SPEED, -0.7, -0.7);
-		putNumber(HATCH_INTAKE_SPIN_IN_FRONT, 0.65, 0.65);
-		putNumber(HATCH_INTAKE_SPIN_OUT_FRONT, -1, -1);
+		putNumber(HATCH_INTAKE_SPIN_IN_FRONT, 0.6, 0.6);
+		putNumber(HATCH_INTAKE_SPIN_OUT_FRONT, -0.8, -0.8);
 		putNumber(HATCH_INTAKE_SPIN_IN_BACK, 0.75, 0.75);
 		putNumber(HATCH_INTAKE_SPIN_OUT_BACK, -0.4, -0.4);
 		// 24 originally
@@ -64,6 +67,9 @@ public class SmartDashboardInfo {
 		putNumber(HATCH_PID_P, 1.0 / 45.0, 1.0 / 45.0);
 		putNumber(HATCH_PID_I, 0, 0);
 		putNumber(HATCH_PID_D, 0, 0);
+		putNumber(VISION_PID_P, 1.0 / 36.0, 1.0 / 36.0);
+		putNumber(VISION_PID_I, 0.01, 0.01);
+		putNumber(VISION_PID_D, 0, 0);
     }
 
     public void putBoolean(String key, boolean comp, boolean practice) {

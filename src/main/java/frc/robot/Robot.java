@@ -7,9 +7,14 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.PIDController;
+import frc.Vector;
 import frc.command.Command;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
@@ -17,32 +22,38 @@ import frc.subsystem.CargoIntakeSubsystem;
 import frc.subsystem.DrivetrainSubsystem;
 import frc.subsystem.ElevatorSubsystem;
 import frc.subsystem.HatchIntakeSubsystem;
+import frc.subsystem.VisionSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
  * documentation. If you change the name of this class or the package after
  * creating this project, you must also update the build.gradle file in the
- * project. - FRC Team 222222222222222 1111111
- * 77777777777777777777555555555555555555 2:::::::::::::::22 1::::::1
- * 7::::::::::::::::::75::::::::::::::::5 2::::::222222:::::2 1:::::::1
- * 7::::::::::::::::::75::::::::::::::::5 2222222 2:::::2 111:::::1
- * 777777777777:::::::75:::::555555555555 2:::::2 1::::1 7::::::7 5:::::5
- * 2:::::2 1::::1 7::::::7 5:::::5 2222::::2 1::::1 7::::::7 5:::::5555555555
- * 22222::::::22 1::::l 7::::::7 5:::::::::::::::5 22::::::::222 1::::l 7::::::7
- * 555555555555:::::5 2:::::22222 1::::l 7::::::7 5:::::5 2:::::2 1::::l
- * 7::::::7 5:::::5 2:::::2 1::::l 7::::::7 5555555 5:::::5 2:::::2
- * 222222111::::::111 7::::::7 5::::::55555::::::5
- * 2::::::2222222:::::21::::::::::1 7::::::7 55:::::::::::::55
- * 2::::::::::::::::::21::::::::::1 7::::::7 55:::::::::55
- * 2222222222222222222211111111111177777777 555555555 The Fighting Calculators
+ * project. - FRC Team
+ * 222222222222222       1111111     77777777777777777777 555555555555555555
+ * 2:::::::::::::::22    1::::::1    7::::::::::::::::::7 5::::::::::::::::5
+ * 2::::::222222:::::2  1:::::::1    7::::::::::::::::::7 5::::::::::::::::5
+ * 2222222     2:::::2  111:::::1    777777777777:::::::7 5:::::555555555555
+ *             2:::::2     1::::1               7::::::7  5:::::5
+ *             2:::::2     1::::1              7::::::7   5:::::5
+ *          2222::::2      1::::1             7::::::7    5:::::5555555555
+ *     22222::::::22       1::::l            7::::::7     5:::::::::::::::5
+ *   22::::::::222         1::::l           7::::::7      555555555555:::::5
+ *  2:::::22222            1::::l          7::::::7                   5:::::5
+ * 2:::::2                 1::::l         7::::::7                    5:::::5
+ * 2:::::2                 1::::l        7::::::7         5555555     5:::::5
+ * 2:::::2       222222 111::::::111    7::::::7          5::::::55555::::::5
+ * 2::::::2222222:::::2 1::::::::::1   7::::::7            55:::::::::::::55
+ * 2::::::::::::::::::2 1::::::::::1  7::::::7               55:::::::::55
+ * 22222222222222222222 111111111111 77777777                  555555555
+ * The Fighting Calculators
  */
 public class Robot extends TimedRobot {
 	public static final int JOYSTICK_TRIGGER = 1;
 
 	public double previousJoystickValue = 0;
-	public static final double topline = .6;
-	public static final double bottomline = -.6;
+	public static final double TOPLINE = .6;
+	public static final double BOTTOMLINE = -.6;
 
 	public static final int GAMEPAD_X = 1;
 	public static final int GAMEPAD_A = 2;
@@ -77,6 +88,8 @@ public class Robot extends TimedRobot {
 	private HatchIntakeSubsystem hatchIntakeSubsystem;
 	private ElevatorSubsystem elevatorSubsystem;
 	private CargoIntakeSubsystem cargoIntakeSubsystem;
+	private VisionSubsystem visionSubsystem;
+	private SmartDashboardInfo smartDashboardInfo;
 
 	// WPI Lib Functions
 
@@ -89,8 +102,9 @@ public class Robot extends TimedRobot {
 		hasAutoEnded = false;
 
 		new RobotInfo();
-		new SmartDashboardInfo();
+		smartDashboardInfo = new SmartDashboardInfo();
 
+		visionSubsystem = new VisionSubsystem();
 		drivetrainSubsystem = new DrivetrainSubsystem();
 		hatchIntakeSubsystem = new HatchIntakeSubsystem();
 		elevatorSubsystem = new ElevatorSubsystem();
@@ -156,7 +170,7 @@ public class Robot extends TimedRobot {
 	 * This function is called periodically during autonomous. This is where the
 	 * autonomous commands must be executed.
 	 *
-	 * @see frc.robot.Robot#executeCommand(Command)
+	 * @see #executeCommand(Command)
 	 */
 	@Override
 	public void autonomousPeriodic() {
@@ -197,7 +211,15 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumberArray("Cargo Setpoints", elevatorSubsystem.getCargoSetpoints());
 		SmartDashboard.putNumberArray("Hatch Setpoints", elevatorSubsystem.getHatchSetpoints());
 
-		drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
+		// Driving
+		if(rightJoystick.getRawButtonPressed(2)) {
+			drivetrainSubsystem.storeTargetHeading();
+		}
+		if(rightJoystick.getRawButton(2) && visionSubsystem.doesValidTargetExist()) {
+			drivetrainSubsystem.driveWithSimpleVision(-leftJoystick.getY());
+		} else {
+			drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
+		}
 
 		if (gamepad.getRawButton(GAMEPAD_LEFT_BUMPER) || leftJoystick.getRawButton(1)) { // left trigger out, left bumper in for hatch intake
 			hatchIntakeSubsystem.spinOutFront();
@@ -243,7 +265,7 @@ public class Robot extends TimedRobot {
 		if (!isManual && isPreviousManual) {
 			elevatorSubsystem.setSetpoint(elevatorSubsystem.getElevatorPosition());
 		}
-		if ((-gamepad.getRawAxis(1) > topline && previousJoystickValue <= topline) || (-gamepad.getRawAxis(1) < bottomline && previousJoystickValue >= bottomline)) { //if you flicked either way
+		if ((-gamepad.getRawAxis(1) > TOPLINE && previousJoystickValue <= TOPLINE) || (-gamepad.getRawAxis(1) < BOTTOMLINE && previousJoystickValue >= BOTTOMLINE)) { //if you flicked either way
 			elevatorSubsystem.setStickMoved(true); //say the stick moved
 			double[] setpoints = gamepad.getRawButton(GAMEPAD_X) ? elevatorSubsystem.getHatchSetpoints() : elevatorSubsystem.getCargoSetpoints();
 			double preset = elevatorSubsystem.getElevatorPreset(setpoints, -gamepad.getRawAxis(1) > 0);
@@ -255,9 +277,9 @@ public class Robot extends TimedRobot {
 			hatchIntakeSubsystem.setIsManual(true);
 		} else {
 			hatchIntakeSubsystem.setIsManual(false);
-			if (-gamepad.getRawAxis(3) > topline) {
+			if (-gamepad.getRawAxis(3) > TOPLINE) {
 				hatchIntakeSubsystem.setBackIntakeUp();
-			} else if (-gamepad.getRawAxis(3) < bottomline) {
+			} else if (-gamepad.getRawAxis(3) < BOTTOMLINE) {
 				hatchIntakeSubsystem.setBackIntakeDown();
 			}
 		} */
@@ -284,6 +306,7 @@ public class Robot extends TimedRobot {
 		isPreviousManual = isManual;
 		hatchIntakeSubsystem.teleopPeriodic();
 		elevatorSubsystem.teleopPeriodic();
+		drivetrainSubsystem.teleopPeriodic();
 	}
 
 	/**
@@ -294,6 +317,7 @@ public class Robot extends TimedRobot {
 	}
 
 	// Custom Functions
+
 	/**
 	 * Runs the execute portion of a command until it is finished. When it is
 	 * finished, it'll call the end portion of the command once.

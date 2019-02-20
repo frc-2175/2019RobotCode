@@ -1,13 +1,18 @@
 package frc.subsystem;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.RobotDriveBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.MotorWrapper;
-import frc.SolenoidWrapper;
+import frc.PIDController;
 import frc.ServiceLocator;
 import frc.VirtualSpeedController;
 import frc.info.RobotInfo;
-
+import frc.info.SmartDashboardInfo;
 
 public class DrivetrainSubsystem {
 
@@ -16,12 +21,15 @@ public class DrivetrainSubsystem {
 	private final MotorWrapper leftSlave;
 	private final MotorWrapper rightMaster;
 	private final MotorWrapper rightSlave;
-	// private final SolenoidWrapper driveShifters;
 	private final DifferentialDrive robotDrive;
 	private static VirtualSpeedController leftVirtualSpeedController = new VirtualSpeedController();
 	private static VirtualSpeedController rightVirtualSpeedController = new VirtualSpeedController();
 	private static DifferentialDrive virtualRobotDrive = new DifferentialDrive(leftVirtualSpeedController,
 		rightVirtualSpeedController);
+	private PIDController pidController;
+	private VisionSubsystem visionSubsystem;
+	public double targetHeading;
+	public AHRS navx;
 
 	public DrivetrainSubsystem() {
 		ServiceLocator.register(this);
@@ -31,7 +39,6 @@ public class DrivetrainSubsystem {
 		leftSlave = robotInfo.get(RobotInfo.LEFT_MOTOR_FOLLOWER);
 		rightMaster = robotInfo.get(RobotInfo.RIGHT_MOTOR_MASTER);
 		rightSlave = robotInfo.get(RobotInfo.RIGHT_MOTOR_FOLLOWER);
-		// driveShifters = robotInfo.get(RobotInfo.DRIVE_SHIFTERS);
 		leftMaster.setInverted(false);
 		rightMaster.setInverted(false);
 
@@ -43,6 +50,16 @@ public class DrivetrainSubsystem {
 		leftVirtualSpeedController = new VirtualSpeedController();
 		rightVirtualSpeedController = new VirtualSpeedController();
 		virtualRobotDrive = new DifferentialDrive(leftVirtualSpeedController, rightVirtualSpeedController);
+		SmartDashboardInfo smartDashboardInfo = ServiceLocator.get(SmartDashboardInfo.class);
+		double kp = smartDashboardInfo.getNumber(SmartDashboardInfo.VISION_PID_P);
+		double ki = smartDashboardInfo.getNumber(SmartDashboardInfo.VISION_PID_I);
+		double kd = smartDashboardInfo.getNumber(SmartDashboardInfo.VISION_PID_D);
+		pidController = new PIDController(kp, ki, kd);
+		navx = new AHRS(SPI.Port.kMXP);
+		navx.reset();
+
+		visionSubsystem = ServiceLocator.get(VisionSubsystem.class);
+		targetHeading = 0;
 
 		// leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		// rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
@@ -81,6 +98,14 @@ public class DrivetrainSubsystem {
 		return blends;
 	}
 
+	/**
+	 * Drives with a blend between curvature and arcade drive using
+	 * linear interpolation
+	 *
+	 * @param xSpeed the forward/backward speed for the robot
+	 * @param zRotation the curvature to drive/the in-place rotation
+	 * @see #getBlendedMotorValues(double, double)
+	 */
 	public void blendedDrive(double xSpeed, double zRotation) {
 		double[] blendedValues = getBlendedMotorValues(xSpeed, zRotation);
 		robotDrive.tankDrive(blendedValues[0], blendedValues[1]);
@@ -110,7 +135,6 @@ public class DrivetrainSubsystem {
 		return (1 - t) * a + t * b;
 	}
 
-	// Copied from RobotDriveBase
 	public static double deadband(double value, double deadband) {
 		if (Math.abs(value) > deadband) {
 			if (value > 0.0) {
@@ -135,10 +159,6 @@ public class DrivetrainSubsystem {
 		}
 	}
 
-	// public void shift(boolean isHigh) {
-	// 	driveShifters.set(isHigh);
-	// }
-
 	public void arcadeDrive(double moveValue, double turnValue) {
 		robotDrive.arcadeDrive(-moveValue, -turnValue);
 	}
@@ -147,4 +167,31 @@ public class DrivetrainSubsystem {
 		robotDrive.tankDrive(leftSpeed, rightSpeed);
 	}
 
+	/**
+	 * Stores the gyro heading of the vision target for use in vision steering
+	 *
+	 * @see #driveWithSimpleVision(double)
+	 */
+	public void storeTargetHeading() {
+		double offsetAngleVision = visionSubsystem.getAngleToTargetZ();
+		targetHeading = navx.getAngle() + offsetAngleVision;
+	}
+
+	/**
+	 * Steers with a pid loop towards a vision target using blended drive
+	 *
+	 * @param xSpeed the forward/backward speed that the robot should drive at
+	 * (usually a joystick input)
+	 * @see #blendedDrive(double, double)
+	 */
+	public void driveWithSimpleVision(double xSpeed) {
+		double zRotation = pidController.pid(navx.getAngle(), targetHeading);
+		SmartDashboard.putNumber("AutoPopulate/PIDOutput", zRotation);
+		SmartDashboard.putNumber("AutoPopulate/AngleOffset", zRotation);
+		blendedDrive(xSpeed, -zRotation);
+	}
+
+	public void teleopPeriodic() {
+		pidController.updateTime(Timer.getFPGATimestamp());
+	}
 }
