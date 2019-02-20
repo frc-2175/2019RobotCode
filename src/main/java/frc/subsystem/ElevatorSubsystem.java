@@ -1,5 +1,8 @@
 package frc.subsystem;
 
+import java.awt.List;
+import java.util.ArrayList;
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -31,9 +34,14 @@ public class ElevatorSubsystem {
     private PIDController pidController;
 	private double setpoint;
 	private boolean isManual;
+	private boolean stickMoved;
 	private final double elevatorKP;
 	private final double elevatorKI;
 	private final double elevatorKD;
+	private final double setpointThreshold;
+	private double[] cargoSetpoints = {16, 44, 72};
+	private double[] hatchSetpoints = {28, 56};
+	 
 
     public ElevatorSubsystem() {
         ServiceLocator.register(this);
@@ -48,13 +56,18 @@ public class ElevatorSubsystem {
 		elevatorMotor.setSelectedSensorPosition(0, 0, 0);
 		zeroEncoder();
 
+		setpointThreshold = 6;
 		elevatorKP = smartDashboardInfo.getNumber(smartDashboardInfo.ELEVATOR_PID_P);
 		elevatorKI = smartDashboardInfo.getNumber(smartDashboardInfo.ELEVATOR_PID_I);
 		elevatorKD = smartDashboardInfo.getNumber(smartDashboardInfo.ELEVATOR_PID_D);
 		pidController = new PIDController(elevatorKP, elevatorKI, elevatorKD);
+
 	}
 	public void setIsManual(boolean x) {
 		isManual = x;
+	}
+	public void setStickMoved(boolean x) {
+		stickMoved = x;
 	}
 
     public void manualMove(double motorSpeed) {
@@ -63,15 +76,15 @@ public class ElevatorSubsystem {
 		}
     }
 
-
 	public void setElevator() {
-		if (!isManual) {
+		if (!isManual) { 
+			SmartDashboard.putNumber("setpoint", setpoint);
 			double output = pidController.pid(getElevatorPosition(), setpoint, 4); //what to set motor speed to
 			output += 0.125;
 			output = clamp(output, -0.4, 0.5);
 			elevatorMotor.set(output); //setting motor speed to speed needed to go to setpoint
 			SmartDashboard.putNumber("AutoPopulate/ElevatorOutput", output);
-		}
+		} 
 	}
 
     public void CargoPlaceElevatorTop() {
@@ -123,5 +136,63 @@ public class ElevatorSubsystem {
 
 	public static double clamp(double val, double min, double max) {
 		return val >= min && val <= max ? val : (val < min ? min : max);
+	}
+/*
+	public void runCargoElevatorPreset(double axisValue) {
+		double elevatorPosition = getElevatorPosition();
+		if(axisValue > 0) { //if stick is up
+			if(elevatorPosition < (cargoBottomSetpoint - setpointThreshold)) { //quadrant 1 up
+				CargoPlaceElevatorBottom();
+			} else if((cargoMiddleSetpoint - setpointThreshold) >= elevatorPosition && elevatorPosition > (cargoBottomSetpoint - setpointThreshold)) { //quadrant 2 up
+				CargoPlaceElevatorMiddle();
+			} else if((cargoTopSetpoint - setpointThreshold) >= elevatorPosition && elevatorPosition > (cargoMiddleSetpoint - setpointThreshold)) { //quadrant 3 up
+				CargoPlaceElevatorTop();
+			} else { //quadrant 4 up
+				CargoPlaceElevatorTop();
+			}
+		} else { //if stick is down
+			if(elevatorPosition > (cargoTopSetpoint + setpointThreshold)) { //quadrant 4 down
+				CargoPlaceElevatorTop();
+			} else if((cargoTopSetpoint + setpointThreshold) >= elevatorPosition && elevatorPosition > (cargoMiddleSetpoint + setpointThreshold)) { //quadrant 3 down
+				CargoPlaceElevatorMiddle();
+			} else if((cargoMiddleSetpoint + setpointThreshold) >= elevatorPosition && elevatorPosition > (cargoBottomSetpoint + setpointThreshold)) { // quadrant 2 down 
+				CargoPlaceElevatorBottom();
+			} else { //quadrant 1 down
+				CargoPlaceElevatorBottom();
+			}
+		}
+	}
+	*/
+
+	public double getElevatorPreset(double[] setpoints, boolean isUp) {
+		double elevatorPosition = getElevatorPosition();
+		if(isUp) {
+			for(double point : setpoints) {
+				if(point - elevatorPosition > setpointThreshold) {
+					return point;
+					// setpoint = point;
+				}
+			} 
+		} else {
+			for(int i = (setpoints.length - 1); i >= 0; i--) {
+				if(setpoints[i] - elevatorPosition < -setpointThreshold) {
+					return setpoints[i];
+					// setpoint = setpoints[i];
+				}
+			}
+		}
+		return -1;
+	}
+
+	public void setSetpoint(double inputPoint) {
+		setpoint = inputPoint;
+	}
+
+	public double[] getCargoSetpoints() {
+		return cargoSetpoints;
+	}
+	
+	public double[] getHatchSetpoints() {
+		return hatchSetpoints;
 	}
 }

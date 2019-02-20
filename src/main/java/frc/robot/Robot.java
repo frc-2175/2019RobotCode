@@ -10,8 +10,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.cscore.*;
 import frc.command.Command;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
@@ -20,38 +18,28 @@ import frc.subsystem.DrivetrainSubsystem;
 import frc.subsystem.ElevatorSubsystem;
 import frc.subsystem.HatchIntakeSubsystem;
 
-import org.opencv.core.Mat;
-import org.opencv.core.Core;
-
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
  * documentation. If you change the name of this class or the package after
  * creating this project, you must also update the build.gradle file in the
- * project.
- * - FRC Team
- 222222222222222      1111111   77777777777777777777555555555555555555
-2:::::::::::::::22   1::::::1   7::::::::::::::::::75::::::::::::::::5
-2::::::222222:::::2 1:::::::1   7::::::::::::::::::75::::::::::::::::5
-2222222     2:::::2 111:::::1   777777777777:::::::75:::::555555555555
-            2:::::2    1::::1              7::::::7 5:::::5
-            2:::::2    1::::1             7::::::7  5:::::5
-         2222::::2     1::::1            7::::::7   5:::::5555555555
-    22222::::::22      1::::l           7::::::7    5:::::::::::::::5
-  22::::::::222        1::::l          7::::::7     555555555555:::::5
- 2:::::22222           1::::l         7::::::7                  5:::::5
-2:::::2                1::::l        7::::::7                   5:::::5
-2:::::2                1::::l       7::::::7        5555555     5:::::5
-2:::::2       222222111::::::111   7::::::7         5::::::55555::::::5
-2::::::2222222:::::21::::::::::1  7::::::7           55:::::::::::::55
-2::::::::::::::::::21::::::::::1 7::::::7              55:::::::::55
-2222222222222222222211111111111177777777                 555555555
-The Fighting Calculators
-*/
+ * project. - FRC Team 222222222222222 1111111
+ * 77777777777777777777555555555555555555 2:::::::::::::::22 1::::::1
+ * 7::::::::::::::::::75::::::::::::::::5 2::::::222222:::::2 1:::::::1
+ * 7::::::::::::::::::75::::::::::::::::5 2222222 2:::::2 111:::::1
+ * 777777777777:::::::75:::::555555555555 2:::::2 1::::1 7::::::7 5:::::5
+ * 2:::::2 1::::1 7::::::7 5:::::5 2222::::2 1::::1 7::::::7 5:::::5555555555
+ * 22222::::::22 1::::l 7::::::7 5:::::::::::::::5 22::::::::222 1::::l 7::::::7
+ * 555555555555:::::5 2:::::22222 1::::l 7::::::7 5:::::5 2:::::2 1::::l
+ * 7::::::7 5:::::5 2:::::2 1::::l 7::::::7 5555555 5:::::5 2:::::2
+ * 222222111::::::111 7::::::7 5::::::55555::::::5
+ * 2::::::2222222:::::21::::::::::1 7::::::7 55:::::::::::::55
+ * 2::::::::::::::::::21::::::::::1 7::::::7 55:::::::::55
+ * 2222222222222222222211111111111177777777 555555555 The Fighting Calculators
+ */
 public class Robot extends TimedRobot {
 	public static final int JOYSTICK_TRIGGER = 1;
 
-	public int elevatorCounter = 1;
 	public double previousJoystickValue = 0;
 	public static final double topline = .6;
 	public static final double bottomline = -.6;
@@ -79,6 +67,7 @@ public class Robot extends TimedRobot {
 	public static final int POV_UP_LEFT = 315;
 
 	private boolean hasAutoEnded;
+	private boolean isPreviousManual;
 
 	private Joystick leftJoystick;
 	private Joystick rightJoystick;
@@ -205,6 +194,9 @@ public class Robot extends TimedRobot {
 		 * left stick up/down DONE I THINK
 		 */
 
+		SmartDashboard.putNumberArray("Cargo Setpoints", elevatorSubsystem.getCargoSetpoints());
+		SmartDashboard.putNumberArray("Hatch Setpoints", elevatorSubsystem.getHatchSetpoints());
+
 		drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
 
 		if (gamepad.getRawButton(GAMEPAD_LEFT_BUMPER) || leftJoystick.getRawButton(1)) { // left trigger out, left bumper in for hatch intake
@@ -246,37 +238,19 @@ public class Robot extends TimedRobot {
 		if (gamepad.getPOV() == POV_LEFT) { // hat left
 			hatchIntakeSubsystem.spinOutBack();
 		}
-		if (gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B)) {
-			elevatorSubsystem.setIsManual(false);
-		} else {
-			elevatorSubsystem.setIsManual(true);
+		boolean isManual = !(gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B));
+		elevatorSubsystem.setIsManual(isManual);
+		if (!isManual && isPreviousManual) {
+			elevatorSubsystem.setSetpoint(elevatorSubsystem.getElevatorPosition());
 		}
-		if (-gamepad.getRawAxis(1) > topline && previousJoystickValue <= topline) {
-			elevatorCounter++;
-		} else if (-gamepad.getRawAxis(1) < bottomline && previousJoystickValue >= bottomline) {
-			elevatorCounter--;
+		if ((-gamepad.getRawAxis(1) > topline && previousJoystickValue <= topline) || (-gamepad.getRawAxis(1) < bottomline && previousJoystickValue >= bottomline)) { //if you flicked either way
+			elevatorSubsystem.setStickMoved(true); //say the stick moved
+			double[] setpoints = gamepad.getRawButton(GAMEPAD_X) ? elevatorSubsystem.getHatchSetpoints() : elevatorSubsystem.getCargoSetpoints();
+			double preset = elevatorSubsystem.getElevatorPreset(setpoints, -gamepad.getRawAxis(1) > 0);
+			if(preset != -1) {
+				elevatorSubsystem.setSetpoint(preset);
+			}
 		}
-		if (elevatorCounter > 3) {
-			elevatorCounter = 3;
-		}
-		if (elevatorCounter < 1) {
-			elevatorCounter = 1;
-		}
-		//put elevator to hi, mid, or low level for cargo or plates depending on button pressed
-		if (elevatorCounter == 1 && gamepad.getRawButton(GAMEPAD_X)) {
-			elevatorSubsystem.HatchPlaceElevatorBottom();
-		} else if (elevatorCounter == 2 && gamepad.getRawButton(GAMEPAD_X)) {
-			elevatorSubsystem.HatchPlaceElevatorMiddle();
-		} else if (elevatorCounter == 3 && gamepad.getRawButton(GAMEPAD_X)) {
-			elevatorSubsystem.HatchPlaceElevatorTop();
-		} else if (elevatorCounter == 1 && gamepad.getRawButton(GAMEPAD_B)) {
-			elevatorSubsystem.CargoPlaceElevatorBottom();
-		} else if (elevatorCounter == 2 && gamepad.getRawButton(GAMEPAD_B)) {
-			elevatorSubsystem.CargoPlaceElevatorMiddle();
-		} else if (elevatorCounter == 3 && gamepad.getRawButton(GAMEPAD_B)) {
-			elevatorSubsystem.CargoPlaceElevatorTop();
-		}
-		SmartDashboard.putNumber("ElevatorCounter", elevatorCounter);
 		/* if(gamepad.getPOV() == POV_UP) {
 			hatchIntakeSubsystem.setIsManual(true);
 		} else {
@@ -287,9 +261,16 @@ public class Robot extends TimedRobot {
 				hatchIntakeSubsystem.setBackIntakeDown();
 			}
 		} */
+		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ? deadband(-gamepad.getRawAxis(1), 0.05) * 0.8 : deadband(-gamepad.getRawAxis(1), 0.05) * 0.5;
+		if(isManual) {
+			elevatorSubsystem.manualMove(elevatorSpeed);
+		} else {
+			elevatorSubsystem.setElevator();
+		}
+		if(elevatorSpeed > 0.05) {
+			cargoIntakeSubsystem.spinRollerbarForElevator();
+		}
 
-		
-		elevatorSubsystem.setIsManual(true);
 		hatchIntakeSubsystem.setBackIntakeSpeed(-gamepad.getRawAxis(3) * 0.5);
 		if(leftJoystick.getRawButton(2)) {
 			hatchIntakeSubsystem.setBackIntakeSpeed(-0.5);
@@ -297,17 +278,10 @@ public class Robot extends TimedRobot {
 		}
 		// hatchIntakeSubsystem.goToSetpoint();
 		previousJoystickValue = -gamepad.getRawAxis(1);
-		elevatorSubsystem.setElevator();
-		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ? deadband(-gamepad.getRawAxis(1), 0.05) * 0.8 : deadband(-gamepad.getRawAxis(1), 0.05) * 0.5;
-		if(elevatorSpeed > 0.05) {
-			cargoIntakeSubsystem.spinRollerbarForElevator();
-		}
-		elevatorSubsystem.manualMove(elevatorSpeed);
-		// System.out.println(elevatorSubsystem.getCurrentDraw());
 		SmartDashboard.putNumber("AutoPopulate/ElevatorCurrentDraw", elevatorSubsystem.getCurrentDraw());
 		SmartDashboard.putNumber("AutoPopulate/ElevatorPosition", elevatorSubsystem.getElevatorPosition());
-		SmartDashboard.putNumber("AutoPopulate/ElevatorPresetCurrent", elevatorCounter);
 		SmartDashboard.putBoolean("AutoPopulate/IsManual", elevatorSubsystem.getIsManual());
+		isPreviousManual = isManual;
 		hatchIntakeSubsystem.teleopPeriodic();
 		elevatorSubsystem.teleopPeriodic();
 	}
