@@ -28,6 +28,9 @@ public class SmartDashboardInfo {
 	public static final String HATCH_PID_P = "hatch.pid.p";
 	public static final String HATCH_PID_I = "hatch.pid.i";
 	public static final String HATCH_PID_D = "hatch.pid.d";
+	public static final String VISION_PID_P = "vision.pid.p";
+	public static final String VISION_PID_I = "vision.pid.i";
+	public static final String VISION_PID_D = "vision.pid.d";
 
 
 
@@ -64,6 +67,9 @@ public class SmartDashboardInfo {
 		putNumber(HATCH_PID_P, 1.0 / 45.0, 1.0 / 45.0);
 		putNumber(HATCH_PID_I, 0, 0);
 		putNumber(HATCH_PID_D, 0, 0);
+		putNumber(VISION_PID_P, 1.0 / 36.0, 1.0 / 36.0);
+		putNumber(VISION_PID_I, 0.01, 0.01);
+		putNumber(VISION_PID_D, 0, 0);
     }
 
     public void putBoolean(String key, boolean comp, boolean practice) {

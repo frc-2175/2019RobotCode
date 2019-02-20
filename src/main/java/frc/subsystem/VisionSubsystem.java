@@ -2,11 +2,21 @@ package frc.subsystem;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.ServiceLocator;
 import frc.Vector;
 
 public class VisionSubsystem {
 	private final NetworkTable limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
+	public static final double LIMELIGHT_HEIGHT_FROM_GROUND = 10.375;
+	public static final double HATCH_GOAL_HEIGHT_FROM_GROUND = 31.5;
+	private final static double CARGO_GOAL_HEIGHT_FROM_GROUND = 38.75;
+	public static final double CAMERA_HORIZONTAL_POS = 9.9517;
+	public static final double CAMERA_VERTICAL_POS = 13.2;
+	public static final double CAMERA_ROTATION_Z = 12;
+	public static final double CAMERA_ROTATION_Y = 18.4182;
+	public static final Vector CAMERA_ROBOT_SPACE = new Vector(CAMERA_HORIZONTAL_POS, CAMERA_VERTICAL_POS);
+
 	public VisionSubsystem() {
 		ServiceLocator.register(this);
 	}
@@ -62,5 +72,23 @@ public class VisionSubsystem {
 			corners[i] = new Vector(cornerXCoordinates[i], cornerYCoordinates[i]);
 		}
 		return corners;
+	}
+
+	public Vector getTargetPositionRobotSpace() {
+		double horizontalOffset = getHorizontalAngleOffset();
+		double verticalOffset = getVerticalAngleOffset();
+		double distance = (CARGO_GOAL_HEIGHT_FROM_GROUND - LIMELIGHT_HEIGHT_FROM_GROUND) /
+			Math.tan(Math.toRadians(verticalOffset + CAMERA_ROTATION_Y));
+		double xCoord = Math.sin(Math.toRadians(horizontalOffset)) * distance;
+		double yCoord = Math.cos(Math.toRadians(horizontalOffset)) * distance;
+		Vector positionCameraSpace = new Vector(xCoord, yCoord);
+		Vector positionRobotSpace = positionCameraSpace.rotate(CAMERA_ROTATION_Z);
+		SmartDashboard.putNumber("AutoPopulate/TargetposX", positionRobotSpace.x);
+		return positionRobotSpace = positionRobotSpace.add(CAMERA_ROBOT_SPACE);
+	}
+
+	public double getAngleToTargetZ() {
+		Vector targetPos = getTargetPositionRobotSpace();
+		return Math.toDegrees(Math.atan(targetPos.x / targetPos.y));
 	}
 }
