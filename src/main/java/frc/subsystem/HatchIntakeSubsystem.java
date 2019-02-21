@@ -84,17 +84,14 @@ public class HatchIntakeSubsystem {
 		groundActuationMotor.setSelectedSensorPosition(0, 0, 0);
 	}
 
-	 public void setFrontIntakeOut() { //front intake moved out or "down"
-	 	actuatorHatchSolenoid.set(true);
-	 }
-
-	public void setFrontIntakeIn() { // front intake moved in/retracted
-	 	actuatorHatchSolenoid.set(false);
+	public void toggleFrontIntake() {
+		actuatorHatchSolenoid.set(!actuatorHatchSolenoid.get());
 	}
 
 	public double getGroundIntakeDegrees() {
 		return (((groundActuationMotor.getSelectedSensorPosition(0) * 360.0) / 4096.0) / 200.0);
 	}
+
 
 	public void teleopPeriodic() {
 		pidController.updateTime(Timer.getFPGATimestamp());

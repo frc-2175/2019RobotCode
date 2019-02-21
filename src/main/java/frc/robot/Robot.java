@@ -117,32 +117,19 @@ public class Robot extends TimedRobot {
 		// new Thread(() -> {
 		// 	UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
 		// 	camera.setResolution(320, 240);
-			
+
 		// 	CvSink cvSink = CameraServer.getInstance().getVideo();
 		// 	CvSource outputStream = CameraServer.getInstance().putVideo("FlippedCamera", 320, 240);
-			
+
 		// 	Mat source = new Mat();
 		// 	Mat output = new Mat();
-			
+
 		// 	while(!Thread.interrupted()) {
 		// 		cvSink.grabFrame(source);
 		// 		Core.rotate(source, output, Core.ROTATE_180);
 		// 		outputStream.putFrame(output);
 		// 	}
 		// }).start();
-	}
-
-	/**
-	 * This function is called every robot packet, no matter the mode. Use this for
-	 * items like diagnostics that you want ran during disabled, autonomous,
-	 * teleoperated and test.
-	 *
-	 * <p>
-	 * This runs after the mode specific periodic functions, but before LiveWindow
-	 * and SmartDashboard integrated updating.
-	 */
-	@Override
-	public void robotPeriodic() {
 	}
 
 	@Override
@@ -187,31 +174,37 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
-		/*
-		 * Alayna's controls:
-		 *
-		 * manual driving: left and right joysticks automatic driving: right trigger
-		 *
-		 * panel in: left bumper DONE
-		 * panel out: left trigger DONE
-		 * panel mechanism out:back DONE
-		 * panel mechanism in: start DONE
-		 * cargo in: right bumper DONE
-		 * cargo out: right trigger DONE
-		 * cargo roller out: y DONE
-		 * cargo roller in: a DONE
-		 * floor hatch spin in: hat right DONE I THINK
-		 * floor hatch spin out: hat left DONE I THINK
-		 * floor hatch panel up/down: right stick DONE
-		 * preset panel heights for elevator: hold x and move left stick up/down DONE
-		 * preset cargo heights for elevator: hold b and move DONE
-		 * left stick up/down DONE I THINK
+		/**
+		 * Full controls list (update if you can while changing things)
+		 * Left Joystick
+		 * 	- Button 1 (Trigger): front hatch panel outtake
+		 * 	- Button 2 (Center Face Button): floor hatch panel outtake and actuate down
+		 * Right Joystick
+		 * 	- Button 1 (Trigger): outtake cargo
+		 * 	- Button 2 (Center Face Button): simple vision for the cargo goal
+		 * Gamepad
+		 * 	- X Button (while held): hatch panel presets for the elevator (flick left stick up for up one preset,
+		 * 		down for down a preset)
+		 * 	- A Button: actuate cargo intake out
+		 * 	- B Button (while held): cargo presets for the elevator (flick left stick up for up one preset,
+		 * 		down for down a preset)
+		 * 	- Y Button: actuate cargo intake in
+		 * 	- Left Bumper: outtake front hatch panel
+		 * 	- Right Bumber: outtake cargo
+		 * 	- Left Trigger: intake hatch panels front
+		 * 	- Right Trigger: intake cargo with actuation
+		 * 	- Start: toggle hatch panel intake front
+		 * 	- Left Stick: control elevator
+		 * 	- Right Stick: control floor hatch intake
+		 * 	- D-pad Right: spin floor intake in
+		 * 	- D-pad Left: spin floor intake out
 		 */
 
 		SmartDashboard.putNumberArray("Cargo Setpoints", elevatorSubsystem.getCargoSetpoints());
 		SmartDashboard.putNumberArray("Hatch Setpoints", elevatorSubsystem.getHatchSetpoints());
 
 		// Driving
+
 		if(rightJoystick.getRawButtonPressed(2)) {
 			drivetrainSubsystem.storeTargetHeading();
 		}
@@ -221,6 +214,9 @@ public class Robot extends TimedRobot {
 			drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
 		}
 
+		// Front Hatch Intake
+
+		// Intaking
 		if (gamepad.getRawButton(GAMEPAD_LEFT_BUMPER) || leftJoystick.getRawButton(1)) { // left trigger out, left bumper in for hatch intake
 			hatchIntakeSubsystem.spinOutFront();
 		} else if (gamepad.getRawButton(GAMEPAD_LEFT_TRIGGER)) {
@@ -228,13 +224,31 @@ public class Robot extends TimedRobot {
 		} else {
 			hatchIntakeSubsystem.stopSpinning();
 		}
+		// Actuation
+		if(gamepad.getRawButtonPressed(GAMEPAD_START)) {
+			hatchIntakeSubsystem.toggleFrontIntake();
+		}
 
-		if (gamepad.getRawButton(GAMEPAD_START)) {
-			hatchIntakeSubsystem.setFrontIntakeOut();
+		// Hatch Intake Floor
+
+		// Intaking
+		if (gamepad.getPOV() == POV_RIGHT) { // hat right
+			hatchIntakeSubsystem.spinInBack();
 		}
-		if (gamepad.getRawButton(GAMEPAD_BACK)) {
-			hatchIntakeSubsystem.setFrontIntakeIn();
+		if (gamepad.getPOV() == POV_LEFT) { // hat left
+			hatchIntakeSubsystem.spinOutBack();
 		}
+		// Actuation via motor
+		hatchIntakeSubsystem.setBackIntakeSpeed(-gamepad.getRawAxis(3) * 0.5);
+		// Driver outtaking controls
+		if(leftJoystick.getRawButton(2)) {
+			hatchIntakeSubsystem.setBackIntakeSpeed(-0.5);
+			hatchIntakeSubsystem.spinOutBack();
+		}
+
+		// Cargo Intake
+
+		// Intaking/Outtaking
 		if (gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER) || rightJoystick.getRawButton(1)) {
 			cargoIntakeSubsystem.rollOut();
 		} else if (gamepad.getRawButton(GAMEPAD_RIGHT_TRIGGER)) {
@@ -242,48 +256,39 @@ public class Robot extends TimedRobot {
 		} else {
 			cargoIntakeSubsystem.stopAllMotors();
 		}
+		// Actuation when pressed/released
 		if(gamepad.getRawButtonPressed(GAMEPAD_RIGHT_TRIGGER)) {
 			cargoIntakeSubsystem.solenoidOut();
 		}
 		if(gamepad.getRawButtonReleased(GAMEPAD_RIGHT_TRIGGER)) {
 			cargoIntakeSubsystem.solenoidIn();
 		}
+		// Manual actuation on buttons
 		if (gamepad.getRawButton(GAMEPAD_Y)) {
 			cargoIntakeSubsystem.solenoidIn();
 		}
 		if (gamepad.getRawButton(GAMEPAD_A)) {
 			cargoIntakeSubsystem.solenoidOut();
 		}
-		if (gamepad.getPOV() == POV_RIGHT) { // hat right
-			hatchIntakeSubsystem.spinInBack();
-		}
-		if (gamepad.getPOV() == POV_LEFT) { // hat left
-			hatchIntakeSubsystem.spinOutBack();
-		}
+
+		// Elevator
 		boolean isManual = !(gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B));
 		elevatorSubsystem.setIsManual(isManual);
 		if (!isManual && isPreviousManual) {
 			elevatorSubsystem.setSetpoint(elevatorSubsystem.getElevatorPosition());
 		}
-		if ((-gamepad.getRawAxis(1) > TOPLINE && previousJoystickValue <= TOPLINE) || (-gamepad.getRawAxis(1) < BOTTOMLINE && previousJoystickValue >= BOTTOMLINE)) { //if you flicked either way
+		if ((-gamepad.getRawAxis(1) > TOPLINE && previousJoystickValue <= TOPLINE) ||
+			(-gamepad.getRawAxis(1) < BOTTOMLINE && previousJoystickValue >= BOTTOMLINE)) { //if you flicked either way
 			elevatorSubsystem.setStickMoved(true); //say the stick moved
-			double[] setpoints = gamepad.getRawButton(GAMEPAD_X) ? elevatorSubsystem.getHatchSetpoints() : elevatorSubsystem.getCargoSetpoints();
+			double[] setpoints = gamepad.getRawButton(GAMEPAD_X) ?
+				elevatorSubsystem.getHatchSetpoints() : elevatorSubsystem.getCargoSetpoints();
 			double preset = elevatorSubsystem.getElevatorPreset(setpoints, -gamepad.getRawAxis(1) > 0);
 			if(preset != -1) {
 				elevatorSubsystem.setSetpoint(preset);
 			}
 		}
-		/* if(gamepad.getPOV() == POV_UP) {
-			hatchIntakeSubsystem.setIsManual(true);
-		} else {
-			hatchIntakeSubsystem.setIsManual(false);
-			if (-gamepad.getRawAxis(3) > TOPLINE) {
-				hatchIntakeSubsystem.setBackIntakeUp();
-			} else if (-gamepad.getRawAxis(3) < BOTTOMLINE) {
-				hatchIntakeSubsystem.setBackIntakeDown();
-			}
-		} */
-		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ? deadband(-gamepad.getRawAxis(1), 0.05) * 0.8 : deadband(-gamepad.getRawAxis(1), 0.05) * 0.5;
+		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ?
+			deadband(-gamepad.getRawAxis(1), 0.05) * 0.8 : deadband(-gamepad.getRawAxis(1), 0.05) * 0.5;
 		if(isManual) {
 			elevatorSubsystem.manualMove(elevatorSpeed);
 		} else {
@@ -293,27 +298,14 @@ public class Robot extends TimedRobot {
 			cargoIntakeSubsystem.spinRollerbarForElevator();
 		}
 
-		hatchIntakeSubsystem.setBackIntakeSpeed(-gamepad.getRawAxis(3) * 0.5);
-		if(leftJoystick.getRawButton(2)) {
-			hatchIntakeSubsystem.setBackIntakeSpeed(-0.5);
-			hatchIntakeSubsystem.spinOutBack();
-		}
-		// hatchIntakeSubsystem.goToSetpoint();
+		// Track some previous values
 		previousJoystickValue = -gamepad.getRawAxis(1);
-		SmartDashboard.putNumber("AutoPopulate/ElevatorCurrentDraw", elevatorSubsystem.getCurrentDraw());
-		SmartDashboard.putNumber("AutoPopulate/ElevatorPosition", elevatorSubsystem.getElevatorPosition());
-		SmartDashboard.putBoolean("AutoPopulate/IsManual", elevatorSubsystem.getIsManual());
 		isPreviousManual = isManual;
+
+		// Subsystem-specific teleop periodics
 		hatchIntakeSubsystem.teleopPeriodic();
 		elevatorSubsystem.teleopPeriodic();
 		drivetrainSubsystem.teleopPeriodic();
-	}
-
-	/**
-	 * This function is called periodically during test mode.
-	 */
-	@Override
-	public void testPeriodic() {
 	}
 
 	// Custom Functions
