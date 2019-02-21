@@ -2,7 +2,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import edu.wpi.first.wpilibj.Timer;
 import frc.PIDController;
 
 public class PIDControllerTest {

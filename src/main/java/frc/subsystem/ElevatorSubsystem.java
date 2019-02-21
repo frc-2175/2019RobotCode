@@ -1,8 +1,5 @@
 package frc.subsystem;
 
-import java.awt.List;
-import java.util.ArrayList;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
@@ -41,7 +38,7 @@ public class ElevatorSubsystem {
 	private final double setpointThreshold;
 	private double[] cargoSetpoints = {16, 44, 72};
 	private double[] hatchSetpoints = {28, 56};
-	 
+
 
     public ElevatorSubsystem() {
         ServiceLocator.register(this);
@@ -57,9 +54,9 @@ public class ElevatorSubsystem {
 		zeroEncoder();
 
 		setpointThreshold = 6;
-		elevatorKP = smartDashboardInfo.getNumber(smartDashboardInfo.ELEVATOR_PID_P);
-		elevatorKI = smartDashboardInfo.getNumber(smartDashboardInfo.ELEVATOR_PID_I);
-		elevatorKD = smartDashboardInfo.getNumber(smartDashboardInfo.ELEVATOR_PID_D);
+		elevatorKP = smartDashboardInfo.getNumber(SmartDashboardInfo.ELEVATOR_PID_P);
+		elevatorKI = smartDashboardInfo.getNumber(SmartDashboardInfo.ELEVATOR_PID_I);
+		elevatorKD = smartDashboardInfo.getNumber(SmartDashboardInfo.ELEVATOR_PID_D);
 		pidController = new PIDController(elevatorKP, elevatorKI, elevatorKD);
 
 	}
@@ -77,14 +74,14 @@ public class ElevatorSubsystem {
     }
 
 	public void setElevator() {
-		if (!isManual) { 
+		if (!isManual) {
 			SmartDashboard.putNumber("setpoint", setpoint);
 			double output = pidController.pid(getElevatorPosition(), setpoint, 4); //what to set motor speed to
 			output += 0.125;
 			output = clamp(output, -0.4, 0.5);
 			elevatorMotor.set(output); //setting motor speed to speed needed to go to setpoint
 			SmartDashboard.putNumber("AutoPopulate/ElevatorOutput", output);
-		} 
+		}
 	}
 
     public void CargoPlaceElevatorTop() {
@@ -155,7 +152,7 @@ public class ElevatorSubsystem {
 				CargoPlaceElevatorTop();
 			} else if((cargoTopSetpoint + setpointThreshold) >= elevatorPosition && elevatorPosition > (cargoMiddleSetpoint + setpointThreshold)) { //quadrant 3 down
 				CargoPlaceElevatorMiddle();
-			} else if((cargoMiddleSetpoint + setpointThreshold) >= elevatorPosition && elevatorPosition > (cargoBottomSetpoint + setpointThreshold)) { // quadrant 2 down 
+			} else if((cargoMiddleSetpoint + setpointThreshold) >= elevatorPosition && elevatorPosition > (cargoBottomSetpoint + setpointThreshold)) { // quadrant 2 down
 				CargoPlaceElevatorBottom();
 			} else { //quadrant 1 down
 				CargoPlaceElevatorBottom();
@@ -172,7 +169,7 @@ public class ElevatorSubsystem {
 					return point;
 					// setpoint = point;
 				}
-			} 
+			}
 		} else {
 			for(int i = (setpoints.length - 1); i >= 0; i--) {
 				if(setpoints[i] - elevatorPosition < -setpointThreshold) {
@@ -191,8 +188,13 @@ public class ElevatorSubsystem {
 	public double[] getCargoSetpoints() {
 		return cargoSetpoints;
 	}
-	
+
 	public double[] getHatchSetpoints() {
 		return hatchSetpoints;
+	}
+
+	public boolean getIsElevatorAtBottom() {
+		// TODO: this value is arbitrary and should eventually be a SmartDashboard value
+		return getElevatorPosition() < 8;
 	}
 }

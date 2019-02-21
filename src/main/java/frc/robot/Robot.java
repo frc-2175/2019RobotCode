@@ -7,14 +7,9 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.PIDController;
-import frc.Vector;
 import frc.command.Command;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;

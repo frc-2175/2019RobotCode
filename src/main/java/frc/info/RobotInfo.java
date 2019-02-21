@@ -1,6 +1,5 @@
 package frc.info;
 
-import com.ctre.phoenix.motorcontrol.can.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,11 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Properties;
+
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
 import frc.MotorWrapper;
 import frc.ServiceLocator;
 import frc.SolenoidWrapper;
-
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 public class RobotInfo {
 
