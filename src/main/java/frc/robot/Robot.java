@@ -251,12 +251,14 @@ public class Robot extends TimedRobot {
 		} else {
 			cargoIntakeSubsystem.stopAllMotors();
 		}
-		// Actuation when pressed/released
-		if(gamepad.getRawButtonPressed(GAMEPAD_RIGHT_TRIGGER)) {
-			cargoIntakeSubsystem.solenoidOut();
-		}
-		if(gamepad.getRawButtonReleased(GAMEPAD_RIGHT_TRIGGER)) {
-			cargoIntakeSubsystem.solenoidIn();
+		// Actuation when pressed/released (only when elevator is near bottom as to avoid punching the rocket)
+		if(elevatorSubsystem.getIsElevatorAtBottom()) {
+			if(gamepad.getRawButtonPressed(GAMEPAD_RIGHT_TRIGGER)) {
+				cargoIntakeSubsystem.solenoidOut();
+			}
+			if(gamepad.getRawButtonReleased(GAMEPAD_RIGHT_TRIGGER)) {
+				cargoIntakeSubsystem.solenoidIn();
+			}
 		}
 		// Manual actuation on buttons
 		if (gamepad.getRawButton(GAMEPAD_Y)) {
