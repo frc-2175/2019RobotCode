@@ -20,6 +20,8 @@ public class HatchIntakeSubsystem {
 	private final SmartDashboardInfo smartDashboardInfo;
 	private boolean isManual;
 	private double setpoint;
+	private int zeroEncoder;
+	private double output;
 
 	public HatchIntakeSubsystem() {
 		ServiceLocator.register(this);
@@ -70,15 +72,19 @@ public class HatchIntakeSubsystem {
 	}
 
 	public void goToSetpoint() {
-		/* if(!isManual) {
-			groundActuationMotor.set(pidController.pid(getGroundIntakeDegrees(), setpoint));
-		} */
+		SmartDashboard.putNumber("FLOOR_HATCH_SETPOINT", setpoint);
+		if(!isManual) {
+			output = pidController.pid(getGroundIntakeDegrees(), setpoint);
+			output = clamp(output, -0.3, 0.3);
+			groundActuationMotor.set(output);
+		}
 	}
 
 	public void setBackIntakeSpeed(double speed) {
-		// if(isManual) {
-		groundActuationMotor.set(speed);
-		// }
+		SmartDashboard.putNumber("MANUAL_SPEED", speed);
+		if(isManual) {
+			groundActuationMotor.set(speed);
+		}
 	}
 	public void zeroEncoder() {
 		groundActuationMotor.setSelectedSensorPosition(0, 0, 0);
@@ -89,7 +95,14 @@ public class HatchIntakeSubsystem {
 	}
 
 	public double getGroundIntakeDegrees() {
-		return (((groundActuationMotor.getSelectedSensorPosition(0) * 360.0) / 4096.0) / 200.0);
+		return ((((groundActuationMotor.getSelectedSensorPosition(0) - zeroEncoder) * 360.0) / 4096.0) / 200.0);
+	}
+	public void setBackIntakeStay() {
+		setpoint = getGroundIntakeDegrees();
+	}
+	public void setZeroEncoder() {
+		zeroEncoder = groundActuationMotor.getSelectedSensorPosition(0);
+		SmartDashboard.putNumber("ZERO_ENCODER", zeroEncoder);
 	}
 
 
@@ -97,5 +110,9 @@ public class HatchIntakeSubsystem {
 		pidController.updateTime(Timer.getFPGATimestamp());
 		SmartDashboard.putNumber("AutoPopulate/HatchTicks", groundActuationMotor.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("AutoPopulate/HatchDegrees", getGroundIntakeDegrees());
+	}
+
+	public static double clamp(double val, double min, double max) {
+		return val >= min && val <= max ? val : (val < min ? min : max);
 	}
 }

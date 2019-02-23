@@ -162,6 +162,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		elevatorSubsystem.zeroEncoder();
+		//hatchIntakeSubsystem.zeroEncoder();
+		hatchIntakeSubsystem.setZeroEncoder();
+		hatchIntakeSubsystem.setBackIntakeStay();
 	}
 
 	/**
@@ -234,7 +237,17 @@ public class Robot extends TimedRobot {
 			hatchIntakeSubsystem.spinOutBack();
 		}
 		// Actuation via motor
-		hatchIntakeSubsystem.setBackIntakeSpeed(-gamepad.getRawAxis(3) * 0.5);
+		hatchIntakeSubsystem.setIsManual(gamepad.getRawButton(GAMEPAD_BACK)); //if gamepad back is pressed then is manual
+		if(gamepad.getRawButtonReleased(GAMEPAD_BACK)) {
+			hatchIntakeSubsystem.setBackIntakeStay();
+		}
+		if ((deadband(-gamepad.getRawAxis(3), 0.05) > 0)) {
+			hatchIntakeSubsystem.setBackIntakeUp();
+		} else if (deadband(-gamepad.getRawAxis(3), 0.05) < 0) {
+			hatchIntakeSubsystem.setBackIntakeDown();
+		}
+		hatchIntakeSubsystem.goToSetpoint();
+		hatchIntakeSubsystem.setBackIntakeSpeed(deadband(-gamepad.getRawAxis(3), 0.05) * 0.3);
 		// Driver outtaking controls
 		if(leftJoystick.getRawButton(2)) {
 			hatchIntakeSubsystem.setBackIntakeSpeed(-0.5);

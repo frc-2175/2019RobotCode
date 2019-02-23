@@ -60,12 +60,11 @@ public class SmartDashboardInfo {
 		putNumber(HATCH_INTAKE_SPIN_OUT_FRONT, -0.8, -0.8);
 		putNumber(HATCH_INTAKE_SPIN_IN_BACK, 0.75, 0.75);
 		putNumber(HATCH_INTAKE_SPIN_OUT_BACK, -0.4, -0.4);
-		// 24 originally
 		putNumber(ELEVATOR_PID_P, 1.0 / 36.0, 1.0 / 36.0);
 		putNumber(ELEVATOR_PID_I, 1.0 / 30.0, 1.0 / 30.0);
 		putNumber(ELEVATOR_PID_D, 0, 0);
-		putNumber(HATCH_PID_P, 1.0 / 45.0, 1.0 / 45.0);
-		putNumber(HATCH_PID_I, 0, 0);
+		putNumber(HATCH_PID_P, 1.0 / 30.0, 1.0 / 30.0); //originally 1 / 30
+		putNumber(HATCH_PID_I, 0.0, 0.0);
 		putNumber(HATCH_PID_D, 0, 0);
 		putNumber(VISION_PID_P, 1.0 / 36.0, 1.0 / 36.0);
 		putNumber(VISION_PID_I, 0.01, 0.01);
