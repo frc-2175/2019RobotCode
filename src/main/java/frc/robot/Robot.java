@@ -247,7 +247,7 @@ public class Robot extends TimedRobot {
 			hatchIntakeSubsystem.setBackIntakeDown();
 		}
 		hatchIntakeSubsystem.goToSetpoint();
-		hatchIntakeSubsystem.setBackIntakeSpeed(deadband(-gamepad.getRawAxis(3), 0.05) * 0.3);
+		hatchIntakeSubsystem.setBackIntakeSpeed(deadband(-gamepad.getRawAxis(3), 0.05) * 0.6);
 		// Driver outtaking controls
 		if(leftJoystick.getRawButton(2)) {
 			hatchIntakeSubsystem.setBackIntakeSpeed(-0.5);
