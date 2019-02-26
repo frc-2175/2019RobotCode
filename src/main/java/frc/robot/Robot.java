@@ -74,6 +74,7 @@ public class Robot extends TimedRobot {
 
 	private boolean hasAutoEnded;
 	private boolean isPreviousManual;
+	private boolean stayingAutomatic;
 
 	private Joystick leftJoystick;
 	private Joystick rightJoystick;
@@ -165,6 +166,7 @@ public class Robot extends TimedRobot {
 		//hatchIntakeSubsystem.zeroEncoder();
 		hatchIntakeSubsystem.setZeroEncoder();
 		hatchIntakeSubsystem.setBackIntakeStay();
+		stayingAutomatic = false;
 	}
 
 	/**
@@ -284,15 +286,20 @@ public class Robot extends TimedRobot {
 		elevatorSubsystem.setIsManual(isManual);
 		if (!isManual && isPreviousManual) {
 			elevatorSubsystem.setSetpoint(elevatorSubsystem.getElevatorPosition());
+			stayingAutomatic = false;
 		}
 		if ((-gamepad.getRawAxis(1) > TOPLINE && previousJoystickValue <= TOPLINE) ||
 			(-gamepad.getRawAxis(1) < BOTTOMLINE && previousJoystickValue >= BOTTOMLINE)) { //if you flicked either way
-			elevatorSubsystem.setStickMoved(true); //say the stick moved
 			double[] setpoints = gamepad.getRawButton(GAMEPAD_X) ?
 				elevatorSubsystem.getHatchSetpoints() : elevatorSubsystem.getCargoSetpoints();
-			double preset = elevatorSubsystem.getElevatorPreset(setpoints, -gamepad.getRawAxis(1) > 0);
-			if(preset != -1) {
-				elevatorSubsystem.setSetpoint(preset);
+			if(!stayingAutomatic) { 
+				double preset = elevatorSubsystem.getElevatorPreset(setpoints, -gamepad.getRawAxis(1) > 0);
+				if(preset != -1) { 
+					elevatorSubsystem.setSetpoint(preset);
+				}
+				stayingAutomatic = true; 
+			} else {
+				elevatorSubsystem.setAutomaticElevatorPreset(setpoints, -gamepad.getRawAxis(1) > 0); //if has been automatic get special thing
 			}
 		}
 		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ?
