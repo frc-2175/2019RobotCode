@@ -7,6 +7,13 @@
 
 package frc.robot;
 
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,7 +53,8 @@ import frc.subsystem.VisionSubsystem;
 public class Robot extends TimedRobot {
 	public static final int JOYSTICK_TRIGGER = 1;
 
-	public double previousJoystickValue = 0;
+	public double previousJoystick1Value = 0;
+	public double previousJoystick3Value = 0;
 	public static final double TOPLINE = .6;
 	public static final double BOTTOMLINE = -.6;
 
@@ -74,6 +82,7 @@ public class Robot extends TimedRobot {
 
 	private boolean hasAutoEnded;
 	private boolean isPreviousManual;
+	private boolean stayingAutomatic;
 
 	private Joystick leftJoystick;
 	private Joystick rightJoystick;
@@ -162,6 +171,10 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		elevatorSubsystem.zeroEncoder();
+		//hatchIntakeSubsystem.zeroEncoder();
+		hatchIntakeSubsystem.setZeroEncoder();
+		hatchIntakeSubsystem.setBackIntakeStay();
+		stayingAutomatic = false;
 	}
 
 	/**
@@ -201,9 +214,11 @@ public class Robot extends TimedRobot {
 		// Driving
 
 		if(rightJoystick.getRawButtonPressed(2)) {
-			drivetrainSubsystem.storeTargetHeading();
+			drivetrainSubsystem.storeTargetHeadingCargo();
+		} else if(leftJoystick.getRawButtonPressed(3)) {
+			drivetrainSubsystem.storeTargetHeadingHatch();
 		}
-		if(rightJoystick.getRawButton(2) && visionSubsystem.doesValidTargetExist()) {
+		if((rightJoystick.getRawButton(2) || leftJoystick.getRawButton(3)) && visionSubsystem.doesValidTargetExist()) {
 			drivetrainSubsystem.driveWithSimpleVision(-leftJoystick.getY());
 		} else {
 			drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
@@ -234,18 +249,37 @@ public class Robot extends TimedRobot {
 			hatchIntakeSubsystem.spinOutBack();
 		}
 		// Actuation via motor
-		hatchIntakeSubsystem.setBackIntakeSpeed(-gamepad.getRawAxis(3) * 0.5);
+		hatchIntakeSubsystem.setIsManual(gamepad.getRawButton(GAMEPAD_BACK)); //if gamepad back is pressed then is manual
+		if(gamepad.getRawButtonReleased(GAMEPAD_BACK)) {
+			hatchIntakeSubsystem.setBackIntakeStay();
+		}
+		if (-gamepad.getRawAxis(3) > TOPLINE && previousJoystick3Value <= TOPLINE) {
+			hatchIntakeSubsystem.setBackIntakeUp();
+		} else if (-gamepad.getRawAxis(3) < BOTTOMLINE && previousJoystick3Value >= BOTTOMLINE) {
+			hatchIntakeSubsystem.setBackIntakeDown();
+		}
+		hatchIntakeSubsystem.goToSetpoint();
+		hatchIntakeSubsystem.setBackIntakeSpeed(deadband(-gamepad.getRawAxis(3), 0.05) * 0.6);
 		// Driver outtaking controls
 		if(leftJoystick.getRawButton(2)) {
-			hatchIntakeSubsystem.setBackIntakeSpeed(-0.5);
 			hatchIntakeSubsystem.spinOutBack();
+			hatchIntakeSubsystem.setBackIntakeDown();
+			//hatchIntakeSubsystem.setBackIntakeSpeed(-0.5);
+			//hatchIntakeSubsystem.spinOutBack();
+		}
+		if(leftJoystick.getRawButtonReleased(2)) {
+			hatchIntakeSubsystem.setBackIntakeStay();
 		}
 
 		// Cargo Intake
 
 		// Intaking/Outtaking
-		if (gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER) || rightJoystick.getRawButton(1)) {
-			cargoIntakeSubsystem.rollOut();
+		if ((gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER) || rightJoystick.getRawButton(1))) {
+			if(elevatorSubsystem.getIsElevatorAtBottom()) {
+				cargoIntakeSubsystem.rollOut();
+			} else {
+				cargoIntakeSubsystem.rollJustBoxOut();
+			}
 		} else if (gamepad.getRawButton(GAMEPAD_RIGHT_TRIGGER)) {
 			cargoIntakeSubsystem.rollIn();
 		} else {
@@ -269,19 +303,24 @@ public class Robot extends TimedRobot {
 		}
 
 		// Elevator
-		boolean isManual = !(gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B));
+		boolean isManual = !(gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B) );
 		elevatorSubsystem.setIsManual(isManual);
 		if (!isManual && isPreviousManual) {
 			elevatorSubsystem.setSetpoint(elevatorSubsystem.getElevatorPosition());
+			stayingAutomatic = false;
 		}
-		if ((-gamepad.getRawAxis(1) > TOPLINE && previousJoystickValue <= TOPLINE) ||
-			(-gamepad.getRawAxis(1) < BOTTOMLINE && previousJoystickValue >= BOTTOMLINE)) { //if you flicked either way
-			elevatorSubsystem.setStickMoved(true); //say the stick moved
+		if ((-gamepad.getRawAxis(1) > TOPLINE && previousJoystick1Value <= TOPLINE) ||
+			(-gamepad.getRawAxis(1) < BOTTOMLINE && previousJoystick1Value >= BOTTOMLINE)) { //if you flicked either way
 			double[] setpoints = gamepad.getRawButton(GAMEPAD_X) ?
 				elevatorSubsystem.getHatchSetpoints() : elevatorSubsystem.getCargoSetpoints();
-			double preset = elevatorSubsystem.getElevatorPreset(setpoints, -gamepad.getRawAxis(1) > 0);
-			if(preset != -1) {
-				elevatorSubsystem.setSetpoint(preset);
+			if(!stayingAutomatic) {
+				double preset = elevatorSubsystem.getElevatorPreset(setpoints, -gamepad.getRawAxis(1) > 0);
+				if(preset != -1) {
+					elevatorSubsystem.setSetpoint(preset);
+				}
+				stayingAutomatic = true;
+			} else {
+				elevatorSubsystem.setAutomaticElevatorPreset(setpoints, -gamepad.getRawAxis(1) > 0); //if has been automatic get special thing
 			}
 		}
 		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ?
@@ -296,7 +335,8 @@ public class Robot extends TimedRobot {
 		}
 
 		// Track some previous values
-		previousJoystickValue = -gamepad.getRawAxis(1);
+		previousJoystick1Value = -gamepad.getRawAxis(1);
+		previousJoystick3Value = -gamepad.getRawAxis(3);
 		isPreviousManual = isManual;
 
 		// Subsystem-specific teleop periodics

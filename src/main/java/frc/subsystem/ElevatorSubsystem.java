@@ -36,9 +36,8 @@ public class ElevatorSubsystem {
 	private final double elevatorKI;
 	private final double elevatorKD;
 	private final double setpointThreshold;
-	private double[] cargoSetpoints = {16, 44, 72};
+	private double[] cargoSetpoints = {16, 44, 73};
 	private double[] hatchSetpoints = {28, 56};
-
 
     public ElevatorSubsystem() {
         ServiceLocator.register(this);
@@ -134,32 +133,9 @@ public class ElevatorSubsystem {
 	public static double clamp(double val, double min, double max) {
 		return val >= min && val <= max ? val : (val < min ? min : max);
 	}
-/*
-	public void runCargoElevatorPreset(double axisValue) {
-		double elevatorPosition = getElevatorPosition();
-		if(axisValue > 0) { //if stick is up
-			if(elevatorPosition < (cargoBottomSetpoint - setpointThreshold)) { //quadrant 1 up
-				CargoPlaceElevatorBottom();
-			} else if((cargoMiddleSetpoint - setpointThreshold) >= elevatorPosition && elevatorPosition > (cargoBottomSetpoint - setpointThreshold)) { //quadrant 2 up
-				CargoPlaceElevatorMiddle();
-			} else if((cargoTopSetpoint - setpointThreshold) >= elevatorPosition && elevatorPosition > (cargoMiddleSetpoint - setpointThreshold)) { //quadrant 3 up
-				CargoPlaceElevatorTop();
-			} else { //quadrant 4 up
-				CargoPlaceElevatorTop();
-			}
-		} else { //if stick is down
-			if(elevatorPosition > (cargoTopSetpoint + setpointThreshold)) { //quadrant 4 down
-				CargoPlaceElevatorTop();
-			} else if((cargoTopSetpoint + setpointThreshold) >= elevatorPosition && elevatorPosition > (cargoMiddleSetpoint + setpointThreshold)) { //quadrant 3 down
-				CargoPlaceElevatorMiddle();
-			} else if((cargoMiddleSetpoint + setpointThreshold) >= elevatorPosition && elevatorPosition > (cargoBottomSetpoint + setpointThreshold)) { // quadrant 2 down
-				CargoPlaceElevatorBottom();
-			} else { //quadrant 1 down
-				CargoPlaceElevatorBottom();
-			}
-		}
-	}
-	*/
+
+	/* problem = flicking up twice to the top preset, they have to wait until the eleavtor gets into threshold of medium preset
+	before going to the top preset */
 
 	public double getElevatorPreset(double[] setpoints, boolean isUp) {
 		double elevatorPosition = getElevatorPosition();
@@ -179,6 +155,26 @@ public class ElevatorSubsystem {
 			}
 		}
 		return -1;
+	}
+
+	public void setAutomaticElevatorPreset(double[] setpoints, boolean isUp) {
+		double currentSetpoint = setpoint;
+		if(isUp) { 
+			for(int x = 0; x < setpoints.length ; x++) {
+				if(currentSetpoint < setpoints[x]) {
+					setpoint = setpoints[x];
+					break;
+				}
+			}
+		} else {
+			for(int x = setpoints.length - 1; x >= 0; x--) {
+				if(currentSetpoint > setpoints[x]) {
+					setpoint = setpoints[x];
+					break;
+				}
+			}
+			
+		}
 	}
 
 	public void setSetpoint(double inputPoint) {

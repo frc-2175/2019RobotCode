@@ -15,7 +15,8 @@ public class CargoIntakeSubsystem {
     public CargoIntakeSubsystem() {
         ServiceLocator.register(this);
         RobotInfo robotInfo = ServiceLocator.get(RobotInfo.class);
-		rollerBarMotor = robotInfo.get(RobotInfo.CARGO_ROLLER_BAR_MOTOR);
+        rollerBarMotor = robotInfo.get(RobotInfo.CARGO_ROLLER_BAR_MOTOR);
+        rollerBarMotor.setInverted(true);
         boxMotor = robotInfo.get(RobotInfo.CARGO_BOX_MOTOR);
 		rollerBarSolenoid = robotInfo.get(RobotInfo.CARGO_SOLENOID);
 		smartDashboardInfo = ServiceLocator.get(SmartDashboardInfo.class);
@@ -25,9 +26,14 @@ public class CargoIntakeSubsystem {
         boxMotor.set(smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_INTAKE_ROLL_IN_BOX_MOTOR_SPEED));
     }
     public void rollOut() { //cargo out
-        boxMotor.set(smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_INTAKE_ROLL_OUT_BOX_MOTOR_SPEED));
         rollerBarMotor.set(smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_INTAKE_ROLL_OUT_ROLLERBAR_SPEED));
+        boxMotor.set(smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_INTAKE_ROLL_OUT_BOX_MOTOR_SPEED));
     }
+    
+    public void rollJustBoxOut() {
+        boxMotor.set(smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_INTAKE_ROLL_OUT_BOX_MOTOR_SPEED));
+    }
+
     public void solenoidOut() { // push out the solenoid, cargo roller out, Y
         rollerBarSolenoid.set(true);
     }

@@ -63,8 +63,8 @@ public class RobotInfo {
 		put(ELEVATOR_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(2)));
 		put(ELEVATOR_MOTOR_MASTER, talon(new WPI_TalonSRX(10)));
 		put(SWAN, victor(new WPI_VictorSPX(7)));
-		put(CARGO_SOLENOID, () -> new SolenoidWrapper(2, 3), () -> new SolenoidWrapper(2, 3));
-		put(HATCH_ACTUATOR_SOLENOID, () -> new SolenoidWrapper(4), () -> new SolenoidWrapper(4));
+		put(CARGO_SOLENOID, () -> new SolenoidWrapper(3, 4), () -> new SolenoidWrapper(3, 4));
+		put(HATCH_ACTUATOR_SOLENOID, () -> new SolenoidWrapper(5), () -> new SolenoidWrapper(5));
 	}
 
 	private MotorWrapper talon(WPI_TalonSRX talon) {
