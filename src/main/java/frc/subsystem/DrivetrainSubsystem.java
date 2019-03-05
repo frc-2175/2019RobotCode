@@ -168,15 +168,29 @@ public class DrivetrainSubsystem {
 	}
 
 	/**
-	 * Stores the gyro heading of the vision target for use in vision steering
+	 * Stores the gyro heading of the cargo vision target for use in vision steering
 	 *
 	 * @see #driveWithSimpleVision(double)
 	 */
-	public void storeTargetHeading() {
-		double offsetAngleVision = visionSubsystem.getAngleToTargetZ();
+	public void storeTargetHeadingCargo() {
+		double offsetAngleVision = visionSubsystem.getAngleToTargetZCargo();
+		SmartDashboard.putNumber("AutoPopulate/OffsetAngle", offsetAngleVision);
 		targetHeading = navx.getAngle() + offsetAngleVision;
+		SmartDashboard.putNumber("AutoPopulate/TargetHeading", targetHeading);
 	}
-
+	
+	/**
+	 * Stores the gyro heading of the hatch vision target for use in vision steering
+	 *
+	 * @see #driveWithSimpleVision(double)
+	 */
+	public void storeTargetHeadingHatch() {
+		double offsetAngleVision = visionSubsystem.getAngleToTargetZHatch();
+		SmartDashboard.putNumber("AutoPopulate/OffsetAngle", offsetAngleVision);
+		targetHeading = navx.getAngle() + offsetAngleVision;
+		SmartDashboard.putNumber("AutoPopulate/TargetHeading", targetHeading);
+	}
+	
 	/**
 	 * Steers with a pid loop towards a vision target using blended drive
 	 *
@@ -185,13 +199,14 @@ public class DrivetrainSubsystem {
 	 * @see #blendedDrive(double, double)
 	 */
 	public void driveWithSimpleVision(double xSpeed) {
-		double zRotation = pidController.pid(navx.getAngle(), targetHeading);
+		double zRotation = -pidController.pid(navx.getAngle(), targetHeading);
 		SmartDashboard.putNumber("AutoPopulate/PIDOutput", zRotation);
-		SmartDashboard.putNumber("AutoPopulate/AngleOffset", zRotation);
+		SmartDashboard.putNumber("AutoPopulate/AngleOffset", navx.getAngle() - targetHeading);
 		blendedDrive(xSpeed, -zRotation);
 	}
 
 	public void teleopPeriodic() {
 		pidController.updateTime(Timer.getFPGATimestamp());
+		SmartDashboard.putNumber("AutoPopulate/Gyro", navx.getAngle());
 	}
 }

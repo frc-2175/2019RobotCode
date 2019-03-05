@@ -74,7 +74,7 @@ public class VisionSubsystem {
 		return corners;
 	}
 
-	public Vector getTargetPositionRobotSpace() {
+	public Vector getTargetPositionRobotSpaceCargo() {
 		double horizontalOffset = getHorizontalAngleOffset();
 		double verticalOffset = getVerticalAngleOffset();
 		double distance = (CARGO_GOAL_HEIGHT_FROM_GROUND - LIMELIGHT_HEIGHT_FROM_GROUND) /
@@ -87,8 +87,26 @@ public class VisionSubsystem {
 		return positionRobotSpace = positionRobotSpace.add(CAMERA_ROBOT_SPACE);
 	}
 
-	public double getAngleToTargetZ() {
-		Vector targetPos = getTargetPositionRobotSpace();
+	public Vector getTargetPositionRobotSpaceHatch() {
+		double horizontalOffset = getHorizontalAngleOffset();
+		double verticalOffset = getVerticalAngleOffset();
+		double distance = (HATCH_GOAL_HEIGHT_FROM_GROUND - LIMELIGHT_HEIGHT_FROM_GROUND) /
+			Math.tan(Math.toRadians(verticalOffset + CAMERA_ROTATION_Y));
+		double xCoord = Math.sin(Math.toRadians(horizontalOffset)) * distance;
+		double yCoord = Math.cos(Math.toRadians(horizontalOffset)) * distance;
+		Vector positionCameraSpace = new Vector(xCoord, yCoord);
+		Vector positionRobotSpace = positionCameraSpace.rotate(CAMERA_ROTATION_Z);
+		SmartDashboard.putNumber("AutoPopulate/TargetposX", positionRobotSpace.x);
+		return positionRobotSpace = positionRobotSpace.add(CAMERA_ROBOT_SPACE);
+	}
+
+	public double getAngleToTargetZCargo() {
+		Vector targetPos = getTargetPositionRobotSpaceCargo();
+		return Math.toDegrees(Math.atan(targetPos.x / targetPos.y));
+	}
+
+	public double getAngleToTargetZHatch() {
+		Vector targetPos = getTargetPositionRobotSpaceHatch();
 		return Math.toDegrees(Math.atan(targetPos.x / targetPos.y));
 	}
 }

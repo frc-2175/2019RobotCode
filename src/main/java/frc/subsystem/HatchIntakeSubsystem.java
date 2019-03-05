@@ -65,10 +65,10 @@ public class HatchIntakeSubsystem {
 		frontIntakeWheel.set(0);
 	}
 	public void setBackIntakeUp() {
-		setpoint = 0;
+		setpoint = 90;
 	}
 	public void setBackIntakeDown() {
-		setpoint = -90;
+		setpoint = 0;
 	}
 
 	public void goToSetpoint() {
@@ -76,7 +76,6 @@ public class HatchIntakeSubsystem {
 		if(!isManual) {
 			output = pidController.pid(getGroundIntakeDegrees(), setpoint, 20);
 			output = clamp(output, -0.4, 0.5);
-			
 			groundActuationMotor.set(output);
 		}
 	}
