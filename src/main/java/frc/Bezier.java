@@ -5,13 +5,13 @@ public class Bezier {
     public double y0 = 0;
     public double x1, y1, x2, y2, x3, y3;
 
-    public Bezier(double targetx, double targety, double strength, double theta) {
+    public Bezier(double targetx, double targety, double strength1, double strength2, double theta) {
         x3 = targetx;
         y3 = targety;
         x1 = 0;
-        y1 = strength;
-        x2 = targetx + Math.sin(Math.toRadians(theta)) * strength;
-        y2 = targety - Math.cos(Math.toRadians(theta)) * strength;
+        y1 = strength1;
+        x2 = targetx + Math.sin(Math.toRadians(theta)) * strength2;
+        y2 = targety - Math.cos(Math.toRadians(theta)) * strength2;
     }
 
     public Vector[] generateBezier(int resolution) {
@@ -31,7 +31,7 @@ public class Bezier {
 	}
 
 	public static Vector[] getSamplePath() {
-		Bezier bezier = new Bezier(36, 60, 12, 0);
+		Bezier bezier = new Bezier(36, 60, 12, 24, 0);
 		return bezier.generateBezier(30);
 	}
 }

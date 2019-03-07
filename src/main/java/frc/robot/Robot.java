@@ -7,16 +7,10 @@
 
 package frc.robot;
 
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-
-import edu.wpi.cscore.CvSink;
-import edu.wpi.cscore.CvSource;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.Bezier;
 import frc.command.Command;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
@@ -25,6 +19,7 @@ import frc.subsystem.DrivetrainSubsystem;
 import frc.subsystem.ElevatorSubsystem;
 import frc.subsystem.HatchIntakeSubsystem;
 import frc.subsystem.VisionSubsystem;
+import frc.Vector;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -94,6 +89,8 @@ public class Robot extends TimedRobot {
 	private CargoIntakeSubsystem cargoIntakeSubsystem;
 	private VisionSubsystem visionSubsystem;
 	private SmartDashboardInfo smartDashboardInfo;
+	private Vector[] autonPath;
+	Vector[] path;
 
 	// WPI Lib Functions
 
@@ -117,6 +114,19 @@ public class Robot extends TimedRobot {
 		leftJoystick = new Joystick(0);
 		rightJoystick = new Joystick(1);
 		gamepad = new Joystick(2);
+
+		Vector[] pathThing = Bezier.getSamplePath();
+		double[] xcoordinates = new double[pathThing.length];
+		double[] ycoordinates = new double[pathThing.length];
+		for(int i = 0; i < pathThing.length; i++) {
+			xcoordinates[i] = pathThing[i].x;
+			ycoordinates[i] = pathThing[i].y;
+		}
+		path = new Vector[30];
+
+		SmartDashboard.putNumberArray("Values/PathXCoords", xcoordinates);
+		SmartDashboard.putNumberArray("Values/PathYCoords", ycoordinates);
+		autonPath = Bezier.getSamplePath();
 
 		// new Thread(() -> {
 		// 	UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
@@ -155,6 +165,17 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		// hasAutoEnded = false;
+		drivetrainSubsystem.resetTracking();
+		autonPath = visionSubsystem.genPathToTargetHatch(30);
+		Vector[] path = Bezier.getSamplePath();
+		double[] xcoordinates = new double[path.length];
+		double[] ycoordinates = new double[path.length];
+		for(int i = 0; i < path.length; i++) {
+			xcoordinates[i] = path[i].x;
+			ycoordinates[i] = path[i].y;
+		}
+		SmartDashboard.putNumberArray("Values/PathXCoords", xcoordinates);
+		SmartDashboard.putNumberArray("Values/PathYCoords", ycoordinates);
 	}
 
 	/**
@@ -165,7 +186,24 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		teleopPeriodic();
+		drivetrainSubsystem.purePursuit(autonPath);
+		// drivetrainSubsystem.purePursuit(Bezier.getSamplePath());
+		SmartDashboard.putNumber("Values/PositionX", drivetrainSubsystem.fieldPosition.x);
+		SmartDashboard.putNumber("Values/PositionY", drivetrainSubsystem.fieldPosition.y);
+	}
+
+	@Override
+	public void disabledPeriodic() {
+		Vector[] path = visionSubsystem.genPathToTargetHatch(30);
+		double[] xcoordinates = new double[path.length];
+		double[] ycoordinates = new double[path.length];
+		for(int i = 0; i < path.length; i++) {
+			xcoordinates[i] = path[i].x;
+			ycoordinates[i] = path[i].y;
+		}
+
+		SmartDashboard.putNumberArray("Values/PathXCoords", xcoordinates);
+		SmartDashboard.putNumberArray("Values/PathYCoords", ycoordinates);
 	}
 
 	@Override
@@ -174,6 +212,8 @@ public class Robot extends TimedRobot {
 		//hatchIntakeSubsystem.zeroEncoder();
 		hatchIntakeSubsystem.setZeroEncoder();
 		hatchIntakeSubsystem.setBackIntakeStay();
+		drivetrainSubsystem.resetTracking();
+
 		stayingAutomatic = false;
 	}
 
@@ -208,18 +248,39 @@ public class Robot extends TimedRobot {
 		 * 	- D-pad Left: spin floor intake out
 		 */
 
+		SmartDashboard.putNumber("Hatch Floor Intake Degrees", hatchIntakeSubsystem.getGroundIntakeDegrees());
 		SmartDashboard.putNumberArray("Cargo Setpoints", elevatorSubsystem.getCargoSetpoints());
 		SmartDashboard.putNumberArray("Hatch Setpoints", elevatorSubsystem.getHatchSetpoints());
 
+		drivetrainSubsystem.trackLocation();
+		SmartDashboard.putNumber("Values/PositionX", drivetrainSubsystem.fieldPosition.x);
+		SmartDashboard.putNumber("Values/PositionY", drivetrainSubsystem.fieldPosition.y);
+		SmartDashboard.putNumber("Values/LeftSideEncoder", drivetrainSubsystem.getLeftSideDistanceDriven());
+		SmartDashboard.putNumber("Values/RightSideEncoder", drivetrainSubsystem.getRightSideDistanceDriven());
+
 		// Driving
 
-		if(rightJoystick.getRawButtonPressed(2)) {
-			drivetrainSubsystem.storeTargetHeadingCargo();
-		} else if(leftJoystick.getRawButtonPressed(3)) {
-			drivetrainSubsystem.storeTargetHeadingHatch();
+		// Simple Vision
+		// if(rightJoystick.getRawButtonPressed(2)) {
+		// 	drivetrainSubsystem.storeTargetHeadingCargo();
+		// } else if(leftJoystick.getRawButtonPressed(3)) {
+		// 	drivetrainSubsystem.storeTargetHeadingHatch();
+		// }
+		// if((rightJoystick.getRawButton(2) || leftJoystick.getRawButton(3)) && visionSubsystem.doesValidTargetExist()) {
+		// 	drivetrainSubsystem.driveWithSimpleVision(-leftJoystick.getY());
+		// } else {
+			// drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
+		// }
+
+		if(leftJoystick.getRawButtonPressed(3)) {
+			drivetrainSubsystem.resetTracking();
+			path = visionSubsystem.genPathToTargetHatch(30);
+		} else if(rightJoystick.getRawButtonPressed(2)) {
+			drivetrainSubsystem.resetTracking();
+			path = visionSubsystem.genPathToTargetCargo(30);
 		}
-		if((rightJoystick.getRawButton(2) || leftJoystick.getRawButton(3)) && visionSubsystem.doesValidTargetExist()) {
-			drivetrainSubsystem.driveWithSimpleVision(-leftJoystick.getY());
+		if(rightJoystick.getRawButton(2) || leftJoystick.getRawButton(3)) {
+			drivetrainSubsystem.purePursuit(path);
 		} else {
 			drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
 		}
