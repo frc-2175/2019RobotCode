@@ -30,6 +30,7 @@ public class DrivetrainSubsystem {
 		rightVirtualSpeedController);
 	private PIDController pidController;
 	private PIDController purePursuitPID;
+	private PIDController endTerm;
 	private VisionSubsystem visionSubsystem;
 	public double targetHeading;
 	public AHRS navx;
@@ -40,6 +41,7 @@ public class DrivetrainSubsystem {
 	private double zeroEncoderLeft;
 	private double zeroEncoderRight;
 	public static final double INPUT_THRESHOLD = 0.1;
+	private double targetZRotation = 0;
 
 	public DrivetrainSubsystem() {
 		ServiceLocator.register(this);
@@ -90,10 +92,10 @@ public class DrivetrainSubsystem {
 		zeroEncoderLeft = 0;
 		zeroEncoderRight = 0;
 
-		SmartDashboard.putNumber("PurePursuit/MinSpeed", 0.3);
-		SmartDashboard.putNumber("PurePursuit/MaxSpeed", 0.4);
+		SmartDashboard.putNumber("PurePursuit/MinSpeed", 0.4);
+		SmartDashboard.putNumber("PurePursuit/MaxSpeed", 0.6);
 		SmartDashboard.putNumber("PurePursuit/LookAhead", 12.0);
-		SmartDashboard.putNumber("PurePursuit/TransitionLength", 0.25);
+		SmartDashboard.putNumber("PurePursuit/TransitionLength", 0.3);
 
 		// leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		// rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
@@ -101,6 +103,8 @@ public class DrivetrainSubsystem {
 		// rightMaster.setSelectedSensorPosition(0, 0, 0);
 
 		// CameraServer.getInstance().startAutomaticCapture();
+
+		endTerm = new PIDController(-0.01, -0.005, 0);
 	}
 
 	public void stopAllMotors() {
@@ -259,36 +263,46 @@ public class DrivetrainSubsystem {
 	}
 
 	public void purePursuit(Vector[] path) {
-		// Get goal point
-		int indexOfGoalPoint = findGoalPoint(path, fieldPosition, SmartDashboard.getNumber("PurePursuit/LookAhead", 12.0));
-		SmartDashboard.putNumber("PurePursuitLogging/IndexOfGoalPoint", indexOfGoalPoint);
-		// Transform goal point into robot coordinates
-		Vector goalPoint = path[indexOfGoalPoint].subtract(fieldPosition).rotate(navx.getAngle());
-		// Set steering
-		double offsetAngle = Math.toDegrees(Math.atan(Math.abs(goalPoint.x / goalPoint.y)));
-		if(goalPoint.x >= 0 && goalPoint.y < 0) {
-		  offsetAngle += 90;
-		} else if(goalPoint.x < 0) {
-		  if(goalPoint.y >= 0) {
-			offsetAngle *= -1;
-		  } else {
-			offsetAngle *= -1;
-			offsetAngle -= 90;
-		  }
-		}
-		SmartDashboard.putNumber("PurePursuitLogging/OffsetAngle", offsetAngle);
-		double zRotation = purePursuitPID.pid(-offsetAngle, 0);
-		SmartDashboard.putNumber("PurePursuitLogging/ZRotation", zRotation);
-
 		double percentOfPathTravelled = findClosestPoint(path, fieldPosition) / (path.length - 1.0);
-		SmartDashboard.putNumber("PurePursuitLogging/PercentTravelled", percentOfPathTravelled);
-		double speed = trapezoidAcceleration(percentOfPathTravelled, SmartDashboard.getNumber("PurePursuit/MaxSpeed", 0.9),
-			SmartDashboard.getNumber("PurePursuit/MinSpeed", 0.3), SmartDashboard.getNumber("PurePursuit/TransitionLength", 0.25));
-		SmartDashboard.putNumber("PurePursuitLogging/Speed", speed);
+		if(percentOfPathTravelled < 1) {
+			// Get goal point
+			int indexOfGoalPoint = findGoalPoint(path, fieldPosition, SmartDashboard.getNumber("PurePursuit/LookAhead", 12.0));
+			SmartDashboard.putNumber("PurePursuitLogging/IndexOfGoalPoint", indexOfGoalPoint);
+			SmartDashboard.putNumber("PurePursuitLogging/GoalPointX", path[indexOfGoalPoint].x);
+			SmartDashboard.putNumber("PurePursuitLogging/GoalPointY", path[indexOfGoalPoint].y);
+			// Transform goal point into robot coordinates
+			Vector goalPoint = path[indexOfGoalPoint].subtract(fieldPosition).rotate(navx.getAngle());
+			// Set steering
+			double offsetAngle = Math.toDegrees(Math.atan(Math.abs(goalPoint.x / goalPoint.y)));
+			if(goalPoint.x >= 0 && goalPoint.y < 0) {
+				offsetAngle += 90;
+			} else if(goalPoint.x < 0) {
+				if(goalPoint.y >= 0) {
+					offsetAngle *= -1;
+				} else {
+					offsetAngle *= -1;
+					offsetAngle -= 90;
+				}
+			}
+			SmartDashboard.putNumber("PurePursuitLogging/OffsetAngle", offsetAngle);
+			double zRotation = purePursuitPID.pid(-offsetAngle, 0);
+			SmartDashboard.putNumber("PurePursuitLogging/ZRotation", zRotation);
 
-		robotDrive.curvatureDrive(speed, zRotation, false);
-		// Update location
-		trackLocation();
+			SmartDashboard.putNumber("PurePursuitLogging/PercentTravelled", percentOfPathTravelled);
+			double speed = trapezoidAcceleration(percentOfPathTravelled, SmartDashboard.getNumber("PurePursuit/MaxSpeed", 0.9),
+				SmartDashboard.getNumber("PurePursuit/MinSpeed", 0.3), SmartDashboard.getNumber("PurePursuit/TransitionLength", 0.25));
+			SmartDashboard.putNumber("PurePursuitLogging/Speed", speed);
+
+			blendedDrive(speed, zRotation, SmartDashboard.getNumber("PurePursuit/MaxSpeed", 0.6));
+			// Update location
+			trackLocation();
+			purePursuitPID.updateTime(Timer.getFPGATimestamp());
+		} else {
+			double zRotation = endTerm.pid(navx.getAngle(), 0); //targetZRotation
+			SmartDashboard.putNumber("PurePursuitLogging/ZRotation", zRotation);
+			arcadeDrive(0, zRotation);
+			endTerm.updateTime(Timer.getFPGATimestamp());
+		}
 	}
 
 	public static double proportional(double input, double setpoint, double kp) {
@@ -342,8 +356,19 @@ public class DrivetrainSubsystem {
 		zeroEncoderLeft = leftMaster.getSelectedSensorPosition(0);
 		zeroEncoderRight = rightMaster.getSelectedSensorPosition(0);
 		navx.reset();
+		endTerm.clear(Timer.getFPGATimestamp());
+		pidController.clear(Timer.getFPGATimestamp());
+		purePursuitPID.clear(Timer.getFPGATimestamp());
 		fieldPosition = new Vector(0, 0);
-	  }
+	}
+
+	public void storeTargetZRotationCargo() {
+		targetZRotation = visionSubsystem.getTargetZRotationCargo();
+	}
+
+	public void storeTargetZRotationHatch() {
+		targetZRotation = visionSubsystem.getTargetZRotationHatch();
+	}
 
 	public void teleopPeriodic() {
 		pidController.updateTime(Timer.getFPGATimestamp());

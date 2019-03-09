@@ -1,5 +1,7 @@
 package frc;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Bezier {
     public double x0 = 0;
     public double y0 = 0;
@@ -11,7 +13,8 @@ public class Bezier {
         x1 = 0;
         y1 = strength1;
         x2 = targetx + Math.sin(Math.toRadians(theta)) * strength2;
-        y2 = targety - Math.cos(Math.toRadians(theta)) * strength2;
+		y2 = targety - Math.cos(Math.toRadians(theta)) * strength2;
+		publishHandles();
     }
 
     public Vector[] generateBezier(int resolution) {
@@ -28,6 +31,15 @@ public class Bezier {
         double y = y0 + 3 * t * (y1 - y0) + 3 * Math.pow(t, 2) * (y0 + y2 - 2 * y1)
             + Math.pow(t, 3) * (y3 - y0 + 3 * y1 - 3 * y2);
         return new Vector(x, y);
+	}
+
+	public void publishHandles() {
+		SmartDashboard.putNumber("Bezier/x1", x1);
+		SmartDashboard.putNumber("Bezier/y1", y1);
+		SmartDashboard.putNumber("Bezier/x2", x2);
+		SmartDashboard.putNumber("Bezier/y2", y2);
+		SmartDashboard.putNumber("Bezier/x3", x3);
+		SmartDashboard.putNumber("Bezier/y3", y3);
 	}
 
 	public static Vector[] getSamplePath() {

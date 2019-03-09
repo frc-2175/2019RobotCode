@@ -170,9 +170,9 @@ public class Robot extends TimedRobot {
 		Vector[] path = Bezier.getSamplePath();
 		double[] xcoordinates = new double[path.length];
 		double[] ycoordinates = new double[path.length];
-		for(int i = 0; i < path.length; i++) {
-			xcoordinates[i] = path[i].x;
-			ycoordinates[i] = path[i].y;
+		for(int i = 0; i < autonPath.length; i++) {
+			xcoordinates[i] = autonPath[i].x;
+			ycoordinates[i] = autonPath[i].y;
 		}
 		SmartDashboard.putNumberArray("Values/PathXCoords", xcoordinates);
 		SmartDashboard.putNumberArray("Values/PathYCoords", ycoordinates);
@@ -248,6 +248,7 @@ public class Robot extends TimedRobot {
 		 * 	- D-pad Left: spin floor intake out
 		 */
 
+
 		SmartDashboard.putNumber("Hatch Floor Intake Degrees", hatchIntakeSubsystem.getGroundIntakeDegrees());
 		SmartDashboard.putNumberArray("Cargo Setpoints", elevatorSubsystem.getCargoSetpoints());
 		SmartDashboard.putNumberArray("Hatch Setpoints", elevatorSubsystem.getHatchSetpoints());
@@ -267,22 +268,31 @@ public class Robot extends TimedRobot {
 		// 	drivetrainSubsystem.storeTargetHeadingHatch();
 		// }
 		// if((rightJoystick.getRawButton(2) || leftJoystick.getRawButton(3)) && visionSubsystem.doesValidTargetExist()) {
-		// 	drivetrainSubsystem.driveWithSimpleVision(-leftJoystick.getY());
-		// } else {
-			// drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
-		// }
+			// 	drivetrainSubsystem.driveWithSimpleVision(-leftJoystick.getY());
+			// } else {
+				// drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
+				// }
 
 		if(leftJoystick.getRawButtonPressed(3)) {
 			drivetrainSubsystem.resetTracking();
-			path = visionSubsystem.genPathToTargetHatch(30);
+			path = Bezier.getSamplePath();
 		} else if(rightJoystick.getRawButtonPressed(2)) {
 			drivetrainSubsystem.resetTracking();
-			path = visionSubsystem.genPathToTargetCargo(30);
+			path = Bezier.getSamplePath();
 		}
 		if(rightJoystick.getRawButton(2) || leftJoystick.getRawButton(3)) {
 			drivetrainSubsystem.purePursuit(path);
 		} else {
 			drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
+			Vector[] visionPath = visionSubsystem.genPathToTargetHatch(30);
+			double[] xcoordinates = new double[visionPath.length];
+			double[] ycoordinates = new double[visionPath.length];
+			for(int i = 0; i < visionPath.length; i++) {
+				xcoordinates[i] = visionPath[i].x;
+				ycoordinates[i] = visionPath[i].y;
+			}
+			SmartDashboard.putNumberArray("Values/PathXCoords", xcoordinates);
+			SmartDashboard.putNumberArray("Values/PathYCoords", ycoordinates);
 		}
 
 		// Front Hatch Intake

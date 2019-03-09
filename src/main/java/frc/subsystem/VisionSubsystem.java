@@ -14,10 +14,10 @@ public class VisionSubsystem {
 	public static final double LIMELIGHT_HEIGHT_FROM_GROUND = 10.6;
 	public static final double HATCH_GOAL_HEIGHT_FROM_GROUND = 31.5;
 	private final static double CARGO_GOAL_HEIGHT_FROM_GROUND = 38.75;
-	public static final double CAMERA_HORIZONTAL_POS = 9.9517;
-	public static final double CAMERA_VERTICAL_POS = 0;
-	public static final double CAMERA_ROTATION_Z = 10.5;
-	public static final double CAMERA_ROTATION_Y = 18.4182;
+	public static final double CAMERA_HORIZONTAL_POS = 10.5;
+	public static final double CAMERA_VERTICAL_POS = 0.0;
+	public static final double CAMERA_ROTATION_Z = 10.59976077;
+	public static final double CAMERA_ROTATION_Y = 18.41;
 	public static final Vector CAMERA_ROBOT_SPACE = new Vector(CAMERA_HORIZONTAL_POS, CAMERA_VERTICAL_POS);
 	public static final double RESOLUTION_X = 960;
 	public static final double RESOLUTION_Y = 720;
@@ -164,13 +164,14 @@ public class VisionSubsystem {
 		double verticalOffset = Math.toDegrees(Math.atan(pointInViewportSpace.y));
 		double horizontalOffset = Math.toDegrees(Math.atan(pointInViewportSpace.x));
 		double distance = (HATCH_GOAL_HEIGHT_FROM_GROUND - LIMELIGHT_HEIGHT_FROM_GROUND) /
-		Math.tan(Math.toRadians(verticalOffset + CAMERA_ROTATION_Y));
+			Math.tan(Math.toRadians(verticalOffset + CAMERA_ROTATION_Y));
 		double xCoord = Math.sin(Math.toRadians(horizontalOffset)) * distance;
 		double yCoord = Math.cos(Math.toRadians(horizontalOffset)) * distance;
 		SmartDashboard.putNumber("AutoPopulate/VerticalOffset", verticalOffset);
 		SmartDashboard.putNumber("AutoPopulate/HorizontalOffset", horizontalOffset);
 		SmartDashboard.putNumber("AutoPopulate/PositionX", xCoord);
 		SmartDashboard.putNumber("AutoPopulate/PositionY", yCoord);
+		SmartDashboard.putNumber("AutoPopulate/Distance", distance);
 		return new Vector(xCoord, yCoord);
 	}
 
@@ -262,8 +263,8 @@ public class VisionSubsystem {
 					return -1;
 				}
 			});
-			leftTarget = corners[1].y > corners[2].y ? corners[1] : corners[2];
-			rightTarget = corners[5].y > corners[6].y ? corners[5] : corners[6];
+			leftTarget = corners[1].y < corners[2].y ? corners[1] : corners[2];
+			rightTarget = corners[5].y < corners[6].y ? corners[5] : corners[6];
 			Vector leftTargetPosition = getPositionOfPointRobotSpaceCargo(leftTarget.x, leftTarget.y);
 			Vector rightTargetPosition = getPositionOfPointRobotSpaceCargo(rightTarget.x, rightTarget.y);
 			SmartDashboard.putNumber("AutoPopulate/Vision/LeftCornerX", leftTargetPosition.x);
@@ -301,8 +302,8 @@ public class VisionSubsystem {
 					return -1;
 				}
 			});
-			leftTarget = corners[1].y > corners[2].y ? corners[1] : corners[2];
-			rightTarget = corners[5].y > corners[6].y ? corners[5] : corners[6];
+			leftTarget = corners[1].y < corners[2].y ? corners[1] : corners[2];
+			rightTarget = corners[5].y < corners[6].y ? corners[5] : corners[6];
 			Vector leftTargetPosition = getPositionOfPointRobotSpaceHatch(leftTarget.x, leftTarget.y);
 			Vector rightTargetPosition = getPositionOfPointRobotSpaceHatch(rightTarget.x, rightTarget.y);
 			SmartDashboard.putNumber("AutoPopulate/Vision/LeftCornerX", leftTargetPosition.x);
@@ -347,6 +348,10 @@ public class VisionSubsystem {
 		}
 	}
 
+	public Vector getTargetPosition(Vector leftCorner, Vector rightCorner) {
+		return new Vector((leftCorner.x + rightCorner.x) / 2, (leftCorner.y + rightCorner.y) / 2);
+	}
+
 	public Vector[] genPathToTargetCargo(int resolution) {
 		Vector targetLocation = getTargetPositionRobotSpaceCargo();
 		double targetZRotation = getTargetZRotationCargo();
@@ -355,12 +360,13 @@ public class VisionSubsystem {
 	}
 
 	public Vector[] genPathToTargetHatch(int resolution) {
-		Vector targetLocation = getTargetPositionRobotSpaceHatch();
+		Vector[] cornerPositions = getPositionOfCornersHatch();
+		Vector targetLocation = getTargetPosition(cornerPositions[0], cornerPositions[1]);
 		double targetZRotation = getTargetZRotationHatch();
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionX", targetLocation.x);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionY", targetLocation.y);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetRotation", targetZRotation);
-		bezier = new Bezier(targetLocation.x, targetLocation.y - 2, PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation);
+		bezier = new Bezier(targetLocation.x + (10 * Math.sin(Math.toRadians(targetZRotation))), targetLocation.y - (10 * Math.cos(Math.toRadians(targetZRotation))), PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation);
 		return bezier.generateBezier(resolution);
 	}
 }
