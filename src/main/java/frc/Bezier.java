@@ -43,7 +43,7 @@ public class Bezier {
 	}
 
 	public static Vector[] getSamplePath() {
-		Bezier bezier = new Bezier(36, 60, 12, 24, 0);
+		Bezier bezier = new Bezier(0, 60, 12, 24, 0);
 		return bezier.generateBezier(30);
 	}
 }

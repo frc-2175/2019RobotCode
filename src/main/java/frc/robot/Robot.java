@@ -186,8 +186,8 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		drivetrainSubsystem.purePursuit(autonPath);
-		// drivetrainSubsystem.purePursuit(Bezier.getSamplePath());
+		// drivetrainSubsystem.purePursuit(autonPath);
+		drivetrainSubsystem.purePursuit(Bezier.getSamplePath());
 		SmartDashboard.putNumber("Values/PositionX", drivetrainSubsystem.fieldPosition.x);
 		SmartDashboard.putNumber("Values/PositionY", drivetrainSubsystem.fieldPosition.y);
 	}
