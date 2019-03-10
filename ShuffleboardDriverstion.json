@@ -1,0 +1,197 @@
+{
+  "tabPane": [
+    {
+      "title": "Camera",
+      "autoPopulate": true,
+      "autoPopulatePrefix": "Values",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              4,
+              4
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://limelight",
+              "_title": "limelight",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": 0.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          },
+          "7,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://Back Fisheye",
+              "_title": "Back Fisheye",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "HALF",
+              "compression": 18.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          },
+          "4,0": {
+            "size": [
+              3,
+              3
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://Front Fisheye",
+              "_title": "Front Fisheye",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "HALF",
+              "compression": 23.0,
+              "fps": -1,
+              "imageWidth": -1,
+              "imageHeight": -1
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Nerd Stuff",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "4,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Values/PositionX",
+              "_title": "SmartDashboard/Values/PositionX",
+              "Graph/Visible time": 30.0,
+              "Visible data/SmartDashboard/Values/PositionX": true
+            }
+          },
+          "6,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/Values/PositionY",
+              "_title": "SmartDashboard/Values/PositionY",
+              "Graph/Visible time": 30.0,
+              "Visible data/SmartDashboard/Values/PositionY": true
+            }
+          },
+          "8,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/AutoPopulate/Gyro",
+              "_title": "SmartDashboard/AutoPopulate/Gyro",
+              "Graph/Visible time": 30.0,
+              "Visible data/SmartDashboard/AutoPopulate/Gyro": true
+            }
+          },
+          "4,2": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/AutoPopulate/HatchDegrees",
+              "_title": "SmartDashboard/AutoPopulate/HatchDegrees",
+              "Graph/Visible time": 30.0,
+              "Visible data/SmartDashboard/AutoPopulate/HatchDegrees": true
+            }
+          },
+          "6,2": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/PurePursuitLogging/Speed",
+              "_title": "SmartDashboard/PurePursuitLogging/Speed",
+              "Graph/Visible time": 30.0,
+              "Visible data/SmartDashboard/PurePursuitLogging/Speed": true
+            }
+          },
+          "8,2": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/PurePursuitLogging/ZRotation",
+              "_title": "SmartDashboard/PurePursuitLogging/ZRotation",
+              "Graph/Visible time": 30.0,
+              "Visible data/SmartDashboard/PurePursuitLogging/ZRotation": true
+            }
+          },
+          "2,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/PurePursuitLogging/OffsetAngle",
+              "_title": "SmartDashboard/PurePursuitLogging/OffsetAngle",
+              "Graph/Visible time": 30.0,
+              "Visible data/SmartDashboard/PurePursuitLogging/OffsetAngle": true
+            }
+          },
+          "2,2": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "Graph",
+              "_source0": "network_table:///SmartDashboard/PurePursuitLogging/PercentTravelled",
+              "_title": "SmartDashboard/PurePursuitLogging/PercentTravelled",
+              "Graph/Visible time": 30.0,
+              "Visible data/SmartDashboard/PurePursuitLogging/PercentTravelled": true
+            }
+          }
+        }
+      }
+    }
+  ],
+  "windowGeometry": {
+    "x": -7.199999809265137,
+    "y": -7.199999809265137,
+    "width": 1550.4000244140625,
+    "height": 838.4000244140625
+  }
+}

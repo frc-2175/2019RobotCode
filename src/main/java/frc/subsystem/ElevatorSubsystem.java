@@ -37,7 +37,8 @@ public class ElevatorSubsystem {
 	private final double elevatorKD;
 	private final double setpointThreshold;
 	private double[] cargoSetpoints = {16, 44, 73};
-	private double[] hatchSetpoints = {28, 56};
+	private double[] hatchSetpoints = {30, 58};
+	// hatch originally 28 & 56
 
     public ElevatorSubsystem() {
         ServiceLocator.register(this);

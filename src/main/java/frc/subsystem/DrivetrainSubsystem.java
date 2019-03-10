@@ -51,8 +51,6 @@ public class DrivetrainSubsystem {
 		leftSlave = robotInfo.get(RobotInfo.LEFT_MOTOR_FOLLOWER);
 		rightMaster = robotInfo.get(RobotInfo.RIGHT_MOTOR_MASTER);
 		rightSlave = robotInfo.get(RobotInfo.RIGHT_MOTOR_FOLLOWER);
-		leftMaster.setInverted(false);
-		rightMaster.setInverted(false);
 
 		leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
@@ -214,7 +212,7 @@ public class DrivetrainSubsystem {
 	 * @see #driveWithSimpleVision(double)
 	 */
 	public void storeTargetHeadingCargo() {
-		double offsetAngleVision = visionSubsystem.getAngleToTargetZCargo();
+		double offsetAngleVision = visionSubsystem.getAngleZToTarget(VisionSubsystem.CARGO_GOAL_HEIGHT_FROM_GROUND);
 		SmartDashboard.putNumber("AutoPopulate/OffsetAngle", offsetAngleVision);
 		targetHeading = navx.getAngle() + offsetAngleVision;
 		SmartDashboard.putNumber("AutoPopulate/TargetHeading", targetHeading);
@@ -226,7 +224,7 @@ public class DrivetrainSubsystem {
 	 * @see #driveWithSimpleVision(double)
 	 */
 	public void storeTargetHeadingHatch() {
-		double offsetAngleVision = visionSubsystem.getAngleToTargetZHatch();
+		double offsetAngleVision = visionSubsystem.getAngleZToTarget(VisionSubsystem.HATCH_GOAL_HEIGHT_FROM_GROUND);
 		SmartDashboard.putNumber("AutoPopulate/OffsetAngle", offsetAngleVision);
 		targetHeading = navx.getAngle() + offsetAngleVision;
 		SmartDashboard.putNumber("AutoPopulate/TargetHeading", targetHeading);
@@ -262,7 +260,7 @@ public class DrivetrainSubsystem {
 		lastEncoderDistanceRight = getRightSideDistanceDriven();
 	}
 
-	public void purePursuit(Vector[] path, Vector targetLocation) {
+	public void purePursuit(Vector[] path, Vector targetLocation, double moveValue) {
 		double percentOfPathTravelled = findClosestPoint(path, fieldPosition) / (path.length - 1.0);
 		if(percentOfPathTravelled < 1) {
 			// Get goal point
@@ -311,7 +309,7 @@ public class DrivetrainSubsystem {
 				double constantStallOvercome = 0.3 * -Math.signum(targetRotation - navx.getAngle());
 				zRotation += constantStallOvercome;
 			}
-			arcadeDrive(0, zRotation);
+			arcadeDrive(moveValue, zRotation);
 			endTerm.updateTime(Timer.getFPGATimestamp());
 			trackLocation();
 		}
@@ -377,11 +375,11 @@ public class DrivetrainSubsystem {
 	}
 
 	public void storeTargetZRotationCargo() {
-		targetZRotation = -visionSubsystem.getTargetZRotationCargo();
+		targetZRotation = -visionSubsystem.getTargetZRotation(VisionSubsystem.CARGO_GOAL_HEIGHT_FROM_GROUND);
 	}
 
 	public void storeTargetZRotationHatch() {
-		targetZRotation = -visionSubsystem.getTargetZRotationHatch();
+		targetZRotation = -visionSubsystem.getTargetZRotation(VisionSubsystem.HATCH_GOAL_HEIGHT_FROM_GROUND);
 	}
 
 	public void teleopPeriodic() {

@@ -65,10 +65,10 @@ public class HatchIntakeSubsystem {
 		frontIntakeWheel.set(0);
 	}
 	public void setBackIntakeUp() {
-		setpoint = 90;
+		setpoint = -49;
 	}
 	public void setBackIntakeDown() {
-		setpoint = 0;
+		setpoint = -139;
 	}
 
 	public void goToSetpoint() {

@@ -52,7 +52,7 @@ public class RobotInfo {
      * @see frc.info.RobotInfo#put(String, Object)
      * */
     public void populate() {
-		put(CARGO_ROLLER_BAR_MOTOR, victor(new WPI_VictorSPX(4)));
+		put(CARGO_ROLLER_BAR_MOTOR, victor(new WPI_VictorSPX(4), true));
 		put(CARGO_BOX_MOTOR, victor(new WPI_VictorSPX(6)));
 		put(LEFT_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(5)));
 		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(9)));
@@ -74,7 +74,14 @@ public class RobotInfo {
 	private MotorWrapper victor(WPI_VictorSPX victor) {
 		return new MotorWrapper(victor);
 	}
+	
+	private MotorWrapper talon(WPI_TalonSRX talon, boolean inverted) {
+		return new MotorWrapper(talon, inverted);
+	}
 
+	private MotorWrapper victor(WPI_VictorSPX victor, boolean inverted) {
+		return new MotorWrapper(victor, inverted);
+	}
     /**
      * Puts an object in the hash map
      * @param key the key by which the object is referred to

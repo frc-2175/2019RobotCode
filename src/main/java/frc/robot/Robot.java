@@ -277,18 +277,18 @@ public class Robot extends TimedRobot {
 			drivetrainSubsystem.resetTracking();
 			drivetrainSubsystem.storeTargetZRotationHatch();
 			path = visionSubsystem.genPathToTargetHatch(30);
-			targetLocation = visionSubsystem.getTargetPositionRobotSpaceHatch();
-		} else if(rightJoystick.getRawButtonPressed(2)) {
+			targetLocation = visionSubsystem.getTargetPositionRobotSpace(VisionSubsystem.HATCH_GOAL_HEIGHT_FROM_GROUND);
+		} else if(rightJoystick.getRawButtonPressed(3)) {
 			drivetrainSubsystem.resetTracking();
 			drivetrainSubsystem.storeTargetZRotationCargo();
-			targetLocation = visionSubsystem.getTargetPositionRobotSpaceCargo();
-			path = Bezier.getSamplePath();
+			path = visionSubsystem.genPathToTargetCargo(30);
+			targetLocation = visionSubsystem.getTargetPositionRobotSpace(VisionSubsystem.CARGO_GOAL_HEIGHT_FROM_GROUND);
 		}
-		if(rightJoystick.getRawButton(2) || leftJoystick.getRawButton(3)) {
-			drivetrainSubsystem.purePursuit(path, targetLocation);
+		if(rightJoystick.getRawButton(3) || leftJoystick.getRawButton(3)) {
+			drivetrainSubsystem.purePursuit(path, targetLocation, leftJoystick.getY());
 		} else {
 			drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
-			Vector[] visionPath = visionSubsystem.genPathToTargetHatch(30);
+			Vector[] visionPath = visionSubsystem.genPathToTargetCargo(30);
 			double[] xcoordinates = new double[visionPath.length];
 			double[] ycoordinates = new double[visionPath.length];
 			for(int i = 0; i < visionPath.length; i++) {
@@ -350,7 +350,7 @@ public class Robot extends TimedRobot {
 
 		// Intaking/Outtaking
 		if ((gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER) || rightJoystick.getRawButton(1))) {
-			if(elevatorSubsystem.getIsElevatorAtBottom()) {
+			if(elevatorSubsystem.getIsElevatorAtBottom() || gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER)) {
 				cargoIntakeSubsystem.rollOut();
 			} else {
 				cargoIntakeSubsystem.rollJustBoxOut();

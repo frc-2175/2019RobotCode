@@ -57,7 +57,7 @@ public class SmartDashboardInfo {
 		putNumber(CARGO_INTAKE_ROLL_OUT_ROLLERBAR_SPEED, -1, -1);
 		putNumber(CARGO_INTAKE_ROLL_OUT_BOX_MOTOR_SPEED, -0.7, -0.7);
 		putNumber(HATCH_INTAKE_SPIN_IN_FRONT, 0.6, 0.6);
-		putNumber(HATCH_INTAKE_SPIN_OUT_FRONT, -0.8, -0.8);
+		putNumber(HATCH_INTAKE_SPIN_OUT_FRONT, -0.65, -0.65);
 		putNumber(HATCH_INTAKE_SPIN_IN_BACK, 0.75, 0.75);
 		putNumber(HATCH_INTAKE_SPIN_OUT_BACK, -0.6, -0.6);
 		putNumber(ELEVATOR_PID_P, 1.0 / 36.0, 1.0 / 36.0);
