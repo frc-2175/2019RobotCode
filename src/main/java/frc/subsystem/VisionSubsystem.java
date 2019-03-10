@@ -16,14 +16,14 @@ public class VisionSubsystem {
 	private final static double CARGO_GOAL_HEIGHT_FROM_GROUND = 38.75;
 	public static final double CAMERA_HORIZONTAL_POS = 10.5;
 	public static final double CAMERA_VERTICAL_POS = 17.125;
-	public static final double CAMERA_ROTATION_Z = 10.59976077;
+	public static final double CAMERA_ROTATION_Z = 8.719;
 	public static final double CAMERA_ROTATION_Y = 17.04238;
 	public static final Vector CAMERA_ROBOT_SPACE = new Vector(CAMERA_HORIZONTAL_POS, CAMERA_VERTICAL_POS);
 	public static final double RESOLUTION_X = 960;
 	public static final double RESOLUTION_Y = 720;
 	public static final double FOV_X = 59.6;
 	public static final double FOV_Y = 49.7;
-	public static final double PATH_STRENGTH = 12.0;
+	public static final double PATH_STRENGTH = 3.0;
 	private Bezier bezier;
 
 	public VisionSubsystem() {
@@ -366,7 +366,7 @@ public class VisionSubsystem {
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionX", targetLocation.x);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionY", targetLocation.y);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetRotation", targetZRotation);
-		bezier = new Bezier(targetLocation.x + (32 * Math.sin(Math.toRadians(targetZRotation))), targetLocation.y - (32 * Math.cos(Math.toRadians(targetZRotation))), PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation);
+		bezier = new Bezier(targetLocation.x + (32 * Math.sin(Math.toRadians(targetZRotation * 0.7))), targetLocation.y - (32 * Math.cos(Math.toRadians(targetZRotation * 0.7))), PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation * 0.7);
 		return bezier.generateBezier(resolution);
 	}
 }

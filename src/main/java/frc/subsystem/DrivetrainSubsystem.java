@@ -95,7 +95,7 @@ public class DrivetrainSubsystem {
 		SmartDashboard.putNumber("PurePursuit/MinSpeed", 0.4);
 		SmartDashboard.putNumber("PurePursuit/MaxSpeed", 0.6);
 		SmartDashboard.putNumber("PurePursuit/LookAhead", 12.0);
-		SmartDashboard.putNumber("PurePursuit/TransitionLength", 0.3);
+		SmartDashboard.putNumber("PurePursuit/TransitionLength", 0.4);
 
 		// leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		// rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
