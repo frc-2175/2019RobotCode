@@ -70,6 +70,9 @@ public class HatchIntakeSubsystem {
 	public void setBackIntakeDown() {
 		setpoint = -139;
 	}
+	public void setBackIntakeInsideFrame() {
+		setpoint = 0;
+	}
 
 	public void goToSetpoint() {
 		SmartDashboard.putNumber("FLOOR_HATCH_SETPOINT", setpoint);

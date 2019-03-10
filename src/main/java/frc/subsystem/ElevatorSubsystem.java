@@ -158,7 +158,7 @@ public class ElevatorSubsystem {
 		return -1;
 	}
 
-	public void setAutomaticElevatorPreset(double[] setpoints, boolean isUp) {
+	public void nextElevatorPreset(double[] setpoints, boolean isUp) {
 		double currentSetpoint = setpoint;
 		if(isUp) { 
 			for(int x = 0; x < setpoints.length ; x++) {

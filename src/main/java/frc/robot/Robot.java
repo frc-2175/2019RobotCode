@@ -332,6 +332,8 @@ public class Robot extends TimedRobot {
 			hatchIntakeSubsystem.setBackIntakeUp();
 		} else if (-gamepad.getRawAxis(3) < BOTTOMLINE && previousJoystick3Value >= BOTTOMLINE) {
 			hatchIntakeSubsystem.setBackIntakeDown();
+		} else if (gamepad.getRawButton(GAMEPAD_RIGHT_STICK_PRESS)) {
+			hatchIntakeSubsystem.setBackIntakeInsideFrame();
 		}
 		hatchIntakeSubsystem.goToSetpoint();
 		hatchIntakeSubsystem.setBackIntakeSpeed(deadband(-gamepad.getRawAxis(3), 0.05) * 0.6);
@@ -339,8 +341,6 @@ public class Robot extends TimedRobot {
 		if(leftJoystick.getRawButton(2)) {
 			hatchIntakeSubsystem.spinOutBack();
 			hatchIntakeSubsystem.setBackIntakeDown();
-			//hatchIntakeSubsystem.setBackIntakeSpeed(-0.5);
-			//hatchIntakeSubsystem.spinOutBack();
 		}
 		if(leftJoystick.getRawButtonReleased(2)) {
 			hatchIntakeSubsystem.setBackIntakeStay();
@@ -349,7 +349,7 @@ public class Robot extends TimedRobot {
 		// Cargo Intake
 
 		// Intaking/Outtaking
-		if ((gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER) || rightJoystick.getRawButton(1))) {
+		if (gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER) || rightJoystick.getRawButton(1)) {
 			if(elevatorSubsystem.getIsElevatorAtBottom() || gamepad.getRawButton(GAMEPAD_RIGHT_BUMPER)) {
 				cargoIntakeSubsystem.rollOut();
 			} else {
@@ -378,7 +378,7 @@ public class Robot extends TimedRobot {
 		}
 
 		// Elevator
-		boolean isManual = !(gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B) );
+		boolean isManual = !(gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B));
 		elevatorSubsystem.setIsManual(isManual);
 		if (!isManual && isPreviousManual) {
 			elevatorSubsystem.setSetpoint(elevatorSubsystem.getElevatorPosition());
@@ -395,7 +395,7 @@ public class Robot extends TimedRobot {
 				}
 				stayingAutomatic = true;
 			} else {
-				elevatorSubsystem.setAutomaticElevatorPreset(setpoints, -gamepad.getRawAxis(1) > 0); //if has been automatic get special thing
+				elevatorSubsystem.nextElevatorPreset(setpoints, -gamepad.getRawAxis(1) > 0); //lets you switch presets quickly
 			}
 		}
 		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ?
