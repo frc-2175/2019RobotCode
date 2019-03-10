@@ -35,7 +35,7 @@ public class DrivetrainSubsystem {
 	public double targetHeading;
 	public AHRS navx;
 	public Vector fieldPosition;
-	public static final double TICKS_TO_INCHES = 0.004675;
+	public static final double TICKS_TO_INCHES = 0.0045933578;
 	double lastEncoderDistanceLeft;
 	double lastEncoderDistanceRight;
 	private double zeroEncoderLeft;
@@ -72,7 +72,7 @@ public class DrivetrainSubsystem {
 		double ki = smartDashboardInfo.getNumber(SmartDashboardInfo.VISION_PID_I);
 		double kd = smartDashboardInfo.getNumber(SmartDashboardInfo.VISION_PID_D);
 		pidController = new PIDController(kp, ki, kd);
-		SmartDashboard.putNumber("PurePursuit/KP", 0.025);
+		SmartDashboard.putNumber("PurePursuit/KP", 0.015); // 0.025
 		SmartDashboard.putNumber("PurePursuit/KI", 0);
 		SmartDashboard.putNumber("PurePursuit/KD", 0);
 		double p_KP = SmartDashboard.getNumber("PurePursuit/KP", 0);
@@ -104,11 +104,11 @@ public class DrivetrainSubsystem {
 
 		// CameraServer.getInstance().startAutomaticCapture();
 
-		endTerm = new PIDController(-0.01, -0.005, 0);
+		// endTerm = new PIDController(-0.018, -0.014, 0.005);
+		endTerm = new PIDController(-0.01, 0, 0);
 	}
 
 	public void stopAllMotors() {
-		blendedDrive(0, 0);
 	}
 
 	/**
@@ -262,7 +262,7 @@ public class DrivetrainSubsystem {
 		lastEncoderDistanceRight = getRightSideDistanceDriven();
 	}
 
-	public void purePursuit(Vector[] path) {
+	public void purePursuit(Vector[] path, Vector targetLocation) {
 		double percentOfPathTravelled = findClosestPoint(path, fieldPosition) / (path.length - 1.0);
 		if(percentOfPathTravelled < 1) {
 			// Get goal point
@@ -298,10 +298,22 @@ public class DrivetrainSubsystem {
 			trackLocation();
 			purePursuitPID.updateTime(Timer.getFPGATimestamp());
 		} else {
-			double zRotation = endTerm.pid(navx.getAngle(), 0); //targetZRotation
-			SmartDashboard.putNumber("PurePursuitLogging/ZRotation", zRotation);
+			double dx = targetLocation.x - fieldPosition.x;
+			double dy = targetLocation.y - fieldPosition.y;
+			double targetRotation = Math.toDegrees(Math.atan(dx / dy));
+			SmartDashboard.putNumber("PurePursuitLogging/TargetRotation", targetRotation);
+			double zRotation;
+			if(Math.abs(targetRotation - navx.getAngle()) < 1) {
+				zRotation = 0;
+			} else {
+				zRotation = endTerm.pid(navx.getAngle(), targetRotation, 15); //targetZRotation
+				SmartDashboard.putNumber("PurePursuitLogging/ZRotation", zRotation);
+				double constantStallOvercome = 0.3 * -Math.signum(targetRotation - navx.getAngle());
+				zRotation += constantStallOvercome;
+			}
 			arcadeDrive(0, zRotation);
 			endTerm.updateTime(Timer.getFPGATimestamp());
+			trackLocation();
 		}
 	}
 
@@ -355,6 +367,8 @@ public class DrivetrainSubsystem {
 		lastEncoderDistanceRight = 0;
 		zeroEncoderLeft = leftMaster.getSelectedSensorPosition(0);
 		zeroEncoderRight = rightMaster.getSelectedSensorPosition(0);
+		// leftMaster.setSelectedSensorPosition(0, 0, 0);
+		// rightMaster.setSelectedSensorPosition(0, 0, 0);
 		navx.reset();
 		endTerm.clear(Timer.getFPGATimestamp());
 		pidController.clear(Timer.getFPGATimestamp());
@@ -363,17 +377,23 @@ public class DrivetrainSubsystem {
 	}
 
 	public void storeTargetZRotationCargo() {
-		targetZRotation = visionSubsystem.getTargetZRotationCargo();
+		targetZRotation = -visionSubsystem.getTargetZRotationCargo();
 	}
 
 	public void storeTargetZRotationHatch() {
-		targetZRotation = visionSubsystem.getTargetZRotationHatch();
+		targetZRotation = -visionSubsystem.getTargetZRotationHatch();
 	}
 
 	public void teleopPeriodic() {
 		pidController.updateTime(Timer.getFPGATimestamp());
 		purePursuitPID.updateTime(Timer.getFPGATimestamp());
 		SmartDashboard.putNumber("AutoPopulate/Gyro", navx.getAngle());
+		SmartDashboard.putNumber("Values/LeftRawEncoder", leftMaster.getSelectedSensorPosition(0));
+		SmartDashboard.putNumber("Values/RightRawEncoder", rightMaster.getSelectedSensorPosition(0));
 	}
 
+	public void proportionalZeroTurn() {
+		double output = proportional(navx.getAngle(), 0, 0.01);
+		arcadeDrive(0, output);
+	}
 }

@@ -90,6 +90,7 @@ public class Robot extends TimedRobot {
 	private VisionSubsystem visionSubsystem;
 	private SmartDashboardInfo smartDashboardInfo;
 	private Vector[] autonPath;
+	private Vector targetLocation = new Vector(0, 0);
 	Vector[] path;
 
 	// WPI Lib Functions
@@ -186,10 +187,9 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousPeriodic() {
-		drivetrainSubsystem.purePursuit(autonPath);
-		// drivetrainSubsystem.purePursuit(Bezier.getSamplePath());
 		SmartDashboard.putNumber("Values/PositionX", drivetrainSubsystem.fieldPosition.x);
 		SmartDashboard.putNumber("Values/PositionY", drivetrainSubsystem.fieldPosition.y);
+		teleopPeriodic();
 	}
 
 	@Override
@@ -275,13 +275,17 @@ public class Robot extends TimedRobot {
 
 		if(leftJoystick.getRawButtonPressed(3)) {
 			drivetrainSubsystem.resetTracking();
-			path = Bezier.getSamplePath();
+			drivetrainSubsystem.storeTargetZRotationHatch();
+			path = visionSubsystem.genPathToTargetHatch(30);
+			targetLocation = visionSubsystem.getTargetPositionRobotSpaceHatch();
 		} else if(rightJoystick.getRawButtonPressed(2)) {
 			drivetrainSubsystem.resetTracking();
+			drivetrainSubsystem.storeTargetZRotationCargo();
+			targetLocation = visionSubsystem.getTargetPositionRobotSpaceCargo();
 			path = Bezier.getSamplePath();
 		}
 		if(rightJoystick.getRawButton(2) || leftJoystick.getRawButton(3)) {
-			drivetrainSubsystem.purePursuit(path);
+			drivetrainSubsystem.purePursuit(path, targetLocation);
 		} else {
 			drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
 			Vector[] visionPath = visionSubsystem.genPathToTargetHatch(30);
