@@ -409,6 +409,14 @@ public class Robot extends TimedRobot {
 			cargoIntakeSubsystem.spinRollerbarForElevator();
 		}
 
+		//climb stuff 
+		if(leftJoystick.getRawButtonPressed(6)) {
+			drivetrainSubsystem.toggleClimberFront();
+		}
+		if(leftJoystick.getRawButtonPressed(7)) {
+			drivetrainSubsystem.toggleClimberBack();
+		}
+
 		// Track some previous values
 		previousJoystick1Value = -gamepad.getRawAxis(1);
 		previousJoystick3Value = -gamepad.getRawAxis(3);

@@ -11,10 +11,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.MotorWrapper;
 import frc.PIDController;
 import frc.ServiceLocator;
+import frc.SolenoidWrapper;
+import frc.Vector;
 import frc.VirtualSpeedController;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
-import frc.Vector;
 
 public class DrivetrainSubsystem {
 
@@ -28,6 +29,8 @@ public class DrivetrainSubsystem {
 	private static VirtualSpeedController rightVirtualSpeedController = new VirtualSpeedController();
 	private static DifferentialDrive virtualRobotDrive = new DifferentialDrive(leftVirtualSpeedController,
 		rightVirtualSpeedController);
+	private final SolenoidWrapper climberFrontSolenoid;
+	private final SolenoidWrapper climberBackSolenoid;
 	private PIDController pidController;
 	private PIDController purePursuitPID;
 	private PIDController endTerm;
@@ -65,6 +68,10 @@ public class DrivetrainSubsystem {
 		leftVirtualSpeedController = new VirtualSpeedController();
 		rightVirtualSpeedController = new VirtualSpeedController();
 		virtualRobotDrive = new DifferentialDrive(leftVirtualSpeedController, rightVirtualSpeedController);
+
+		climberFrontSolenoid = robotInfo.get(RobotInfo.CLIMBER_FRONT_SOLENOID);
+		climberBackSolenoid = robotInfo.get(RobotInfo.CLIMBER_BACK_SOLENOID);
+
 		SmartDashboardInfo smartDashboardInfo = ServiceLocator.get(SmartDashboardInfo.class);
 		double kp = smartDashboardInfo.getNumber(SmartDashboardInfo.VISION_PID_P);
 		double ki = smartDashboardInfo.getNumber(SmartDashboardInfo.VISION_PID_I);
@@ -393,5 +400,13 @@ public class DrivetrainSubsystem {
 	public void proportionalZeroTurn() {
 		double output = proportional(navx.getAngle(), 0, 0.01);
 		arcadeDrive(0, output);
+	}
+
+	public void toggleClimberFront() {
+		climberFrontSolenoid.set(!climberFrontSolenoid.get());
+	}
+
+	public void toggleClimberBack() {
+		climberBackSolenoid.set(!climberBackSolenoid.get());
 	}
 }

@@ -31,6 +31,8 @@ public class RobotInfo {
 	public static final String ELEVATOR_MOTOR_MASTER = "elevator.motor.master";
 	public static final String ELEVATOR_MOTOR_FOLLOWER = "elevator.motor.follower";
 	public static final String HATCH_SOLENOID = "intake.hatch.solenoid";
+	public static final String CLIMBER_FRONT_SOLENOID = "climber.solenoid.front";
+	public static final String CLIMBER_BACK_SOLENOID = "climber.solenoid.back";
 	public static interface ValueContainer {
 		public Object get();
 	}
@@ -65,6 +67,8 @@ public class RobotInfo {
 		put(SWAN, victor(new WPI_VictorSPX(7)));
 		put(CARGO_SOLENOID, () -> new SolenoidWrapper(3, 4), () -> new SolenoidWrapper(3, 4));
 		put(HATCH_ACTUATOR_SOLENOID, () -> new SolenoidWrapper(5), () -> new SolenoidWrapper(5));
+		put(CLIMBER_FRONT_SOLENOID, () -> new SolenoidWrapper(6, 7), () -> new SolenoidWrapper(6, 7));
+		put(CLIMBER_BACK_SOLENOID, () -> new SolenoidWrapper(1, 2), () -> new SolenoidWrapper(1, 2));
 	}
 
 	private MotorWrapper talon(WPI_TalonSRX talon) {
