@@ -14,6 +14,8 @@ public class VisionSubsystem {
 	public static final double LIMELIGHT_HEIGHT_FROM_GROUND = 10.6;
 	public static final double HATCH_GOAL_HEIGHT_FROM_GROUND = 31.5;
 	public final static double CARGO_GOAL_HEIGHT_FROM_GROUND = 38.75;
+	public static final double HATCH_TARGET_ANGLE_MULT = 0.6;
+	public static final double CARGO_TARGET_ANGLE_MULT = 0.4;
 	public static final double CAMERA_HORIZONTAL_POS = 10.5;
 	public static final double CAMERA_VERTICAL_POS = 17.125;
 	public static final double CAMERA_ROTATION_Z = 8.719;
@@ -236,7 +238,7 @@ public class VisionSubsystem {
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionX", targetLocation.x);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionY", targetLocation.y);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetRotation", targetZRotation);
-		bezier = new Bezier(targetLocation.x + (32 * Math.sin(Math.toRadians(targetZRotation * 0.7))), targetLocation.y - (32 * Math.cos(Math.toRadians(targetZRotation * 0.7))), PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation * 0.7);
+		bezier = new Bezier(targetLocation.x + (32 * Math.sin(Math.toRadians(targetZRotation * CARGO_TARGET_ANGLE_MULT))), targetLocation.y - (32 * Math.cos(Math.toRadians(targetZRotation * CARGO_TARGET_ANGLE_MULT))), PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation * CARGO_TARGET_ANGLE_MULT);
 		return bezier.generateBezier(resolution);
 	}
 
@@ -247,7 +249,7 @@ public class VisionSubsystem {
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionX", targetLocation.x);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionY", targetLocation.y);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetRotation", targetZRotation);
-		bezier = new Bezier(targetLocation.x + (32 * Math.sin(Math.toRadians(targetZRotation * 0.7))), targetLocation.y - (32 * Math.cos(Math.toRadians(targetZRotation * 0.7))), PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation * 0.7);
+		bezier = new Bezier(targetLocation.x + (32 * Math.sin(Math.toRadians(targetZRotation * HATCH_TARGET_ANGLE_MULT))), targetLocation.y - (32 * Math.cos(Math.toRadians(targetZRotation * HATCH_TARGET_ANGLE_MULT))), PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation * HATCH_TARGET_ANGLE_MULT);
 		return bezier.generateBezier(resolution);
 	}
 }

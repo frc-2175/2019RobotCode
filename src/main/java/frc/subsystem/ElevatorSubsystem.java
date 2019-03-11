@@ -36,7 +36,7 @@ public class ElevatorSubsystem {
 	private final double elevatorKI;
 	private final double elevatorKD;
 	private final double setpointThreshold;
-	private double[] cargoSetpoints = {16, 44, 73};
+	private double[] cargoSetpoints = {16, 44, 74};
 	private double[] hatchSetpoints = {30, 58};
 	// hatch originally 28 & 56
 
