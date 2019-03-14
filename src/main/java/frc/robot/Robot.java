@@ -149,6 +149,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		// hasAutoEnded = false;
+		stayingAutomatic = false;
 		drivetrainSubsystem.resetTracking();
 		SmartDashboard.putString("CameraToggle/SelectedCamera", "0");
 		drivetrainSubsystem.resetTracking();
