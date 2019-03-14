@@ -178,7 +178,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopInit() {
 		SmartDashboard.putString("CameraToggle/SelectedCamera", "0");
-		stayingAutomatic = false;
 	}
 
 	/**
