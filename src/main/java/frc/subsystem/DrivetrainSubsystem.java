@@ -98,7 +98,7 @@ public class DrivetrainSubsystem {
 		zeroEncoderRight = 0;
 
 		SmartDashboard.putNumber("PurePursuit/MinSpeed", 0.4);
-		SmartDashboard.putNumber("PurePursuit/MaxSpeed", 0.6);
+		SmartDashboard.putNumber("PurePursuit/MaxSpeed", 0.7);
 		SmartDashboard.putNumber("PurePursuit/LookAhead", 12.0);
 		SmartDashboard.putNumber("PurePursuit/TransitionLength", 0.4);
 
@@ -220,9 +220,7 @@ public class DrivetrainSubsystem {
 	 */
 	public void storeTargetHeadingCargo() {
 		double offsetAngleVision = visionSubsystem.getAngleZToTarget(VisionSubsystem.CARGO_GOAL_HEIGHT_FROM_GROUND);
-		SmartDashboard.putNumber("AutoPopulate/OffsetAngle", offsetAngleVision);
 		targetHeading = navx.getAngle() + offsetAngleVision;
-		SmartDashboard.putNumber("AutoPopulate/TargetHeading", targetHeading);
 	}
 
 	/**
@@ -232,9 +230,7 @@ public class DrivetrainSubsystem {
 	 */
 	public void storeTargetHeadingHatch() {
 		double offsetAngleVision = visionSubsystem.getAngleZToTarget(VisionSubsystem.HATCH_GOAL_HEIGHT_FROM_GROUND);
-		SmartDashboard.putNumber("AutoPopulate/OffsetAngle", offsetAngleVision);
 		targetHeading = navx.getAngle() + offsetAngleVision;
-		SmartDashboard.putNumber("AutoPopulate/TargetHeading", targetHeading);
 	}
 
 	/**
@@ -246,8 +242,6 @@ public class DrivetrainSubsystem {
 	 */
 	public void driveWithSimpleVision(double xSpeed) {
 		double zRotation = -pidController.pid(navx.getAngle(), targetHeading);
-		SmartDashboard.putNumber("AutoPopulate/PIDOutput", zRotation);
-		SmartDashboard.putNumber("AutoPopulate/AngleOffset", navx.getAngle() - targetHeading);
 		blendedDrive(xSpeed, -zRotation);
 	}
 

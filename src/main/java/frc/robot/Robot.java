@@ -128,23 +128,6 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumberArray("Values/PathXCoords", xcoordinates);
 		SmartDashboard.putNumberArray("Values/PathYCoords", ycoordinates);
 		autonPath = Bezier.getSamplePath();
-
-		// new Thread(() -> {
-		// 	UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-		// 	camera.setResolution(320, 240);
-
-		// 	CvSink cvSink = CameraServer.getInstance().getVideo();
-		// 	CvSource outputStream = CameraServer.getInstance().putVideo("FlippedCamera", 320, 240);
-
-		// 	Mat source = new Mat();
-		// 	Mat output = new Mat();
-
-		// 	while(!Thread.interrupted()) {
-		// 		cvSink.grabFrame(source);
-		// 		Core.rotate(source, output, Core.ROTATE_180);
-		// 		outputStream.putFrame(output);
-		// 	}
-		// }).start();
 	}
 
 	@Override
@@ -167,16 +150,11 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {
 		// hasAutoEnded = false;
 		drivetrainSubsystem.resetTracking();
-		autonPath = visionSubsystem.genPathToTargetHatch(30);
-		Vector[] path = Bezier.getSamplePath();
-		double[] xcoordinates = new double[path.length];
-		double[] ycoordinates = new double[path.length];
-		for(int i = 0; i < autonPath.length; i++) {
-			xcoordinates[i] = autonPath[i].x;
-			ycoordinates[i] = autonPath[i].y;
-		}
-		SmartDashboard.putNumberArray("Values/PathXCoords", xcoordinates);
-		SmartDashboard.putNumberArray("Values/PathYCoords", ycoordinates);
+		SmartDashboard.putString("CameraToggle/SelectedCamera", "0");
+		drivetrainSubsystem.resetTracking();
+		elevatorSubsystem.zeroEncoder();
+		hatchIntakeSubsystem.setZeroEncoder();
+		hatchIntakeSubsystem.setBackIntakeStay();
 	}
 
 	/**
@@ -194,26 +172,11 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledPeriodic() {
-		Vector[] path = visionSubsystem.genPathToTargetHatch(30);
-		double[] xcoordinates = new double[path.length];
-		double[] ycoordinates = new double[path.length];
-		for(int i = 0; i < path.length; i++) {
-			xcoordinates[i] = path[i].x;
-			ycoordinates[i] = path[i].y;
-		}
-
-		SmartDashboard.putNumberArray("Values/PathXCoords", xcoordinates);
-		SmartDashboard.putNumberArray("Values/PathYCoords", ycoordinates);
 	}
 
 	@Override
 	public void teleopInit() {
-		elevatorSubsystem.zeroEncoder();
-		//hatchIntakeSubsystem.zeroEncoder();
-		hatchIntakeSubsystem.setZeroEncoder();
-		hatchIntakeSubsystem.setBackIntakeStay();
-		drivetrainSubsystem.resetTracking();
-
+		SmartDashboard.putString("CameraToggle/SelectedCamera", "0");
 		stayingAutomatic = false;
 	}
 
@@ -260,43 +223,10 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Values/RightSideEncoder", drivetrainSubsystem.getRightSideDistanceDriven());
 
 		// Driving
-
-		// Simple Vision
-		// if(rightJoystick.getRawButtonPressed(2)) {
-		// 	drivetrainSubsystem.storeTargetHeadingCargo();
-		// } else if(leftJoystick.getRawButtonPressed(3)) {
-		// 	drivetrainSubsystem.storeTargetHeadingHatch();
-		// }
-		// if((rightJoystick.getRawButton(2) || leftJoystick.getRawButton(3)) && visionSubsystem.doesValidTargetExist()) {
-			// 	drivetrainSubsystem.driveWithSimpleVision(-leftJoystick.getY());
-			// } else {
-				// drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
-				// }
-
+		drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
 		if(leftJoystick.getRawButtonPressed(3)) {
-			drivetrainSubsystem.resetTracking();
-			drivetrainSubsystem.storeTargetZRotationHatch();
-			path = visionSubsystem.genPathToTargetHatch(30);
-			targetLocation = visionSubsystem.getTargetPositionRobotSpace(VisionSubsystem.HATCH_GOAL_HEIGHT_FROM_GROUND);
-		} else if(rightJoystick.getRawButtonPressed(3)) {
-			drivetrainSubsystem.resetTracking();
-			drivetrainSubsystem.storeTargetZRotationCargo();
-			path = visionSubsystem.genPathToTargetCargo(30);
-			targetLocation = visionSubsystem.getTargetPositionRobotSpace(VisionSubsystem.CARGO_GOAL_HEIGHT_FROM_GROUND);
-		}
-		if(rightJoystick.getRawButton(3) || leftJoystick.getRawButton(3)) {
-			drivetrainSubsystem.purePursuit(path, targetLocation, leftJoystick.getY());
-		} else {
-			drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
-			Vector[] visionPath = visionSubsystem.genPathToTargetCargo(30);
-			double[] xcoordinates = new double[visionPath.length];
-			double[] ycoordinates = new double[visionPath.length];
-			for(int i = 0; i < visionPath.length; i++) {
-				xcoordinates[i] = visionPath[i].x;
-				ycoordinates[i] = visionPath[i].y;
-			}
-			SmartDashboard.putNumberArray("Values/PathXCoords", xcoordinates);
-			SmartDashboard.putNumberArray("Values/PathYCoords", ycoordinates);
+			String value = SmartDashboard.getString("CameraToggle/SelectedCamera", "0").equals("0") ? "1" : "0";
+			SmartDashboard.putString("CameraToggle/SelectedCamera", value);
 		}
 
 		// Front Hatch Intake
@@ -408,8 +338,12 @@ public class Robot extends TimedRobot {
 		if(elevatorSpeed > 0.05) {
 			cargoIntakeSubsystem.spinRollerbarForElevator();
 		}
+		// Elevator zero
+		if(gamepad.getPOV() == POV_DOWN) {
+			elevatorSubsystem.zeroEncoder();
+		}
 
-		//climb stuff 
+		// Climb stuff 
 		if(leftJoystick.getRawButtonPressed(6)) {
 			drivetrainSubsystem.toggleClimberFront();
 		}

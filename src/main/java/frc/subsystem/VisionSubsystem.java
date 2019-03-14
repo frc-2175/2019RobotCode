@@ -238,7 +238,7 @@ public class VisionSubsystem {
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionX", targetLocation.x);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionY", targetLocation.y);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetRotation", targetZRotation);
-		bezier = new Bezier(targetLocation.x + (32 * Math.sin(Math.toRadians(targetZRotation * CARGO_TARGET_ANGLE_MULT))), targetLocation.y - (32 * Math.cos(Math.toRadians(targetZRotation * CARGO_TARGET_ANGLE_MULT))), PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation * CARGO_TARGET_ANGLE_MULT);
+		bezier = new Bezier(targetLocation.x + (26 * Math.sin(Math.toRadians(targetZRotation * CARGO_TARGET_ANGLE_MULT))), targetLocation.y - (32 * Math.cos(Math.toRadians(targetZRotation * CARGO_TARGET_ANGLE_MULT))), PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation * CARGO_TARGET_ANGLE_MULT);
 		return bezier.generateBezier(resolution);
 	}
 
@@ -249,7 +249,7 @@ public class VisionSubsystem {
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionX", targetLocation.x);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetPositionY", targetLocation.y);
 		SmartDashboard.putNumber("VisionOtherStuff/TargetRotation", targetZRotation);
-		bezier = new Bezier(targetLocation.x + (32 * Math.sin(Math.toRadians(targetZRotation * HATCH_TARGET_ANGLE_MULT))), targetLocation.y - (32 * Math.cos(Math.toRadians(targetZRotation * HATCH_TARGET_ANGLE_MULT))), PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation * HATCH_TARGET_ANGLE_MULT);
+		bezier = new Bezier(targetLocation.x + (40 * Math.sin(Math.toRadians(targetZRotation * HATCH_TARGET_ANGLE_MULT))), targetLocation.y - (40 * Math.cos(Math.toRadians(targetZRotation * HATCH_TARGET_ANGLE_MULT))), PATH_STRENGTH, 2 * PATH_STRENGTH, targetZRotation * HATCH_TARGET_ANGLE_MULT);
 		return bezier.generateBezier(resolution);
 	}
 }
