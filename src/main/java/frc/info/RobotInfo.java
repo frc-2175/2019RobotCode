@@ -54,7 +54,8 @@ public class RobotInfo {
      * @see frc.info.RobotInfo#put(String, Object)
      * */
     public void populate() {
-		put(CARGO_ROLLER_BAR_MOTOR, victor(new WPI_VictorSPX(4), true));
+		// On practice, this should be inverted
+		put(CARGO_ROLLER_BAR_MOTOR, victor(new WPI_VictorSPX(4), false), victor(new WPI_VictorSPX(4), true));
 		put(CARGO_BOX_MOTOR, victor(new WPI_VictorSPX(6)));
 		put(LEFT_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(5)));
 		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(9)));
@@ -65,10 +66,10 @@ public class RobotInfo {
 		put(ELEVATOR_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(2)));
 		put(ELEVATOR_MOTOR_MASTER, talon(new WPI_TalonSRX(10)));
 		put(SWAN, victor(new WPI_VictorSPX(7)));
-		put(CARGO_SOLENOID, () -> new SolenoidWrapper(3, 4), () -> new SolenoidWrapper(3, 4));
-		put(HATCH_ACTUATOR_SOLENOID, () -> new SolenoidWrapper(5), () -> new SolenoidWrapper(5));
+		put(CARGO_SOLENOID, () -> new SolenoidWrapper(2, 3), () -> new SolenoidWrapper(3, 4));
+		put(HATCH_ACTUATOR_SOLENOID, () -> new SolenoidWrapper(4), () -> new SolenoidWrapper(5));
 		put(CLIMBER_FRONT_SOLENOID, () -> new SolenoidWrapper(6, 7), () -> new SolenoidWrapper(6, 7));
-		put(CLIMBER_BACK_SOLENOID, () -> new SolenoidWrapper(1, 2), () -> new SolenoidWrapper(1, 2));
+		put(CLIMBER_BACK_SOLENOID, () -> new SolenoidWrapper(5), () -> new SolenoidWrapper(1, 2));
 	}
 
 	private MotorWrapper talon(WPI_TalonSRX talon) {

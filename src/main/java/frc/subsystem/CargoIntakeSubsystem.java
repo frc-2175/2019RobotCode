@@ -33,6 +33,14 @@ public class CargoIntakeSubsystem {
         boxMotor.set(smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_INTAKE_ROLL_OUT_BOX_MOTOR_SPEED));
     }
 
+    public void rollJustRollerBarOut() {
+        rollerBarMotor.set(smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_INTAKE_ROLL_OUT_ROLLERBAR_SPEED));
+    }
+
+    public void rollJustRollerBarOutSlow() {
+        rollerBarMotor.set(-0.5);
+    }
+
     public void solenoidOut() { // push out the solenoid, cargo roller out, Y
         rollerBarSolenoid.set(true);
     }

@@ -62,13 +62,14 @@ public class HatchIntakeSubsystem {
 
 	public void stopSpinning() { // stops both front and back rolling
 		groundRollerBallMotor.set(0);
+		// frontIntakeWheel.set(0); so it will keep spinning
 		frontIntakeWheel.set(0);
 	}
 	public void setBackIntakeUp() {
-		setpoint = -49;
+		setpoint = -50.2;
 	}
 	public void setBackIntakeDown() {
-		setpoint = -139;
+		setpoint = -140.2;
 	}
 	public void setBackIntakeInsideFrame() {
 		setpoint = 0;

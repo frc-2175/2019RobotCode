@@ -12,56 +12,18 @@
         "tiles": {
           "3,0": {
             "size": [
-              3,
-              2
+              5,
+              4
             ],
             "content": {
               "_type": "Camera Stream",
-              "_source0": "camera_server://SwitchingCamera",
-              "_title": "SwitchingCamera",
+              "_source0": "camera_server://Front",
+              "_title": "Front",
               "Crosshair/Show crosshair": true,
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": 0.0,
-              "fps": -1,
-              "imageWidth": -1,
-              "imageHeight": -1
-            }
-          },
-          "6,0": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://BackFisheye",
-              "_title": "BackFisheye",
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": true,
-              "Controls/Rotation": "NONE",
-              "compression": 0.0,
-              "fps": -1,
-              "imageWidth": -1,
-              "imageHeight": -1
-            }
-          },
-          "3,2": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://FrontFisheye",
-              "_title": "FrontFisheye",
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": true,
-              "Controls/Rotation": "HALF",
-              "compression": 0.0,
+              "compression": 12.0,
               "fps": -1,
               "imageWidth": -1,
               "imageHeight": -1
@@ -89,8 +51,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Values/PositionX",
               "_title": "SmartDashboard/Values/PositionX",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/Values/PositionX": true
+              "Graph/Visible time": 30.0
             }
           },
           "6,0": {
@@ -102,8 +63,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Values/PositionY",
               "_title": "SmartDashboard/Values/PositionY",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/Values/PositionY": true
+              "Graph/Visible time": 30.0
             }
           },
           "8,0": {
@@ -115,8 +75,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/AutoPopulate/Gyro",
               "_title": "SmartDashboard/AutoPopulate/Gyro",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/AutoPopulate/Gyro": true
+              "Graph/Visible time": 30.0
             }
           },
           "4,2": {
@@ -128,8 +87,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/AutoPopulate/HatchDegrees",
               "_title": "SmartDashboard/AutoPopulate/HatchDegrees",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/AutoPopulate/HatchDegrees": true
+              "Graph/Visible time": 30.0
             }
           },
           "6,2": {
@@ -141,8 +99,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/PurePursuitLogging/Speed",
               "_title": "SmartDashboard/PurePursuitLogging/Speed",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/PurePursuitLogging/Speed": true
+              "Graph/Visible time": 30.0
             }
           },
           "8,2": {
@@ -154,8 +111,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/PurePursuitLogging/ZRotation",
               "_title": "SmartDashboard/PurePursuitLogging/ZRotation",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/PurePursuitLogging/ZRotation": true
+              "Graph/Visible time": 30.0
             }
           },
           "2,0": {
@@ -167,8 +123,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/PurePursuitLogging/OffsetAngle",
               "_title": "SmartDashboard/PurePursuitLogging/OffsetAngle",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/PurePursuitLogging/OffsetAngle": true
+              "Graph/Visible time": 30.0
             }
           },
           "2,2": {
@@ -180,8 +135,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/PurePursuitLogging/PercentTravelled",
               "_title": "SmartDashboard/PurePursuitLogging/PercentTravelled",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/PurePursuitLogging/PercentTravelled": true
+              "Graph/Visible time": 30.0
             }
           }
         }

@@ -127,6 +127,11 @@ public class Robot extends TimedRobot {
 
 		SmartDashboard.putNumberArray("Values/PathXCoords", xcoordinates);
 		SmartDashboard.putNumberArray("Values/PathYCoords", ycoordinates);
+		if(SmartDashboard.putString("CameraToggle/CameraSelected", "1")) {
+			System.out.println("Worked");
+		} else {
+			System.out.println("Didn't Work");
+		}
 		autonPath = Bezier.getSamplePath();
 	}
 
@@ -151,7 +156,7 @@ public class Robot extends TimedRobot {
 		// hasAutoEnded = false;
 		stayingAutomatic = false;
 		drivetrainSubsystem.resetTracking();
-		SmartDashboard.putString("CameraToggle/SelectedCamera", "0");
+		SmartDashboard.putString("CameraToggle/CameraSelected", "0");
 		drivetrainSubsystem.resetTracking();
 		elevatorSubsystem.zeroEncoder();
 		hatchIntakeSubsystem.setZeroEncoder();
@@ -177,7 +182,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		SmartDashboard.putString("CameraToggle/SelectedCamera", "0");
+		SmartDashboard.putString("CameraToggle/CameraSelected", "0");
 	}
 
 	/**
@@ -225,8 +230,8 @@ public class Robot extends TimedRobot {
 		// Driving
 		drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
 		if(leftJoystick.getRawButtonPressed(3)) {
-			String value = SmartDashboard.getString("CameraToggle/SelectedCamera", "0").equals("0") ? "1" : "0";
-			SmartDashboard.putString("CameraToggle/SelectedCamera", value);
+			String value = SmartDashboard.getString("CameraToggle/CameraSelected", "0").equals("0") ? "1" : "0";
+			SmartDashboard.putString("CameraToggle/CameraSelected", value);
 		}
 
 		// Front Hatch Intake
@@ -329,7 +334,7 @@ public class Robot extends TimedRobot {
 			}
 		}
 		double elevatorSpeed = deadband(-gamepad.getRawAxis(1), 0.05) >= 0 ?
-			deadband(-gamepad.getRawAxis(1), 0.05) * 0.8 : deadband(-gamepad.getRawAxis(1), 0.05) * 0.5;
+			deadband(-gamepad.getRawAxis(1), 0.05) * 0.8 : deadband(-gamepad.getRawAxis(1), 0.05) * 0.4;
 		if(isManual) {
 			elevatorSubsystem.manualMove(elevatorSpeed);
 		} else {
