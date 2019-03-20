@@ -75,6 +75,7 @@ public class Robot extends TimedRobot {
 	public static final int POV_LEFT = 270;
 	public static final int POV_UP_LEFT = 315;
 	public static final double extraSpace = 5.0;
+	public static boolean isGoingCargoShip = false;
 
 	private boolean hasAutoEnded;
 	private boolean isPreviousManual;
@@ -346,24 +347,16 @@ public class Robot extends TimedRobot {
 		}
 
 		if(gamepad.getPOV() == POV_UP) { //if u press up
+			isGoingCargoShip = true; //it's going to the cargo ship now!!!!
 			elevatorSubsystem.setIsManual(false); //no longer manual
 			elevatorSubsystem.CargoPlaceElevatorShip(); //set setpoint
 		}
-		if((Math.abs(gamepad.getRawAxis(1))) > NUMBER ) { //if u press the stick
-				elevatorSubsystem.setIsManual(true); //make it manual also
+		if((Math.abs(gamepad.getRawAxis(1))) > 0.05 ) { //if u press the stick
+			if(isGoingCargoShip == true) { //and it was going to the place
+				elevatorSubsystem.setIsManual(true); //make it manual
+				isGoingCargoShip = false;
+			}
 		}
-
-
-
-
-
-
-
-
-
-
-
-
 
 		// Elevator zero
 		if(gamepad.getPOV() == POV_DOWN) {
