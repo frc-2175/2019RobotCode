@@ -43,10 +43,10 @@ public class PIDController {
 		double p = error * kp;
 		double i = 0;
 		if(shouldRunIntegral) {
-            if(((input < threshold + setpoint) && (input > setpoint - threshold)) || (threshold == 0)) {
+            if(((input < threshold + setpoint) && (input > setpoint - threshold)) || (threshold == 0)) { // TODO(low): This condition could probably be reversed for clarity.
                 integral += dt * error;
             } else {
-                integral = 0; 
+                integral = 0;
             }
             i = integral * ki;
 		} else {

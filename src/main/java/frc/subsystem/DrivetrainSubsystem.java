@@ -31,20 +31,20 @@ public class DrivetrainSubsystem {
 		rightVirtualSpeedController);
 	private final SolenoidWrapper climberFrontSolenoid;
 	private final SolenoidWrapper climberBackSolenoid;
-	private PIDController pidController;
+	private PIDController pidController; // TODO(medium): This should probably be renamed to something more descriptive.
 	private PIDController purePursuitPID;
-	private PIDController endTerm;
-	private VisionSubsystem visionSubsystem;
+	private PIDController endTerm; // TODO(medium): This as well.
+	private VisionSubsystem visionSubsystem; // TODO(medium): This (and possibly the PID controllers) should be marked as final so we can never forget to initialize it.
 	public double targetHeading;
-	public AHRS navx;
-	public Vector fieldPosition;
-	public static final double TICKS_TO_INCHES = 0.0045933578;
-	double lastEncoderDistanceLeft;
+	public AHRS navx; // TODO(medium): This should be final.
+	public Vector fieldPosition; // TODO(medium): If possible, this and other variables in this class could be initialized up here instead of in the constructor for clarity. I recommend using the constructor only for initialization logic that can't be done inline.
+	public static final double TICKS_TO_INCHES = 0.0045933578; // TODO(low): Constants should move to the top of the class.
+	double lastEncoderDistanceLeft; // TODO(low): Might as well make these private for consistency.
 	double lastEncoderDistanceRight;
 	private double zeroEncoderLeft;
 	private double zeroEncoderRight;
-	public static final double INPUT_THRESHOLD = 0.1;
-	private double targetZRotation = 0;
+	public static final double INPUT_THRESHOLD = 0.1; // TODO(low): Constants should move to the top of the class.
+	private double targetZRotation = 0; // TODO(low): It appears this is unused, so it should probably be deleted.
 
 	public DrivetrainSubsystem() {
 		ServiceLocator.register(this);
@@ -65,7 +65,7 @@ public class DrivetrainSubsystem {
 
 		robotDrive = new DifferentialDrive(leftMaster.getMotor(), rightMaster.getMotor());
 
-		leftVirtualSpeedController = new VirtualSpeedController();
+		leftVirtualSpeedController = new VirtualSpeedController(); // TODO(low): There is no need to set these here since they are also initialized above.
 		rightVirtualSpeedController = new VirtualSpeedController();
 		virtualRobotDrive = new DifferentialDrive(leftVirtualSpeedController, rightVirtualSpeedController);
 
@@ -78,7 +78,7 @@ public class DrivetrainSubsystem {
 		double kd = smartDashboardInfo.getNumber(SmartDashboardInfo.VISION_PID_D);
 		pidController = new PIDController(kp, ki, kd);
 		SmartDashboard.putNumber("PurePursuit/KP", 0.015); // 0.025
-		SmartDashboard.putNumber("PurePursuit/KI", 0);
+		SmartDashboard.putNumber("PurePursuit/KI", 0); // TODO(medium): This seems questionable. Why are you setting it on SmartDashboard and then immediately getting it? You should probably hardcode the values and then just put them on the dashboard.
 		SmartDashboard.putNumber("PurePursuit/KD", 0);
 		double p_KP = SmartDashboard.getNumber("PurePursuit/KP", 0);
 		double p_KI = SmartDashboard.getNumber("PurePursuit/KI", 0);
@@ -102,6 +102,7 @@ public class DrivetrainSubsystem {
 		SmartDashboard.putNumber("PurePursuit/LookAhead", 12.0);
 		SmartDashboard.putNumber("PurePursuit/TransitionLength", 0.4);
 
+		// TODO(medium): Can these comments be deleted?
 		// leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		// rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		// leftMaster.setSelectedSensorPosition(0, 0, 0);
@@ -156,6 +157,8 @@ public class DrivetrainSubsystem {
 	public void blendedDrive(double xSpeed, double zRotation) {
 		blendedDrive(xSpeed, zRotation, INPUT_THRESHOLD);
 	}
+
+	// TODO(medium): We should move clamp and lerp to a MathUtils class or something. There are now three different subsystems that each have their own definition of clamp, and Robot has its own definition of deadband.
 
 	/**
 	 * Clamps a double value based on a minimum and a maximum
@@ -213,6 +216,8 @@ public class DrivetrainSubsystem {
 		robotDrive.tankDrive(leftSpeed, rightSpeed);
 	}
 
+	// TODO(low): These methods should be consolidated into one.
+
 	/**
 	 * Stores the gyro heading of the cargo vision target for use in vision steering
 	 *
@@ -241,7 +246,7 @@ public class DrivetrainSubsystem {
 	 * @see #blendedDrive(double, double)
 	 */
 	public void driveWithSimpleVision(double xSpeed) {
-		double zRotation = -pidController.pid(navx.getAngle(), targetHeading);
+		double zRotation = -pidController.pid(navx.getAngle(), targetHeading); // TODO(low): There is apparently no need to negate this because you negate zRotation immediately below.
 		blendedDrive(xSpeed, -zRotation);
 	}
 
@@ -272,6 +277,7 @@ public class DrivetrainSubsystem {
 			// Transform goal point into robot coordinates
 			Vector goalPoint = path[indexOfGoalPoint].subtract(fieldPosition).rotate(navx.getAngle());
 			// Set steering
+			// TODO(low): This is probably worthy of turning into its own function and writing some tests for it.
 			double offsetAngle = Math.toDegrees(Math.atan(Math.abs(goalPoint.x / goalPoint.y)));
 			if(goalPoint.x >= 0 && goalPoint.y < 0) {
 				offsetAngle += 90;
@@ -284,7 +290,7 @@ public class DrivetrainSubsystem {
 				}
 			}
 			SmartDashboard.putNumber("PurePursuitLogging/OffsetAngle", offsetAngle);
-			double zRotation = purePursuitPID.pid(-offsetAngle, 0);
+			double zRotation = purePursuitPID.pid(-offsetAngle, 0); // TODO(low): Rather than negating the input variable, you should probably negate the P, I, and D constants.
 			SmartDashboard.putNumber("PurePursuitLogging/ZRotation", zRotation);
 
 			SmartDashboard.putNumber("PurePursuitLogging/PercentTravelled", percentOfPathTravelled);
@@ -299,7 +305,7 @@ public class DrivetrainSubsystem {
 		} else {
 			double dx = targetLocation.x - fieldPosition.x;
 			double dy = targetLocation.y - fieldPosition.y;
-			double targetRotation = Math.toDegrees(Math.atan(dx / dy));
+			double targetRotation = Math.toDegrees(Math.atan(dx / dy)); // TODO(medium): Unlikely as it may be, we are not protected against a divide-by-zero here.
 			SmartDashboard.putNumber("PurePursuitLogging/TargetRotation", targetRotation);
 			double zRotation;
 			if(Math.abs(targetRotation - navx.getAngle()) < 1) {
@@ -307,12 +313,12 @@ public class DrivetrainSubsystem {
 			} else {
 				zRotation = endTerm.pid(navx.getAngle(), targetRotation, 15); //targetZRotation
 				SmartDashboard.putNumber("PurePursuitLogging/ZRotation", zRotation);
-				double constantStallOvercome = 0.3 * -Math.signum(targetRotation - navx.getAngle());
+				double constantStallOvercome = 0.3 * -Math.signum(targetRotation - navx.getAngle()); // TODO(low): It would probably be clearer to put the negative sign on the 0.3.
 				zRotation += constantStallOvercome;
 			}
 			arcadeDrive(moveValue, zRotation);
 			endTerm.updateTime(Timer.getFPGATimestamp());
-			trackLocation();
+			trackLocation(); // TODO(low): The trackLocation could be moved outside the if statement.
 		}
 	}
 

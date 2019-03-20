@@ -84,6 +84,8 @@ public class ElevatorSubsystem {
 		}
 	}
 
+	// TODO(medium): Are these methods used anywhere? Can they be removed?
+
     public void CargoPlaceElevatorTop() {
         setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_TOP_SETPOINT);
     }
@@ -120,7 +122,7 @@ public class ElevatorSubsystem {
 	}
 
 	public double getElevatorPosition() {
-		return 3 * -elevatorMotor.getSelectedSensorPosition(0) * 1.273 * Math.PI / 4096;
+		return 3 * -elevatorMotor.getSelectedSensorPosition(0) * 1.273 * Math.PI / 4096; // TODO(low): This looks like some dark magic. We should leave a comment labeling the units.
 	}
 
 	public void zeroEncoder() {
@@ -131,12 +133,11 @@ public class ElevatorSubsystem {
 		return isManual;
 	}
 
+	// TODO(low): Another copy of clamp. See comment in DrivetrainSubsystem.
+
 	public static double clamp(double val, double min, double max) {
 		return val >= min && val <= max ? val : (val < min ? min : max);
 	}
-
-	/* problem = flicking up twice to the top preset, they have to wait until the eleavtor gets into threshold of medium preset
-	before going to the top preset */
 
 	public double getElevatorPreset(double[] setpoints, boolean isUp) {
 		double elevatorPosition = getElevatorPosition();
@@ -160,7 +161,7 @@ public class ElevatorSubsystem {
 
 	public void nextElevatorPreset(double[] setpoints, boolean isUp) {
 		double currentSetpoint = setpoint;
-		if(isUp) { 
+		if(isUp) {
 			for(int x = 0; x < setpoints.length ; x++) {
 				if(currentSetpoint < setpoints[x]) {
 					setpoint = setpoints[x];
@@ -174,7 +175,7 @@ public class ElevatorSubsystem {
 					break;
 				}
 			}
-			
+
 		}
 	}
 

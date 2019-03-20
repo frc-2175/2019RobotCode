@@ -78,7 +78,7 @@ public class RobotInfo {
 	private MotorWrapper victor(WPI_VictorSPX victor) {
 		return new MotorWrapper(victor);
 	}
-	
+
 	private MotorWrapper talon(WPI_TalonSRX talon, boolean inverted) {
 		return new MotorWrapper(talon, inverted);
 	}
@@ -121,6 +121,8 @@ public class RobotInfo {
 		Object choice = isComp ? comp.get() : practice.get();
 		info.put(key, choice);
 	}
+
+	// TODO(low): Should there be a version of put that take just a single ValueContainer? Technically you could always just use the version that takes a single object, but it might be nice to have consistency.
 
     /**
      * Gets an object from the hash map
