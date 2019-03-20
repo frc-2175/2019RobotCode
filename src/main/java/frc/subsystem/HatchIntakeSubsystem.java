@@ -12,8 +12,8 @@ import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
 
 public class HatchIntakeSubsystem {
-	private MotorWrapper frontIntakeWheel;
-	private MotorWrapper groundRollerBallMotor;
+	private MotorWrapper frontIntakeWheel; // TODO(medium): As many of these as possible should be final.
+	private MotorWrapper groundRollerBallMotor; // TODO(low): What is a roller ball motor? :P
 	private MotorWrapper groundActuationMotor;
 	private SolenoidWrapper actuatorHatchSolenoid;
 	private PIDController pidController;
@@ -34,7 +34,6 @@ public class HatchIntakeSubsystem {
 		groundActuationMotor = robotInfo.get(RobotInfo.GROUND_ACTUATOR_MOTOR);
 		groundActuationMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		actuatorHatchSolenoid = robotInfo.get(RobotInfo.HATCH_ACTUATOR_SOLENOID);
-		// actuatorHatchSolenoid = robotInfo.get(RobotInfo.HATCH_ACTUATOR_SOLENOID);
 		double kp = smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_PID_P);
 		double ki = smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_PID_I);
 		double kd = smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_PID_D);

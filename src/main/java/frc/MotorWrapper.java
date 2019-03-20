@@ -43,7 +43,9 @@ public class MotorWrapper {
 		}
 	}
 
+	// TODO(low): This should probably be called setNeutralMode.
 	public void coast(boolean wantCoast) {
+		// TODO(low): If this only works on talons, it should probably make sure isTalon is true or talon is not null.
 		if (wantCoast) {
 			talon.setNeutralMode(NeutralMode.Coast);
 		} else {

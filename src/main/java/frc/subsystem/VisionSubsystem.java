@@ -55,6 +55,7 @@ public class VisionSubsystem {
 	 * @param camModeNumber number for camera mode you want (0 vision processor, 1 driver cam)
 	 */
 	public void setCamMode(int camModeNumber) {
+		// TODO(low): We should add constants for the camera modes.
 		limelightTable.getEntry("camMode").setNumber(camModeNumber);
 	}
 
@@ -62,6 +63,7 @@ public class VisionSubsystem {
 	 * @param ledModeNumber number for LED mode (0 use current LED mode, 1 force off, 2 force blink, 3 force on)
 	 */
 	public void setLedMode(int ledModeNumber) {
+		// TODO(low): We should add constants for these LED modes.
 		limelightTable.getEntry("ledMode").setNumber(ledModeNumber);
 	}
 
@@ -86,6 +88,7 @@ public class VisionSubsystem {
 	}
 
 	public Vector getTargetPositionRobotSpace(double targetHeight) {
+		//  TODO(low): This could be made more accurate by using the corners directly.
 		double horizontalOffset = getHorizontalAngleOffset();
 		double verticalOffset = getVerticalAngleOffset();
 		double distance = (targetHeight - LIMELIGHT_HEIGHT_FROM_GROUND) /
@@ -230,6 +233,8 @@ public class VisionSubsystem {
 	public Vector getTargetPosition(Vector leftCorner, Vector rightCorner) {
 		return new Vector((leftCorner.x + rightCorner.x) / 2, (leftCorner.y + rightCorner.y) / 2);
 	}
+
+	// TODO(medium): The common parts of these functions could be extracted into a single function.
 
 	public Vector[] genPathToTargetCargo(int resolution) {
 		Vector[] cornerPositions = getPositionOfCorners(CARGO_GOAL_HEIGHT_FROM_GROUND);

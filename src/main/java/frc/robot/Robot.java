@@ -101,7 +101,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		hasAutoEnded = false;
+		hasAutoEnded = false; // TODO: Should we remove this variable since we're not even doing any auto?
 
 		new RobotInfo();
 		smartDashboardInfo = new SmartDashboardInfo();
@@ -348,7 +348,7 @@ public class Robot extends TimedRobot {
 			elevatorSubsystem.zeroEncoder();
 		}
 
-		// Climb stuff 
+		// Climb stuff
 		if(leftJoystick.getRawButtonPressed(6)) {
 			drivetrainSubsystem.toggleClimberFront();
 		}
@@ -368,6 +368,8 @@ public class Robot extends TimedRobot {
 	}
 
 	// Custom Functions
+
+	// TODO(low): Should we remove this executeCommand function?
 
 	/**
 	 * Runs the execute portion of a command until it is finished. When it is
