@@ -74,6 +74,7 @@ public class Robot extends TimedRobot {
 	public static final int POV_DOWN_LEFT = 225;
 	public static final int POV_LEFT = 270;
 	public static final int POV_UP_LEFT = 315;
+	public static final double extraSpace = 5.0;
 
 	private boolean hasAutoEnded;
 	private boolean isPreviousManual;
@@ -252,7 +253,7 @@ public class Robot extends TimedRobot {
 		// Hatch Intake Floor
 
 		// Intaking
-		if (gamepad.getPOV() == POV_RIGHT) { // hat right
+		if (gamepad.getPOV() == POV_RIGHT) { // right
 			hatchIntakeSubsystem.spinInBack();
 		}
 		if (gamepad.getPOV() == POV_LEFT) { // hat left
@@ -343,12 +344,33 @@ public class Robot extends TimedRobot {
 		if(elevatorSpeed > 0.05) {
 			cargoIntakeSubsystem.spinRollerbarForElevator();
 		}
+
+		if(gamepad.getPOV() == POV_UP) { //if u press up
+			elevatorSubsystem.setIsManual(false); //no longer manual
+			elevatorSubsystem.CargoPlaceElevatorShip(); //set setpoint
+		}
+		if((Math.abs(gamepad.getRawAxis(1))) > NUMBER ) { //if u press the stick
+				elevatorSubsystem.setIsManual(true); //make it manual also
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
 		// Elevator zero
 		if(gamepad.getPOV() == POV_DOWN) {
 			elevatorSubsystem.zeroEncoder();
 		}
 
-		// Climb stuff 
+		// Climb stuff
 		if(leftJoystick.getRawButtonPressed(6)) {
 			drivetrainSubsystem.toggleClimberFront();
 		}

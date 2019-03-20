@@ -83,6 +83,9 @@ public class ElevatorSubsystem {
 			SmartDashboard.putNumber("AutoPopulate/ElevatorOutput", output);
 		}
 	}
+	public void CargoPlaceElevatorShip() {
+		setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_SHIP_SETPOINT);
+	}
 
     public void CargoPlaceElevatorTop() {
         setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_TOP_SETPOINT);
@@ -160,7 +163,7 @@ public class ElevatorSubsystem {
 
 	public void nextElevatorPreset(double[] setpoints, boolean isUp) {
 		double currentSetpoint = setpoint;
-		if(isUp) { 
+		if(isUp) {
 			for(int x = 0; x < setpoints.length ; x++) {
 				if(currentSetpoint < setpoints[x]) {
 					setpoint = setpoints[x];
@@ -174,12 +177,16 @@ public class ElevatorSubsystem {
 					break;
 				}
 			}
-			
+
 		}
 	}
 
 	public void setSetpoint(double inputPoint) {
 		setpoint = inputPoint;
+	}
+
+	public double getSetpoint() {
+		return setpoint;
 	}
 
 	public double[] getCargoSetpoints() {
