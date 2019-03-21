@@ -350,6 +350,7 @@ public class Robot extends TimedRobot {
 			isGoingCargoShip = true; //it's going to the cargo ship now!!!!
 			elevatorSubsystem.setIsManual(false); //no longer manual
 			elevatorSubsystem.CargoPlaceElevatorShip(); //set setpoint
+			hatchIntakeSubsystem.setFrontIntakeOut(); //put out swan
 		}
 		if((Math.abs(gamepad.getRawAxis(1))) > 0.05 ) { //if u press the stick
 			if(isGoingCargoShip == true) { //and it was going to the place
