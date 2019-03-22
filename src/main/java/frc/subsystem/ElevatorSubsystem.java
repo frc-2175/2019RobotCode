@@ -83,6 +83,9 @@ public class ElevatorSubsystem {
 			SmartDashboard.putNumber("AutoPopulate/ElevatorOutput", output);
 		}
 	}
+	public void CargoPlaceElevatorShip() {
+		setpoint = smartDashboardInfo.getNumber(SmartDashboardInfo.CARGO_SHIP_SETPOINT);
+	}
 
 	// TODO(medium): Are these methods used anywhere? Can they be removed?
 
@@ -181,6 +184,10 @@ public class ElevatorSubsystem {
 
 	public void setSetpoint(double inputPoint) {
 		setpoint = inputPoint;
+	}
+
+	public double getSetpoint() {
+		return setpoint;
 	}
 
 	public double[] getCargoSetpoints() {

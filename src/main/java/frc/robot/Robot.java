@@ -74,6 +74,8 @@ public class Robot extends TimedRobot {
 	public static final int POV_DOWN_LEFT = 225;
 	public static final int POV_LEFT = 270;
 	public static final int POV_UP_LEFT = 315;
+	public static final double extraSpace = 5.0;
+	public static boolean isGoingCargoShip = false;
 
 	private boolean hasAutoEnded;
 	private boolean isPreviousManual;
@@ -262,7 +264,7 @@ public class Robot extends TimedRobot {
 		// Hatch Intake Floor
 
 		// Intaking
-		if (gamepad.getPOV() == POV_RIGHT) { // hat right
+		if (gamepad.getPOV() == POV_RIGHT) { // right
 			hatchIntakeSubsystem.spinInBack();
 		}
 		if (gamepad.getPOV() == POV_LEFT) { // hat left
@@ -323,7 +325,9 @@ public class Robot extends TimedRobot {
 		}
 
 		// Elevator
-		boolean isManual = !(gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B));
+
+		boolean isManual = !(gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B) || isGoingCargoShip); //if you are pressing X or B then it's not manual
+
 		elevatorSubsystem.setIsManual(isManual);
 		if (!isManual && isPreviousManual) {
 			elevatorSubsystem.setSetpoint(elevatorSubsystem.getElevatorPosition());
@@ -353,6 +357,20 @@ public class Robot extends TimedRobot {
 		if(elevatorSpeed > 0.05) {
 			cargoIntakeSubsystem.spinRollerbarForElevator();
 		}
+
+		if(gamepad.getPOV() == POV_UP) { //if u press up
+			isGoingCargoShip = true; //it's going to the cargo ship now!!!!
+			elevatorSubsystem.setIsManual(false); //no longer manual
+			elevatorSubsystem.CargoPlaceElevatorShip(); //set setpoint
+			hatchIntakeSubsystem.setFrontIntakeOut(); //put out swan
+		}
+		if((Math.abs(gamepad.getRawAxis(1))) > 0.05 ) { //if u press the stick
+			if(isGoingCargoShip == true) { //and it was going to the place
+				elevatorSubsystem.setIsManual(true); //make it manual
+				isGoingCargoShip = false;
+			}
+		}
+
 		// Elevator zero
 		if(gamepad.getPOV() == POV_DOWN) {
 			elevatorSubsystem.zeroEncoder();

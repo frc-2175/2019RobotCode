@@ -97,6 +97,10 @@ public class HatchIntakeSubsystem {
 		actuatorHatchSolenoid.set(!actuatorHatchSolenoid.get());
 	}
 
+	public void setFrontIntakeOut() {
+		actuatorHatchSolenoid.set(true);
+	}
+
 	public double getGroundIntakeDegrees() {
 		return ((((groundActuationMotor.getSelectedSensorPosition(0) - zeroEncoder) * 360.0) / 4096.0) / 200.0);
 	}
