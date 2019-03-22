@@ -228,7 +228,17 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Values/RightSideEncoder", drivetrainSubsystem.getRightSideDistanceDriven());
 
 		// Driving
-		drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
+
+		if(rightJoystick.getRawButtonPressed(3)) {
+			drivetrainSubsystem.storeTargetHeading();
+		}
+		if(rightJoystick.getRawButton(3)) {
+			drivetrainSubsystem.steerTowardVisionTarget(-leftJoystick.getY());
+		} else {
+			drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
+		}
+
+
 		if(leftJoystick.getRawButtonPressed(3)) {
 			String value = SmartDashboard.getString("CameraToggle/CameraSelected", "0").equals("0") ? "1" : "0";
 			SmartDashboard.putString("CameraToggle/CameraSelected", value);

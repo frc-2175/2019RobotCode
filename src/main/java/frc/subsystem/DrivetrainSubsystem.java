@@ -34,6 +34,7 @@ public class DrivetrainSubsystem {
 	private PIDController pidController; // TODO(medium): This should probably be renamed to something more descriptive.
 	private PIDController purePursuitPID;
 	private PIDController endTerm; // TODO(medium): This as well.
+	private PIDController simpleAimPID;
 	private VisionSubsystem visionSubsystem; // TODO(medium): This (and possibly the PID controllers) should be marked as final so we can never forget to initialize it.
 	public double targetHeading;
 	public AHRS navx; // TODO(medium): This should be final.
@@ -96,6 +97,8 @@ public class DrivetrainSubsystem {
     	lastEncoderDistanceRight = 0;
 		zeroEncoderLeft = 0;
 		zeroEncoderRight = 0;
+
+		simpleAimPID = new PIDController(1.0 / 30.0, 0, 0);
 
 		SmartDashboard.putNumber("PurePursuit/MinSpeed", 0.4);
 		SmartDashboard.putNumber("PurePursuit/MaxSpeed", 0.7);
@@ -295,7 +298,7 @@ public class DrivetrainSubsystem {
 
 			SmartDashboard.putNumber("PurePursuitLogging/PercentTravelled", percentOfPathTravelled);
 			double speed = trapezoidAcceleration(percentOfPathTravelled, SmartDashboard.getNumber("PurePursuit/MaxSpeed", 0.9),
-				SmartDashboard.getNumber("PurePursuit/MinSpeed", 0.3), SmartDashboard.getNumber("PurePursuit/TransitionLength", 0.25));
+			SmartDashboard.getNumber("PurePursuit/MinSpeed", 0.3), SmartDashboard.getNumber("PurePursuit/TransitionLength", 0.25));
 			SmartDashboard.putNumber("PurePursuitLogging/Speed", speed);
 
 			blendedDrive(speed, zRotation, SmartDashboard.getNumber("PurePursuit/MaxSpeed", 0.6));
@@ -389,9 +392,22 @@ public class DrivetrainSubsystem {
 		targetZRotation = -visionSubsystem.getTargetZRotation(VisionSubsystem.HATCH_GOAL_HEIGHT_FROM_GROUND);
 	}
 
+	public void storeTargetHeading() {
+		double offsetAngleVision = visionSubsystem.getHorizontalAngleOffset();
+		targetHeading = navx.getAngle() + offsetAngleVision;
+		SmartDashboard.putNumber("SimpleAim/TargetHeading", targetHeading);
+		SmartDashboard.putNumber("SimpleAim/OffsetAngle", offsetAngleVision);
+	}
+
+	public void steerTowardVisionTarget(double moveValue) {
+		double steering = simpleAimPID.pid(navx.getAngle(), targetHeading);
+		blendedDrive(moveValue, steering);
+	}
+
 	public void teleopPeriodic() {
 		pidController.updateTime(Timer.getFPGATimestamp());
 		purePursuitPID.updateTime(Timer.getFPGATimestamp());
+		simpleAimPID.updateTime(Timer.getFPGATimestamp());
 		SmartDashboard.putNumber("AutoPopulate/Gyro", navx.getAngle());
 		SmartDashboard.putNumber("Values/LeftRawEncoder", leftMaster.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("Values/RightRawEncoder", rightMaster.getSelectedSensorPosition(0));
