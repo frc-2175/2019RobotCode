@@ -48,11 +48,12 @@ public class SmartDashboardInfo {
     public void populate() {
 		putNumber(CARGO_BOTTOM_SETPOINT, 16, 16);
 		putNumber(CARGO_MIDDLE_SETPOINT, 44, 44);
-		putNumber(CARGO_SHIP_SETPOINT, 44, 44);
+		putNumber(CARGO_SHIP_SETPOINT, 31, 31);
 		putNumber(CARGO_TOP_SETPOINT, 72, 72);
 		putNumber(HATCH_BOTTOM_SETPOINT, 1, 1);
-		putNumber(HATCH_MIDDLE_SETPOINT, 28, 28);
-		putNumber(HATCH_TOP_SETPOINT, 56, 56);
+		putNumber(HATCH_MIDDLE_SETPOINT, 30, 30);
+		// originally middle = 28, top = 56
+		putNumber(HATCH_TOP_SETPOINT, 58, 58);
 		putNumber(CARGO_INTAKE_ROLL_IN_ROLLERBAR_SPEED, 0.65, 0.65);
 		putNumber(CARGO_INTAKE_ROLL_IN_BOX_MOTOR_SPEED, .5, .5);
 		putNumber(CARGO_INTAKE_ROLL_OUT_ROLLERBAR_SPEED, -1, -1);

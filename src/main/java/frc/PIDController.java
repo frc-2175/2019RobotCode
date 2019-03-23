@@ -1,7 +1,8 @@
 package frc;
 
 public class PIDController {
-	double kp, ki, kd, integral, previousError, previousTime, dt;
+    public double kp, ki, kd;
+	double integral, previousError, previousTime, dt;
 	boolean shouldRunIntegral = false;
 
     /**

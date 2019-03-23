@@ -98,7 +98,7 @@ public class DrivetrainSubsystem {
 		zeroEncoderLeft = 0;
 		zeroEncoderRight = 0;
 
-		simpleAimPID = new PIDController(1.0 / 30.0, 0, 0);
+		simpleAimPID = new PIDController(1.0 / 28.0, 0, 0.005);
 
 		SmartDashboard.putNumber("PurePursuit/MinSpeed", 0.4);
 		SmartDashboard.putNumber("PurePursuit/MaxSpeed", 0.7);
@@ -394,13 +394,19 @@ public class DrivetrainSubsystem {
 
 	public void storeTargetHeading() {
 		double offsetAngleVision = visionSubsystem.getHorizontalAngleOffset();
-		targetHeading = navx.getAngle() + offsetAngleVision;
+		targetHeading = navx.getAngle() + offsetAngleVision + 2.3;
 		SmartDashboard.putNumber("SimpleAim/TargetHeading", targetHeading);
 		SmartDashboard.putNumber("SimpleAim/OffsetAngle", offsetAngleVision);
 	}
 
 	public void steerTowardVisionTarget(double moveValue) {
-		double steering = simpleAimPID.pid(navx.getAngle(), targetHeading);
+		double constant = Math.abs(moveValue) > 0.05 ? 0 : 0.335;
+		double integral = Math.abs(moveValue) > 0.05 ? 0 : 0.03;
+		simpleAimPID.ki = integral;
+		double maxOutput = 10.0 / 28.0;
+		double steering = simpleAimPID.pid(navx.getAngle(), targetHeading, 5);
+		clamp(steering, -maxOutput, maxOutput);
+		steering += constant * Math.signum(targetHeading - navx.getAngle());
 		blendedDrive(moveValue, steering);
 	}
 
@@ -409,6 +415,7 @@ public class DrivetrainSubsystem {
 		purePursuitPID.updateTime(Timer.getFPGATimestamp());
 		simpleAimPID.updateTime(Timer.getFPGATimestamp());
 		SmartDashboard.putNumber("AutoPopulate/Gyro", navx.getAngle());
+		System.out.println(navx.getAngle());
 		SmartDashboard.putNumber("Values/LeftRawEncoder", leftMaster.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("Values/RightRawEncoder", rightMaster.getSelectedSensorPosition(0));
 	}
