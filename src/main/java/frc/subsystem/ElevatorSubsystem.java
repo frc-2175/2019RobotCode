@@ -78,7 +78,7 @@ public class ElevatorSubsystem {
 			SmartDashboard.putNumber("setpoint", setpoint);
 			double output = pidController.pid(getElevatorPosition(), setpoint, 4); //what to set motor speed to
 			output += 0.125;
-			output = clamp(output, -0.4, 0.5);
+			output = clamp(output, -0.4, 0.6);
 			elevatorMotor.set(output); //setting motor speed to speed needed to go to setpoint
 			SmartDashboard.putNumber("AutoPopulate/ElevatorOutput", output);
 		}

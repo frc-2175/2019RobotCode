@@ -315,6 +315,7 @@ public class Robot extends TimedRobot {
 		}
 
 		// Elevator
+		SmartDashboard.putNumber("ELEVATOR_HEIGHT", elevatorSubsystem.getElevatorPosition());
 
 		boolean isManual = !(gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B) || isGoingCargoShip); //if you are pressing X or B then it's not manual
 
