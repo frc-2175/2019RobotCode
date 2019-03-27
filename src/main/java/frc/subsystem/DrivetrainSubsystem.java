@@ -394,12 +394,12 @@ public class DrivetrainSubsystem {
 
 	public void storeTargetHeading() {
 		double offsetAngleVision = visionSubsystem.getHorizontalAngleOffset();
-		targetHeading = navx.getAngle() + offsetAngleVision + 1;
+		targetHeading = navx.getAngle() + offsetAngleVision + 2.0;
 		SmartDashboard.putNumber("SimpleAim/TargetHeading", targetHeading);
 		SmartDashboard.putNumber("SimpleAim/OffsetAngle", offsetAngleVision);
 	}
 
-	public void steerTowardVisionTarget(double moveValue) {
+	public void steerTowardVisionTarget(double moveValue, double turnValue) {
 		double constant = Math.abs(moveValue) > 0.05 ? 0 : 0.335;
 		double integral = Math.abs(moveValue) > 0.05 ? 0 : 0.03;
 		simpleAimPID.ki = integral;
@@ -407,7 +407,7 @@ public class DrivetrainSubsystem {
 		double steering = simpleAimPID.pid(navx.getAngle(), targetHeading, 5);
 		clamp(steering, -maxOutput, maxOutput);
 		steering += constant * Math.signum(targetHeading - navx.getAngle());
-		blendedDrive(moveValue, steering);
+		blendedDrive(moveValue, steering + turnValue);
 	}
 
 	public void teleopPeriodic() {

@@ -235,7 +235,7 @@ public class Robot extends TimedRobot {
 			drivetrainSubsystem.storeTargetHeading();
 		}
 		if(leftJoystick.getRawButton(3)) {
-			drivetrainSubsystem.steerTowardVisionTarget(-leftJoystick.getY());
+			drivetrainSubsystem.steerTowardVisionTarget(-leftJoystick.getY(), rightJoystick.getX() * 0.25);
 		} else {
 			drivetrainSubsystem.blendedDrive(-leftJoystick.getY(), rightJoystick.getX());
 		}
