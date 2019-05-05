@@ -30,9 +30,6 @@ public class HatchIntakeSubsystem {
 		smartDashboardInfo = ServiceLocator.get(SmartDashboardInfo.class);
 
 		frontIntakeWheel = robotInfo.get(RobotInfo.SWAN);
-		groundRollerBallMotor = robotInfo.get(RobotInfo.GROUND_ROLLER_BAR_MOTOR);
-		groundActuationMotor = robotInfo.get(RobotInfo.GROUND_ACTUATOR_MOTOR);
-		groundActuationMotor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, 0);
 		actuatorHatchSolenoid = robotInfo.get(RobotInfo.HATCH_ACTUATOR_SOLENOID);
 		double kp = smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_PID_P);
 		double ki = smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_PID_I);
@@ -52,45 +49,8 @@ public class HatchIntakeSubsystem {
 	public void spinOutFront() { //spin out front/main intake
 		frontIntakeWheel.set(smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_INTAKE_SPIN_OUT_FRONT));
 	}
-	public void spinInBack() { //spin in back/ground intake HAT RIGHT
-		groundRollerBallMotor.set(smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_INTAKE_SPIN_IN_BACK));
- 	}
-	public void spinOutBack() { //spin out back/ground intake HAT LEFT
-		groundRollerBallMotor.set(smartDashboardInfo.getNumber(SmartDashboardInfo.HATCH_INTAKE_SPIN_OUT_BACK));
-	}
-
-	public void stopSpinning() { // stops both front and back rolling
-		groundRollerBallMotor.set(0);
-		// frontIntakeWheel.set(0); so it will keep spinning
+	public void stopSpinning() { // stops front rolling
 		frontIntakeWheel.set(0);
-	}
-	public void setBackIntakeUp() {
-		setpoint = -50.2;
-	}
-	public void setBackIntakeDown() {
-		setpoint = -140.2;
-	}
-	public void setBackIntakeInsideFrame() {
-		setpoint = 0;
-	}
-
-	public void goToSetpoint() {
-		SmartDashboard.putNumber("FLOOR_HATCH_SETPOINT", setpoint);
-		if(!isManual) {
-			output = pidController.pid(getGroundIntakeDegrees(), setpoint, 20);
-			output = clamp(output, -0.4, 0.5);
-			groundActuationMotor.set(output);
-		}
-	}
-
-	public void setBackIntakeSpeed(double speed) {
-		SmartDashboard.putNumber("MANUAL_SPEED", speed);
-		if(isManual) {
-			groundActuationMotor.set(speed);
-		}
-	}
-	public void zeroEncoder() {
-		groundActuationMotor.setSelectedSensorPosition(0, 0, 0);
 	}
 
 	public void toggleFrontIntake() {
@@ -101,22 +61,9 @@ public class HatchIntakeSubsystem {
 		actuatorHatchSolenoid.set(true);
 	}
 
-	public double getGroundIntakeDegrees() {
-		return ((((groundActuationMotor.getSelectedSensorPosition(0) - zeroEncoder) * 360.0) / 4096.0) / 200.0);
-	}
-	public void setBackIntakeStay() {
-		setpoint = getGroundIntakeDegrees();
-	}
-	public void setZeroEncoder() {
-		zeroEncoder = groundActuationMotor.getSelectedSensorPosition(0);
-		SmartDashboard.putNumber("ZERO_ENCODER", zeroEncoder);
-	}
-
-
 	public void teleopPeriodic() {
 		pidController.updateTime(Timer.getFPGATimestamp());
 		SmartDashboard.putNumber("AutoPopulate/HatchTicks", groundActuationMotor.getSelectedSensorPosition(0));
-		SmartDashboard.putNumber("AutoPopulate/HatchDegrees", getGroundIntakeDegrees());
 	}
 
 	public static double clamp(double val, double min, double max) {

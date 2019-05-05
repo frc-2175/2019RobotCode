@@ -11,39 +11,34 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Bezier;
+import frc.Vector;
 import frc.command.Command;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
 import frc.subsystem.CargoIntakeSubsystem;
+import frc.subsystem.ClimbingSubsystem;
 import frc.subsystem.DrivetrainSubsystem;
 import frc.subsystem.ElevatorSubsystem;
 import frc.subsystem.HatchIntakeSubsystem;
 import frc.subsystem.VisionSubsystem;
-import frc.Vector;
 
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
  * documentation. If you change the name of this class or the package after
  * creating this project, you must also update the build.gradle file in the
- * project. - FRC Team
- * 222222222222222       1111111     77777777777777777777 555555555555555555
- * 2:::::::::::::::22    1::::::1    7::::::::::::::::::7 5::::::::::::::::5
- * 2::::::222222:::::2  1:::::::1    7::::::::::::::::::7 5::::::::::::::::5
- * 2222222     2:::::2  111:::::1    777777777777:::::::7 5:::::555555555555
- *             2:::::2     1::::1               7::::::7  5:::::5
- *             2:::::2     1::::1              7::::::7   5:::::5
- *          2222::::2      1::::1             7::::::7    5:::::5555555555
- *     22222::::::22       1::::l            7::::::7     5:::::::::::::::5
- *   22::::::::222         1::::l           7::::::7      555555555555:::::5
- *  2:::::22222            1::::l          7::::::7                   5:::::5
- * 2:::::2                 1::::l         7::::::7                    5:::::5
- * 2:::::2                 1::::l        7::::::7         5555555     5:::::5
- * 2:::::2       222222 111::::::111    7::::::7          5::::::55555::::::5
- * 2::::::2222222:::::2 1::::::::::1   7::::::7            55:::::::::::::55
- * 2::::::::::::::::::2 1::::::::::1  7::::::7               55:::::::::55
- * 22222222222222222222 111111111111 77777777                  555555555
- * The Fighting Calculators
+ * project. - FRC Team 222222222222222 1111111 77777777777777777777
+ * 555555555555555555 2:::::::::::::::22 1::::::1 7::::::::::::::::::7
+ * 5::::::::::::::::5 2::::::222222:::::2 1:::::::1 7::::::::::::::::::7
+ * 5::::::::::::::::5 2222222 2:::::2 111:::::1 777777777777:::::::7
+ * 5:::::555555555555 2:::::2 1::::1 7::::::7 5:::::5 2:::::2 1::::1 7::::::7
+ * 5:::::5 2222::::2 1::::1 7::::::7 5:::::5555555555 22222::::::22 1::::l
+ * 7::::::7 5:::::::::::::::5 22::::::::222 1::::l 7::::::7 555555555555:::::5
+ * 2:::::22222 1::::l 7::::::7 5:::::5 2:::::2 1::::l 7::::::7 5:::::5 2:::::2
+ * 1::::l 7::::::7 5555555 5:::::5 2:::::2 222222 111::::::111 7::::::7
+ * 5::::::55555::::::5 2::::::2222222:::::2 1::::::::::1 7::::::7
+ * 55:::::::::::::55 2::::::::::::::::::2 1::::::::::1 7::::::7 55:::::::::55
+ * 22222222222222222222 111111111111 77777777 555555555 The Fighting Calculators
  */
 public class Robot extends TimedRobot {
 	public static final int JOYSTICK_TRIGGER = 1;
@@ -86,6 +81,7 @@ public class Robot extends TimedRobot {
 	private Joystick gamepad;
 
 	private DrivetrainSubsystem drivetrainSubsystem;
+	private ClimbingSubsystem climbingSubsystem;
 	private HatchIntakeSubsystem hatchIntakeSubsystem;
 	private ElevatorSubsystem elevatorSubsystem;
 	private CargoIntakeSubsystem cargoIntakeSubsystem;
@@ -113,6 +109,7 @@ public class Robot extends TimedRobot {
 		hatchIntakeSubsystem = new HatchIntakeSubsystem();
 		elevatorSubsystem = new ElevatorSubsystem();
 		cargoIntakeSubsystem = new CargoIntakeSubsystem();
+		climbingSubsystem = new ClimbingSubsystem();
 
 		leftJoystick = new Joystick(0);
 		rightJoystick = new Joystick(1);
@@ -161,8 +158,6 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putString("CameraToggle/CameraSelected", "0");
 		drivetrainSubsystem.resetTracking();
 		elevatorSubsystem.zeroEncoder();
-		hatchIntakeSubsystem.setZeroEncoder();
-		hatchIntakeSubsystem.setBackIntakeStay();
 	}
 
 	/**
@@ -219,7 +214,6 @@ public class Robot extends TimedRobot {
 		 */
 
 
-		SmartDashboard.putNumber("Hatch Floor Intake Degrees", hatchIntakeSubsystem.getGroundIntakeDegrees());
 		SmartDashboard.putNumberArray("Cargo Setpoints", elevatorSubsystem.getCargoSetpoints());
 		SmartDashboard.putNumberArray("Hatch Setpoints", elevatorSubsystem.getHatchSetpoints());
 
@@ -259,38 +253,6 @@ public class Robot extends TimedRobot {
 		// Actuation
 		if(gamepad.getRawButtonPressed(GAMEPAD_START)) {
 			hatchIntakeSubsystem.toggleFrontIntake();
-		}
-
-		// Hatch Intake Floor
-
-		// Intaking
-		if (gamepad.getPOV() == POV_RIGHT) { // right
-			hatchIntakeSubsystem.spinInBack();
-		}
-		if (gamepad.getPOV() == POV_LEFT) { // hat left
-			hatchIntakeSubsystem.spinOutBack();
-		}
-		// Actuation via motor
-		hatchIntakeSubsystem.setIsManual(gamepad.getRawButton(GAMEPAD_BACK)); //if gamepad back is pressed then is manual
-		if(gamepad.getRawButtonReleased(GAMEPAD_BACK)) {
-			hatchIntakeSubsystem.setBackIntakeStay();
-		}
-		if (-gamepad.getRawAxis(3) > TOPLINE && previousJoystick3Value <= TOPLINE) {
-			hatchIntakeSubsystem.setBackIntakeUp();
-		} else if (-gamepad.getRawAxis(3) < BOTTOMLINE && previousJoystick3Value >= BOTTOMLINE) {
-			hatchIntakeSubsystem.setBackIntakeDown();
-		} else if (gamepad.getRawButton(GAMEPAD_RIGHT_STICK_PRESS)) {
-			hatchIntakeSubsystem.setBackIntakeInsideFrame();
-		}
-		hatchIntakeSubsystem.goToSetpoint();
-		hatchIntakeSubsystem.setBackIntakeSpeed(deadband(-gamepad.getRawAxis(3), 0.05) * 0.6);
-		// Driver outtaking controls
-		if(leftJoystick.getRawButton(2)) {
-			hatchIntakeSubsystem.spinOutBack();
-			hatchIntakeSubsystem.setBackIntakeDown();
-		}
-		if(leftJoystick.getRawButtonReleased(2)) {
-			hatchIntakeSubsystem.setBackIntakeStay();
 		}
 
 		// Cargo Intake
@@ -377,11 +339,16 @@ public class Robot extends TimedRobot {
 		}
 
 		// Climb stuff
-		if(leftJoystick.getRawButtonPressed(6)) {
-			drivetrainSubsystem.toggleClimberFront();
-		}
-		if(leftJoystick.getRawButtonPressed(7)) {
-			drivetrainSubsystem.toggleClimberBack();
+		if(rightJoystick.getRawButton(6)){
+			climbingSubsystem.climbMoveForward();
+		} else if(rightJoystick.getRawButton(7)) {
+			climbingSubsystem.climbMoveBack();
+		} else if(rightJoystick.getRawButton(11)) {
+			climbingSubsystem.climbMoveUp();
+		} else if(rightJoystick.getRawButton(10)) {
+			climbingSubsystem.climbMoveDown();
+		} else {
+			climbingSubsystem.climbStop();
 		}
 
 		// Track some previous values

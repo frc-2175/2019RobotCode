@@ -29,8 +29,6 @@ public class DrivetrainSubsystem {
 	private static VirtualSpeedController rightVirtualSpeedController = new VirtualSpeedController();
 	private static DifferentialDrive virtualRobotDrive = new DifferentialDrive(leftVirtualSpeedController,
 		rightVirtualSpeedController);
-	private final SolenoidWrapper climberFrontSolenoid;
-	private final SolenoidWrapper climberBackSolenoid;
 	private PIDController pidController; // TODO(medium): This should probably be renamed to something more descriptive.
 	private PIDController purePursuitPID;
 	private PIDController endTerm; // TODO(medium): This as well.
@@ -69,9 +67,6 @@ public class DrivetrainSubsystem {
 		leftVirtualSpeedController = new VirtualSpeedController(); // TODO(low): There is no need to set these here since they are also initialized above.
 		rightVirtualSpeedController = new VirtualSpeedController();
 		virtualRobotDrive = new DifferentialDrive(leftVirtualSpeedController, rightVirtualSpeedController);
-
-		climberFrontSolenoid = robotInfo.get(RobotInfo.CLIMBER_FRONT_SOLENOID);
-		climberBackSolenoid = robotInfo.get(RobotInfo.CLIMBER_BACK_SOLENOID);
 
 		SmartDashboardInfo smartDashboardInfo = ServiceLocator.get(SmartDashboardInfo.class);
 		double kp = smartDashboardInfo.getNumber(SmartDashboardInfo.VISION_PID_P);
@@ -423,13 +418,5 @@ public class DrivetrainSubsystem {
 	public void proportionalZeroTurn() {
 		double output = proportional(navx.getAngle(), 0, 0.01);
 		arcadeDrive(0, output);
-	}
-
-	public void toggleClimberFront() {
-		climberFrontSolenoid.set(!climberFrontSolenoid.get());
-	}
-
-	public void toggleClimberBack() {
-		climberBackSolenoid.set(!climberBackSolenoid.get());
 	}
 }

@@ -25,14 +25,12 @@ public class RobotInfo {
 	public static final String CARGO_BOX_MOTOR = "intake.cargo.motor.box";
 	public static final String CARGO_SOLENOID = "intake.cargo.solenoid";
 	public static final String SWAN = "intake.hatch.motor.swan";
-	public static final String GROUND_ROLLER_BAR_MOTOR = "intake.hatch.ground.motor.rollerbar";
-	public static final String GROUND_ACTUATOR_MOTOR = "intake.hatch.ground.actuator";
 	public static final String HATCH_ACTUATOR_SOLENOID = "intake.hatch.solenoid.actuator";
 	public static final String ELEVATOR_MOTOR_MASTER = "elevator.motor.master";
 	public static final String ELEVATOR_MOTOR_FOLLOWER = "elevator.motor.follower";
 	public static final String HATCH_SOLENOID = "intake.hatch.solenoid";
-	public static final String CLIMBER_FRONT_SOLENOID = "climber.solenoid.front";
-	public static final String CLIMBER_BACK_SOLENOID = "climber.solenoid.back";
+	public static final String CLIMBER_VERTICAL_MOTOR = "climb.motor.vertical";
+	public static final String CLIMBER_HORIZONTAL_MOTOR = "climb.motor.horizontal";
 	public static interface ValueContainer {
 		public Object get();
 	}
@@ -61,15 +59,13 @@ public class RobotInfo {
 		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(9)));
 		put(RIGHT_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(1)));
 		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(8)));
-		put(GROUND_ACTUATOR_MOTOR, talon(new WPI_TalonSRX(11)));
-		put(GROUND_ROLLER_BAR_MOTOR, victor(new WPI_VictorSPX(3)));
 		put(ELEVATOR_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(2)));
 		put(ELEVATOR_MOTOR_MASTER, talon(new WPI_TalonSRX(10)));
 		put(SWAN, victor(new WPI_VictorSPX(7)));
 		put(CARGO_SOLENOID, () -> new SolenoidWrapper(2, 3), () -> new SolenoidWrapper(3, 4));
 		put(HATCH_ACTUATOR_SOLENOID, () -> new SolenoidWrapper(4), () -> new SolenoidWrapper(5));
-		put(CLIMBER_FRONT_SOLENOID, () -> new SolenoidWrapper(6, 7), () -> new SolenoidWrapper(6, 7));
-		put(CLIMBER_BACK_SOLENOID, () -> new SolenoidWrapper(5), () -> new SolenoidWrapper(1, 2));
+		put(CLIMBER_VERTICAL_MOTOR, talon(new WPI_TalonSRX(11)));
+		put(CLIMBER_HORIZONTAL_MOTOR, victor(new WPI_VictorSPX(3)));
 	}
 
 	private MotorWrapper talon(WPI_TalonSRX talon) {
