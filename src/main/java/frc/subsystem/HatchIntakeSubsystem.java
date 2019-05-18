@@ -63,7 +63,6 @@ public class HatchIntakeSubsystem {
 
 	public void teleopPeriodic() {
 		pidController.updateTime(Timer.getFPGATimestamp());
-		SmartDashboard.putNumber("AutoPopulate/HatchTicks", groundActuationMotor.getSelectedSensorPosition(0));
 	}
 
 	public static double clamp(double val, double min, double max) {

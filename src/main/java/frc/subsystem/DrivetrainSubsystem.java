@@ -389,7 +389,7 @@ public class DrivetrainSubsystem {
 
 	public void storeTargetHeading() {
 		double offsetAngleVision = visionSubsystem.getHorizontalAngleOffset();
-		targetHeading = navx.getAngle() + offsetAngleVision + 2.0;
+		targetHeading = navx.getAngle() + offsetAngleVision - 1;
 		SmartDashboard.putNumber("SimpleAim/TargetHeading", targetHeading);
 		SmartDashboard.putNumber("SimpleAim/OffsetAngle", offsetAngleVision);
 	}

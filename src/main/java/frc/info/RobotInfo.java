@@ -53,7 +53,7 @@ public class RobotInfo {
      * */
     public void populate() {
 		// On practice, this should be inverted
-		put(CARGO_ROLLER_BAR_MOTOR, victor(new WPI_VictorSPX(4), false), victor(new WPI_VictorSPX(4), true));
+		put(CARGO_ROLLER_BAR_MOTOR, victor(new WPI_VictorSPX(4), false), victor(new WPI_VictorSPX(4), false));
 		put(CARGO_BOX_MOTOR, victor(new WPI_VictorSPX(6)));
 		put(LEFT_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(5)));
 		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(9)));

@@ -339,13 +339,13 @@ public class Robot extends TimedRobot {
 		}
 
 		// Climb stuff
-		if(rightJoystick.getRawButton(6)){
+		if(rightJoystick.getRawButton(11)){
 			climbingSubsystem.climbMoveForward();
-		} else if(rightJoystick.getRawButton(7)) {
-			climbingSubsystem.climbMoveBack();
-		} else if(rightJoystick.getRawButton(11)) {
-			climbingSubsystem.climbMoveUp();
 		} else if(rightJoystick.getRawButton(10)) {
+			climbingSubsystem.climbMoveBack();
+		} else if(leftJoystick.getRawButton(6)) {
+			climbingSubsystem.climbMoveUp();
+		} else if(leftJoystick.getRawButton(7)) {
 			climbingSubsystem.climbMoveDown();
 		} else {
 			climbingSubsystem.climbStop();

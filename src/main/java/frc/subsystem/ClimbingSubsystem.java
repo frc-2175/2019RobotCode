@@ -25,10 +25,10 @@ public class ClimbingSubsystem{
 		horizontalClimber.set(-0.5);
 	}
 	public void climbMoveUp() {
-		verticalClimber.set(0.5);
+		verticalClimber.set(1);
 	}
 	public void climbMoveDown() {
-		verticalClimber.set(0.5);
+		verticalClimber.set(-1);
 	}
 	public void climbStop() {
 		verticalClimber.set(0.0);
