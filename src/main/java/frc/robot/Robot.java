@@ -116,12 +116,6 @@ public class Robot extends TimedRobot {
 		elevatorSubsystem = new ElevatorSubsystem();
 		cargoIntakeSubsystem = new CargoIntakeSubsystem();
 		climbingSubsystem = new ClimbingSubsystem();
-		autonomousCommand = new SequentialCommand(new Command[] {
-			new DrivingForward(), 
-			new TurningLeft(),
-			new DrivingForward(), 
-			new TurningRight()
-		});
 
 		leftJoystick = new Joystick(0);
 		rightJoystick = new Joystick(1);
@@ -144,6 +138,8 @@ public class Robot extends TimedRobot {
 			System.out.println("Didn't Work");
 		}
 		autonPath = Bezier.getSamplePath();
+
+		turnLeft();
 	}
 
 	@Override
@@ -413,5 +409,17 @@ public class Robot extends TimedRobot {
 		} else {
 			return 0.0;
 		}
+	}
+
+	public void driveForward(double distance) {
+		autonomousCommand = new DrivingForward(distance);
+	}
+
+	public void turnRight() {
+		autonomousCommand = new TurningRight();
+	}
+
+	public void turnLeft() {
+		autonomousCommand = new TurningLeft();
 	}
 }

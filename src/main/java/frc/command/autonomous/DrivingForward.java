@@ -16,7 +16,14 @@ import frc.subsystem.DrivetrainSubsystem;
  * Add your docs here.
  */
 public class DrivingForward implements Command {
-    DrivetrainSubsystem driveTrain = ServiceLocator.get(DrivetrainSubsystem.class);
+
+    double distance;
+    DrivetrainSubsystem driveTrain;
+
+    public DrivingForward(double distance) {
+        this.distance = distance;
+        driveTrain = ServiceLocator.get(DrivetrainSubsystem.class);
+    }
 
     public void init() {
         driveTrain.resetTracking();
@@ -29,7 +36,7 @@ public class DrivingForward implements Command {
     public boolean isFinished() {
         System.out.println(driveTrain.getRightSideDistanceDriven());
 
-        if(driveTrain.getRightSideDistanceDriven() >= 20) {
+        if(driveTrain.getRightSideDistanceDriven() >= distance) {
             return true;
         } else {
             return false;

@@ -51,8 +51,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Values/PositionX",
               "_title": "SmartDashboard/Values/PositionX",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/Values/PositionX": true
+              "Graph/Visible time": 30.0
             }
           },
           "6,0": {
@@ -64,8 +63,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/Values/PositionY",
               "_title": "SmartDashboard/Values/PositionY",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/Values/PositionY": true
+              "Graph/Visible time": 30.0
             }
           },
           "8,0": {
@@ -77,8 +75,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/AutoPopulate/Gyro",
               "_title": "SmartDashboard/AutoPopulate/Gyro",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/AutoPopulate/Gyro": true
+              "Graph/Visible time": 30.0
             }
           },
           "4,2": {
@@ -90,8 +87,7 @@
               "_type": "Graph",
               "_source0": "network_table:///SmartDashboard/AutoPopulate/HatchDegrees",
               "_title": "SmartDashboard/AutoPopulate/HatchDegrees",
-              "Graph/Visible time": 30.0,
-              "Visible data/SmartDashboard/AutoPopulate/HatchDegrees": true
+              "Graph/Visible time": 30.0
             }
           },
           "6,2": {
@@ -143,6 +139,18 @@
             }
           }
         }
+      }
+    },
+    {
+      "title": "Tab 3",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {}
       }
     }
   ],
