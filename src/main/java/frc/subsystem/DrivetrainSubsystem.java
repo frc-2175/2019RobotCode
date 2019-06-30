@@ -365,6 +365,10 @@ public class DrivetrainSubsystem {
 		return (rightMaster.getSelectedSensorPosition(0) - zeroEncoderRight) * TICKS_TO_INCHES;
 	}
 
+	public double getHeading() {
+		return navx.getAngle();
+	}
+
 	public void resetTracking() {
 		lastEncoderDistanceLeft = 0;
 		lastEncoderDistanceRight = 0;

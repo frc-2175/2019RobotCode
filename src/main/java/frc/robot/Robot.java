@@ -13,6 +13,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Bezier;
 import frc.Vector;
 import frc.command.Command;
+import frc.command.SequentialCommand;
+import frc.command.autonomous.DrivingForward;
+import frc.command.autonomous.TurningRight;
+import frc.command.autonomous.TurningLeft;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
 import frc.subsystem.CargoIntakeSubsystem;
@@ -91,6 +95,8 @@ public class Robot extends TimedRobot {
 	private Vector targetLocation = new Vector(0, 0);
 	Vector[] path;
 
+	private Command autonomousCommand;
+
 	// WPI Lib Functions
 
 	/**
@@ -110,6 +116,12 @@ public class Robot extends TimedRobot {
 		elevatorSubsystem = new ElevatorSubsystem();
 		cargoIntakeSubsystem = new CargoIntakeSubsystem();
 		climbingSubsystem = new ClimbingSubsystem();
+		autonomousCommand = new SequentialCommand(new Command[] {
+			new DrivingForward(), 
+			new TurningLeft(),
+			new DrivingForward(), 
+			new TurningRight()
+		});
 
 		leftJoystick = new Joystick(0);
 		rightJoystick = new Joystick(1);
@@ -158,6 +170,8 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putString("CameraToggle/CameraSelected", "0");
 		drivetrainSubsystem.resetTracking();
 		elevatorSubsystem.zeroEncoder();
+
+		autonomousCommand.init();
 	}
 
 	/**
@@ -170,7 +184,7 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		SmartDashboard.putNumber("Values/PositionX", drivetrainSubsystem.fieldPosition.x);
 		SmartDashboard.putNumber("Values/PositionY", drivetrainSubsystem.fieldPosition.y);
-		teleopPeriodic();
+		executeCommand(autonomousCommand);
 	}
 
 	@Override
@@ -375,13 +389,11 @@ public class Robot extends TimedRobot {
 	 * @param command the command to execute
 	 */
 	public void executeCommand(Command command) {
-		if (!hasAutoEnded) {
-			if (!command.isFinished()) {
-				command.execute();
-			} else {
-				command.end();
-				hasAutoEnded = true;
-			}
+		if (!command.isFinished()) {
+			command.execute();
+		} else {
+			command.end();
+			hasAutoEnded = true;
 		}
 	}
 

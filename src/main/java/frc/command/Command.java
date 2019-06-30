@@ -1,23 +1,27 @@
 package frc.command;
 
+import frc.ServiceLocator;
+import frc.subsystem.DrivetrainSubsystem;
+
 public interface Command {
+
     /**
      * Runs on the start of the command.
      */
-    public abstract void init();
+    public void init();
 
     /**
      * Runs periodically after the init call.
      */
-    public abstract void execute();
+    public void execute();
     
     /**
      * @return whether or not the command is finished
      */
-    public abstract boolean isFinished();
+    public boolean isFinished();
 
     /**
      * Runs after the command ends.
      */
-    public abstract void end();
+    public void end();
 }
