@@ -422,4 +422,8 @@ public class Robot extends TimedRobot {
 	public void turnLeft() {
 		autonomousCommand = new TurningLeft();
 	}
+
+	public void drivingBackward(double distance) {
+		autonomousCommand = new DrivingForward(distance);
+	}
 }
