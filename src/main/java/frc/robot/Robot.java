@@ -14,6 +14,7 @@ import frc.Bezier;
 import frc.Vector;
 import frc.command.Command;
 import frc.command.SequentialCommand;
+import frc.command.autonomous.DrivingBackward;
 import frc.command.autonomous.DrivingForward;
 import frc.command.autonomous.TurningRight;
 import frc.command.autonomous.TurningLeft;
@@ -139,7 +140,19 @@ public class Robot extends TimedRobot {
 		}
 		autonPath = Bezier.getSamplePath();
 
-		turnLeft();
+
+
+
+		// Edit this code here to complete the maze!!!!!!!!!!!
+
+
+		driveBackward(-35.0);
+
+
+
+
+
+
 	}
 
 	@Override
@@ -423,7 +436,7 @@ public class Robot extends TimedRobot {
 		autonomousCommand = new TurningLeft();
 	}
 
-	public void drivingBackward(double distance) {
-		autonomousCommand = new DrivingForward(distance);
+	public void driveBackward(double distance) {
+		autonomousCommand = new DrivingBackward(distance);
 	}
 }

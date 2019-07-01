@@ -31,10 +31,11 @@ public class DrivingBackward implements Command {
 
     public void execute() {
         driveTrain.blendedDrive( -.5, 0);
-    }
-
-    public boolean isFinished() {
         System.out.println(driveTrain.getRightSideDistanceDriven());
+        System.out.println(distance);
+    }
+    
+    public boolean isFinished() {
 
         if(driveTrain.getRightSideDistanceDriven() <= distance) {
             return true;
