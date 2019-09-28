@@ -23,7 +23,7 @@ public class TurningLeft implements Command{
     }
 
     public void execute() {
-        driveTrain.blendedDrive(0, -.5);
+        driveTrain.blendedDrive(0, -.6);
     }
 
     public  boolean isFinished() {

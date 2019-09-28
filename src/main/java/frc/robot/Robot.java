@@ -13,11 +13,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Bezier;
 import frc.Vector;
 import frc.command.Command;
-import frc.command.SequentialCommand;
-import frc.command.autonomous.DrivingBackward;
-import frc.command.autonomous.DrivingForward;
-import frc.command.autonomous.TurningRight;
-import frc.command.autonomous.TurningLeft;
+import frc.command.CommandRunner;
+import frc.command.autonomous.ActuatePanelIntakeOutCommand;
+import frc.command.autonomous.HatchOuttakeCommand;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
 import frc.subsystem.CargoIntakeSubsystem;
@@ -96,7 +94,7 @@ public class Robot extends TimedRobot {
 	private Vector targetLocation = new Vector(0, 0);
 	Vector[] path;
 
-	private Command autonomousCommand;
+	private CommandRunner autonomousCommand;
 
 	// WPI Lib Functions
 
@@ -146,9 +144,8 @@ public class Robot extends TimedRobot {
 		// Edit this code here to complete the maze!!!!!!!!!!!
 
 
-		driveBackward(-35.0);
-
-
+		
+		autonomousCommand = new CommandRunner(new ActuatePanelIntakeOutCommand());
 
 
 
@@ -179,8 +176,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putString("CameraToggle/CameraSelected", "0");
 		drivetrainSubsystem.resetTracking();
 		elevatorSubsystem.zeroEncoder();
-
-		autonomousCommand.init();
+		autonomousCommand.resetCommand();
 	}
 
 	/**
@@ -193,7 +189,7 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		SmartDashboard.putNumber("Values/PositionX", drivetrainSubsystem.fieldPosition.x);
 		SmartDashboard.putNumber("Values/PositionY", drivetrainSubsystem.fieldPosition.y);
-		executeCommand(autonomousCommand);
+		autonomousCommand.runCommand();
 	}
 
 	@Override
@@ -424,19 +420,19 @@ public class Robot extends TimedRobot {
 		}
 	}
 
-	public void driveForward(double distance) {
-		autonomousCommand = new DrivingForward(distance);
-	}
+	// public void driveForward(double distance) {
+	// 	autonomousCommand = new DrivingForward(distance);
+	// }
 
-	public void turnRight() {
-		autonomousCommand = new TurningRight();
-	}
+	// public void turnRight() {
+	// 	autonomousCommand = new TurningRight();
+	// }
 
-	public void turnLeft() {
-		autonomousCommand = new TurningLeft();
-	}
+	// public void turnLeft() {
+	// 	autonomousCommand = new TurningLeft();
+	// }
 
-	public void driveBackward(double distance) {
-		autonomousCommand = new DrivingBackward(distance);
-	}
+	// public void driveBackward(double distance) {
+	// 	autonomousCommand = new DrivingBackward(distance);
+	// }
 }
