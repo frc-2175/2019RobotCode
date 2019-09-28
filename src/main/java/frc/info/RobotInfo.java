@@ -48,6 +48,7 @@ public class RobotInfo {
     }
 
     /**
+	 *
      * This is where all of the information is put into the hash map.
      * @see frc.info.RobotInfo#put(String, Object)
      * */
@@ -59,7 +60,7 @@ public class RobotInfo {
 		put(LEFT_MOTOR_MASTER, talon(new WPI_TalonSRX(9)));
 		put(RIGHT_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(1)));
 		put(RIGHT_MOTOR_MASTER, talon(new WPI_TalonSRX(8)));
-		put(ELEVATOR_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(2)));
+		put(ELEVATOR_MOTOR_FOLLOWER, victor(new WPI_VictorSPX(2), true));
 		put(ELEVATOR_MOTOR_MASTER, talon(new WPI_TalonSRX(10)));
 		put(SWAN, victor(new WPI_VictorSPX(7)));
 		put(CARGO_SOLENOID, () -> new SolenoidWrapper(2, 3), () -> new SolenoidWrapper(3, 4));
