@@ -30,7 +30,7 @@ public class DriveForwardInchesCommand implements Command {
     }
 
     public void execute() {
-        driveTrain.blendedDrive( .5, 0);
+        driveTrain.blendedDrive( .6, 0);
     }
 
     public boolean isFinished() {

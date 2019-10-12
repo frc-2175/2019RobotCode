@@ -14,8 +14,12 @@ import frc.Bezier;
 import frc.Vector;
 import frc.command.Command;
 import frc.command.CommandRunner;
+import frc.command.ParallelCommand;
+import frc.command.SequentialCommand;
 import frc.command.autonomous.ActuatePanelIntakeOutCommand;
+import frc.command.autonomous.DriveForwardInchesCommand;
 import frc.command.autonomous.HatchOuttakeCommand;
+import frc.command.autonomous.RollerBarOutCommand;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
 import frc.subsystem.CargoIntakeSubsystem;
@@ -143,9 +147,17 @@ public class Robot extends TimedRobot {
 
 		// Edit this code here to complete the maze!!!!!!!!!!!
 
+		ParallelCommand getTheBall = new ParallelCommand(new Command[] {
+			new DriveForwardInchesCommand(12*4.5),
+			new RollerBarOutCommand(3.0)
+		});
 
-		
-		autonomousCommand = new CommandRunner(new ActuatePanelIntakeOutCommand());
+		SequentialCommand placeCargoPanel = new SequentialCommand(new Command[] {
+			new ActuatePanelIntakeOutCommand(),
+			new DriveForwardInchesCommand(125),
+			new HatchOuttakeCommand(2.0)
+		});
+		autonomousCommand = new CommandRunner(getTheBall);
 
 
 

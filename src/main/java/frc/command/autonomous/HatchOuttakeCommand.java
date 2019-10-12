@@ -21,11 +21,11 @@ public class HatchOuttakeCommand implements Command {
     }
 
     public void execute() {
+        nowTime = Timer.getFPGATimestamp();
         hatchIntakeSubsystem.spinOutFront();
     }
 
     public boolean isFinished() {
-        nowTime = Timer.getFPGATimestamp();
         return (nowTime - startTime) >= timeSpinningOut;
 
     }
