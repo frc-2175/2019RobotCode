@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Bezier;
 import frc.Vector;
@@ -20,6 +21,7 @@ import frc.command.autonomous.ActuatePanelIntakeOutCommand;
 import frc.command.autonomous.DriveForwardInchesCommand;
 import frc.command.autonomous.HatchOuttakeCommand;
 import frc.command.autonomous.RollerBarOutCommand;
+import frc.command.autonomous.TurnAndDriveCommand;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
 import frc.subsystem.CargoIntakeSubsystem;
@@ -98,7 +100,10 @@ public class Robot extends TimedRobot {
 	private Vector targetLocation = new Vector(0, 0);
 	Vector[] path;
 
+	private Gyro gyro;
+
 	private CommandRunner autonomousCommand;
+
 
 	// WPI Lib Functions
 
@@ -146,6 +151,9 @@ public class Robot extends TimedRobot {
 
 
 		// Edit this code here to complete the maze!!!!!!!!!!!
+		SequentialCommand turnAndGo = new SequentialCommand(new Command[] {
+			new TurnAndDriveCommand(6*12)
+		});
 
 		ParallelCommand getTheBall = new ParallelCommand(new Command[] {
 			new DriveForwardInchesCommand(12*4.5),
@@ -157,7 +165,7 @@ public class Robot extends TimedRobot {
 			new DriveForwardInchesCommand(125),
 			new HatchOuttakeCommand(2.0)
 		});
-		autonomousCommand = new CommandRunner(getTheBall);
+		autonomousCommand = new CommandRunner(turnAndGo);
 
 
 
