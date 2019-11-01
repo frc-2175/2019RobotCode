@@ -1,13 +1,15 @@
 package frc.command;
 
+import frc.spacetime.SpacetimeEvent;
+
 /**
- * Runs commands in parallel (at the same time).
- * This command will end when the last of the commands in parallel has ended.
+ * Runs commands in parallel (at the same time). This command will end when the
+ * last of the commands in parallel has ended.
  */
-public class ParallelCommand implements Command {
+public class ParallelCommand extends Command {
     private final Command[] commands;
     private boolean[] hasEndRunYet;
-    
+
     /**
      * @param commands an array of the commands to be run in parallel
      */
@@ -17,20 +19,20 @@ public class ParallelCommand implements Command {
         System.out.println(commands.length);
         hasEndRunYet = new boolean[commands.length];
     }
-    
+
     public void init() {
         for (Command command : commands) {
-            command.init();
+            command._init();
         }
     }
 
     public void execute() {
         for(int i = 0; i < commands.length; i++) {
-            if(!commands[i].isFinished()) {
-                commands[i].execute();
+            if(!commands[i]._isFinished()) {
+                commands[i]._execute();
             } else if(!hasEndRunYet[i]) {
-                System.out.println("Ending a command");
-                commands[i].end();
+                System.out.println("Ending a command (parallel)");
+                commands[i]._end();
                 hasEndRunYet[i] = true;
             }
         }
@@ -39,7 +41,7 @@ public class ParallelCommand implements Command {
     public boolean isFinished() {
         boolean isFinished = true;
         for (Command command : commands) {
-            if(!command.isFinished()) {
+            if(!command._isFinished()) {
                 isFinished = false;
             }
         }
@@ -50,9 +52,17 @@ public class ParallelCommand implements Command {
         for(int i = 0; i < commands.length; i++) {
             if(!hasEndRunYet[i]) {
                 System.out.println("Ending a command");
-                commands[i].end();
+                commands[i]._end();
                 hasEndRunYet[i] = true;
             }
         }
-    }
+	}
+
+	@Override
+	public void initSpacetimeEvent(SpacetimeEvent parentEvent) {
+		super.initSpacetimeEvent(parentEvent);
+		for(Command command : commands) {
+			command.initSpacetimeEvent(event);
+		}
+	}
 }

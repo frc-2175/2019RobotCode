@@ -15,7 +15,7 @@ import frc.subsystem.DrivetrainSubsystem;
 /**
  * Add your docs here.
  */
-public class DriveForwardInchesCommand implements Command {
+public class DriveForwardInchesCommand extends Command {
 
     double distance;
     DrivetrainSubsystem driveTrain;
@@ -44,7 +44,7 @@ public class DriveForwardInchesCommand implements Command {
     }
 
     public void end() {
-        driveTrain.blendedDrive( 0, 0);
+        driveTrain.blendedDrive(0, 0);
     }
 
 }
