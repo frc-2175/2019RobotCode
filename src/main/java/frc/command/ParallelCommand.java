@@ -28,9 +28,10 @@ public class ParallelCommand extends Command {
 
     public void execute() {
         for(int i = 0; i < commands.length; i++) {
-            if(!commands[i]._isFinished()) {
-                commands[i]._execute();
-            } else if(!hasEndRunYet[i]) {
+			if(!hasEndRunYet[i]) {
+				commands[i]._execute();
+			}
+			if(!hasEndRunYet[i] && commands[i]._isFinished()) {
                 System.out.println("Ending a command (parallel)");
                 commands[i]._end();
                 hasEndRunYet[i] = true;

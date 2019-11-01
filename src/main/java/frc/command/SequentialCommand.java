@@ -20,25 +20,26 @@ public class SequentialCommand extends Command {
     }
 
     public void init() {
-        index = 0;
-        if(!isEmpty) {
-            commands[0]._init();
-        }
+		index = 0;
+		if(!isEmpty) {
+			commands[index]._init();
+		}
     }
 
     public void execute() {
         if(!isEmpty) {
-            if(commands[index]._isFinished()) {
+			// Execute
+			commands[index]._execute();
+
+			// Check isFinished + transition
+			if(commands[index]._isFinished()) {
                 System.out.println("Ending a command (sequential)");
                 commands[index]._end();
                 if(index < commands.length - 1) {
                     System.out.println("Starting a new command");
-                    index += 1;
+					index += 1;
 					commands[index]._init();
-					commands[index]._execute();
                 }
-            } else {
-                commands[index]._execute();
             }
         }
     }
