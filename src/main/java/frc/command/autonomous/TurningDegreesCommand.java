@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.ServiceLocator;
 
 
-public class TurningDegreesCommand implements Command {
+public class TurningDegreesCommand extends Command {
     double turnDegrees;
     DrivetrainSubsystem driveTrainSubsystem;
 
