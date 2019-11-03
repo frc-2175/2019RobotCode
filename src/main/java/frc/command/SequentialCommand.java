@@ -1,6 +1,9 @@
 package frc.command;
 
+import frc.ServiceLocator;
 import frc.spacetime.SpacetimeEvent;
+import frc.logging.LogField;
+import frc.logging.Logger;
 
 /**
  * Runs commands sequentially (one after another). This command will end when
@@ -9,35 +12,35 @@ import frc.spacetime.SpacetimeEvent;
 public class SequentialCommand extends Command {
     private final Command[] commands;
     private int index = 0;
-    private boolean isEmpty;
+	private Logger logger;
 
     /**
      * @param commands an array of the commands to be run sequentially
      */
     public SequentialCommand(Command[] commands) {
         this.commands = commands;
-        isEmpty = commands.length == 0;
+		logger = ServiceLocator.get(Logger.class).newWithExtraFields(new LogField("CommandType", "Sequential"));
     }
 
     public void init() {
 		index = 0;
-		if(!isEmpty) {
+		if(commands.length != 0) {
 			commands[index]._init();
 		}
     }
 
     public void execute() {
-        if(!isEmpty) {
+        if(commands.length != 0) {
 			// Execute
 			commands[index]._execute();
 
 			// Check isFinished + transition
 			if(commands[index]._isFinished()) {
-                System.out.println("Ending a command (sequential)");
+                logger.debug("Ending a sub-command", new LogField("CommandName", commands[index].getClass().getName()));
                 commands[index]._end();
                 if(index < commands.length - 1) {
-                    System.out.println("Starting a new command");
 					index += 1;
+					logger.debug("Starting a sub-command", new LogField("CommandName", commands[index].getClass().getName()));
 					commands[index]._init();
                 }
             }
@@ -46,7 +49,7 @@ public class SequentialCommand extends Command {
 
     public boolean isFinished() {
         boolean isFinished = index == commands.length - 1 && commands[commands.length - 1]._isFinished();
-        return isEmpty ? true : isFinished;
+        return (commands.length == 0) ? true : isFinished;
     }
 
     public void end() {

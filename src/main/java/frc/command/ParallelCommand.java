@@ -54,9 +54,9 @@ public class ParallelCommand extends Command {
             if(!hasEndRunYet[i]) {
                 System.out.println("Ending a command");
                 commands[i]._end();
-                hasEndRunYet[i] = true;
             }
-        }
+			hasEndRunYet[i] = false;
+		}
 	}
 
 	@Override
