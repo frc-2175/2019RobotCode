@@ -5,7 +5,7 @@ import frc.ServiceLocator;
 import frc.command.Command;
 import frc.subsystem.HatchIntakeSubsystem;
 
-public class HatchOuttakeCommand implements Command {
+public class HatchOuttakeCommand extends Command {
     private HatchIntakeSubsystem hatchIntakeSubsystem;
     private double timeSpinningOut; //it's in seconds by the way !!!!!!!!!!
     private double startTime;

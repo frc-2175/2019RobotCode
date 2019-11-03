@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.interfaces.Gyro;
 import frc.ServiceLocator;
 
 
-public class TurnAndDriveCommand implements Command {
+public class TurnAndDriveCommand extends Command {
     double distance;
     DrivetrainSubsystem driveTrainSubsystem;
 
@@ -76,10 +76,10 @@ public class TurnAndDriveCommand implements Command {
     } */
 
     	/**
-	 * 
+	 *
 	 * @return returns degrees to turn so that robot drives straight
 	 */
-	public double getTurnDegrees() { 
+	public double getTurnDegrees() {
 		double safetyAreaDegrees = 1.0; //change this if you want safety area/deadband?? to be a diff num
 		double curDegrees = driveTrainSubsystem.getHeading(); //getting current angle of robot (straight on is 0 i think)
 		if(curDegrees > safetyAreaDegrees) { // if robot is turned to too much degrees,

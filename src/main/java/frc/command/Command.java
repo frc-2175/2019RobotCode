@@ -1,27 +1,55 @@
 package frc.command;
 
-import frc.ServiceLocator;
-import frc.subsystem.DrivetrainSubsystem;
+import frc.spacetime.SpacetimeEvent;
 
-public interface Command {
+public abstract class Command {
+	protected SpacetimeEvent event;
 
     /**
      * Runs on the start of the command.
      */
-    public void init();
+    public abstract void init();
 
     /**
      * Runs periodically after the init call.
      */
-    public void execute();
-    
+    public abstract void execute();
+
     /**
      * @return whether or not the command is finished
      */
-    public boolean isFinished();
+    public abstract boolean isFinished();
 
     /**
      * Runs after the command ends.
      */
-    public void end();
+	public abstract void end();
+
+	public void _init() {
+		if(event != null) {
+			event.start();
+		}
+
+		init();
+	}
+
+	public void _execute() {
+		execute();
+	}
+
+	public boolean _isFinished() {
+		return isFinished();
+	}
+
+	public void _end() {
+		if(event != null) {
+			event.end();
+		}
+
+		end();
+	}
+
+	public void initSpacetimeEvent(SpacetimeEvent parentEvent) {
+		event = parentEvent.makeChild(this.getClass().getName());
+	}
 }

@@ -14,7 +14,7 @@ import frc.subsystem.DrivetrainSubsystem;
 /**
  * Add your docs here.
  */
-public class TurningLeft implements Command{
+public class TurningLeft extends Command{
 
     DrivetrainSubsystem driveTrain = ServiceLocator.get(DrivetrainSubsystem.class);
 

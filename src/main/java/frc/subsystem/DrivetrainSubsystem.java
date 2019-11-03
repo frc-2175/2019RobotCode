@@ -414,7 +414,6 @@ public class DrivetrainSubsystem {
 		purePursuitPID.updateTime(Timer.getFPGATimestamp());
 		simpleAimPID.updateTime(Timer.getFPGATimestamp());
 		SmartDashboard.putNumber("AutoPopulate/Gyro", navx.getAngle());
-		System.out.println(navx.getAngle());
 		SmartDashboard.putNumber("Values/LeftRawEncoder", leftMaster.getSelectedSensorPosition(0));
 		SmartDashboard.putNumber("Values/RightRawEncoder", rightMaster.getSelectedSensorPosition(0));
 	}

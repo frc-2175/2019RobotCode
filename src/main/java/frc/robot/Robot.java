@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.Bezier;
+import frc.ServiceLocator;
 import frc.Vector;
 import frc.command.Command;
 import frc.command.CommandRunner;
@@ -24,6 +25,9 @@ import frc.command.autonomous.RollerBarOutCommand;
 import frc.command.autonomous.TurnAndDriveCommand;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
+import frc.logging.LogHandler;
+import frc.logging.Logger;
+import frc.logging.StdoutHandler;
 import frc.subsystem.CargoIntakeSubsystem;
 import frc.subsystem.ClimbingSubsystem;
 import frc.subsystem.DrivetrainSubsystem;
@@ -103,6 +107,7 @@ public class Robot extends TimedRobot {
 	private Gyro gyro;
 
 	private CommandRunner autonomousCommand;
+	private Logger robotLogger;
 
 
 	// WPI Lib Functions
@@ -115,7 +120,7 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		hasAutoEnded = false; // TODO: Should we remove this variable since we're not even doing any auto?
 
-		new RobotInfo();
+		RobotInfo robotInfo = new RobotInfo();
 		smartDashboardInfo = new SmartDashboardInfo();
 
 		visionSubsystem = new VisionSubsystem();
@@ -124,6 +129,12 @@ public class Robot extends TimedRobot {
 		elevatorSubsystem = new ElevatorSubsystem();
 		cargoIntakeSubsystem = new CargoIntakeSubsystem();
 		climbingSubsystem = new ClimbingSubsystem();
+
+		robotLogger = new Logger(new LogHandler[] {
+			new StdoutHandler()
+		});
+
+		ServiceLocator.register(robotLogger);
 
 		leftJoystick = new Joystick(0);
 		rightJoystick = new Joystick(1);
@@ -167,9 +178,13 @@ public class Robot extends TimedRobot {
 		});
 		autonomousCommand = new CommandRunner(turnAndGo);
 
-
-
-
+		ParallelCommand noahsTestCommand = new ParallelCommand(new Command[] {
+			new SequentialCommand(new Command[] {
+				new ActuatePanelIntakeOutCommand(),
+				new HatchOuttakeCommand(2.0)
+			}),
+			new RollerBarOutCommand(3.0)
+		});
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import frc.ServiceLocator;
 import frc.command.Command;
 import frc.subsystem.CargoIntakeSubsystem;
 
-public class RollerBarOutCommand implements Command {
+public class RollerBarOutCommand extends Command {
     private CargoIntakeSubsystem cargoIntakeSubsystem;
     private double timeRollingOut;
     private double startTime;

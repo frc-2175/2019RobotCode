@@ -2,7 +2,7 @@ package command;
 
 import frc.command.Command;
 
-public class TestCommand1 implements Command {
+public class TestCommand1 extends Command {
 	private int timesExecuted = 0;
 	private boolean hasInitialized = false;
 	private boolean hasEnded = false;

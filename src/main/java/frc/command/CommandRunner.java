@@ -1,27 +1,33 @@
 package frc.command;
 
+import frc.ServiceLocator;
+import frc.spacetime.SpacetimeEvent;
+import frc.logging.Logger;
+
 public class CommandRunner {
     private Command command;
     private boolean hasRunInit;
-    private boolean hasRunEnd;
+	private boolean hasRunEnd;
 
     public CommandRunner(Command command) {
-        this.command = command;
+		this.command = command;
+		Logger robotLogger = ServiceLocator.get(Logger.class);
+		command.initSpacetimeEvent(new SpacetimeEvent("CommandRunner", robotLogger.newWithExtraFields()));
         hasRunInit = false;
         hasRunEnd = false;
     }
 
     public void runCommand() {
         if(!hasRunInit) {
-            command.init();
+			command._init();
             hasRunInit = true;
-            command.execute();
+            command._execute();
         } else {
-            if(!command.isFinished()) {
-                command.execute();
+            if(!command._isFinished()) {
+                command._execute();
             } else {
                 if(!hasRunEnd) {
-                    command.end();
+                    command._end();
                     hasRunEnd = true;
                 }
             }

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
 import frc.command.Command;
 import frc.command.SequentialCommand;
 
@@ -34,8 +35,7 @@ public class SequentialCommandTest {
 		assertTrue("First command did not end", testCommand1.getHasEnded());
 		assertTrue("First command did not finish", testCommand1.isFinished());
 		seqCommand.execute();
-		assertEquals(1, testCommand2.getTimes());
-		seqCommand.execute();
+		assertEquals(2, testCommand2.getTimes());
 		seqCommand.execute();
 		assertTrue("Second command did not end", testCommand2.getHasEnded());
 		assertTrue("Second command did not finish", testCommand2.isFinished());

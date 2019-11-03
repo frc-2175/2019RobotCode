@@ -15,7 +15,7 @@ import frc.subsystem.DrivetrainSubsystem;
 /**
  * Add your docs here.
  */
-public class DrivingBackward implements Command {
+public class DrivingBackward extends Command {
 
     double distance;
     DrivetrainSubsystem driveTrain;
@@ -34,7 +34,7 @@ public class DrivingBackward implements Command {
         System.out.println(driveTrain.getRightSideDistanceDriven());
         System.out.println(distance);
     }
-    
+
     public boolean isFinished() {
 
         if(driveTrain.getRightSideDistanceDriven() <= distance) {
