@@ -22,6 +22,7 @@ import frc.command.autonomous.ActuatePanelIntakeOutCommand;
 import frc.command.autonomous.DriveForwardInchesCommand;
 import frc.command.autonomous.HatchOuttakeCommand;
 import frc.command.autonomous.RollerBarOutCommand;
+import frc.command.autonomous.SpinInHatchCommand;
 import frc.command.autonomous.TurningDegreesCommand;
 import frc.command.autonomous.TurningLeft;
 import frc.command.autonomous.TurningRight;
@@ -169,14 +170,19 @@ public class Robot extends TimedRobot {
 
 		// Edit this code here to complete the maze!!!!!!!!!!!
 		SequentialCommand goAngle = new SequentialCommand(new Command[] {
-			new TurningDegreesCommand(-getAngle(5*12, 12)), //remember put negative if ur going left !!!!!!!!!!!!!!!!!!!!!!
-			new DriveStraightBetterCommand(getHype(5*12,12), 1),
-			new TurningDegreesCommand(getAngle(5*12, 12)),
-			new DriveStraightBetterCommand(12,1)
+			new TurningDegreesCommand(-getAngle(125, 16)), //remember put negative if you're going left !!!!!!
+			new DriveStraightBetterCommand(getHype(125, 16), 1), //might be 127 , 16 uhh just try that if it doesn't work
+			new TurningDegreesCommand(getAngle(125, 16)),
+			new DriveStraightBetterCommand(12,1),
+			//new HatchOuttakeCommand(2.0)
 		});
-		System.out.println(-getAngle(5*12, 12));
+		//System.out.println(-getAngle(5*12, 12)); uhh
 
-		
+		ParallelCommand keepHatchAndActuate = new ParallelCommand(new Command[] {
+			new SpinInHatchCommand(.5),
+			new ActuatePanelIntakeOutCommand()
+		});
+
 
 		SequentialCommand turnAndGo = new SequentialCommand(new Command[] {
 			new TurningLeft(),
@@ -481,7 +487,7 @@ public class Robot extends TimedRobot {
      * @return returns distance you will need to move at an angle
      */
     public double getHype(double forward, double sideways) { 
-        return Math.sqrt((Math.pow(forward, 2.0) + Math.pow(sideways, 2.0)));
+        return Math.sqrt((Math.pow(forward - 12, 2.0) + Math.pow(sideways, 2.0)));
     }
 
     /**
@@ -491,7 +497,7 @@ public class Robot extends TimedRobot {
      * @return returns angle to turn 
      */
     public double getAngle(double forward, double sideways) {
-        return Math.toDegrees(Math.atan((sideways/forward)));
+        return Math.toDegrees(Math.atan(sideways/(forward - 12)));
     }
 
 

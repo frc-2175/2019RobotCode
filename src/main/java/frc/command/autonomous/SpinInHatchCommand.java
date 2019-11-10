@@ -5,14 +5,14 @@ import frc.ServiceLocator;
 import frc.command.Command;
 import frc.subsystem.HatchIntakeSubsystem;
 
-public class HatchOuttakeCommand extends Command {
-    private HatchIntakeSubsystem hatchIntakeSubsystem;
-    private double timeSpinningOut; //it's in seconds by the way !!!!!!!!!!
-    private double startTime;
-    private double nowTime;
+public class SpinInHatchCommand extends Command {
+    HatchIntakeSubsystem hatchIntakeSubsystem;
+    double timeToSpin;
+    double startTime;
+    double nowTime;
 
-    public HatchOuttakeCommand(double timeSpinningOut) {
-        this.timeSpinningOut = timeSpinningOut;
+    public SpinInHatchCommand(double timeToSpin) {
+        this.timeToSpin = timeToSpin;
         hatchIntakeSubsystem = ServiceLocator.get(HatchIntakeSubsystem.class);
     }
 
@@ -21,13 +21,12 @@ public class HatchOuttakeCommand extends Command {
     }
 
     public void execute() {
-        hatchIntakeSubsystem.spinOutFront();
+        hatchIntakeSubsystem.spinInFront();
     }
 
     public boolean isFinished() {
         nowTime = Timer.getFPGATimestamp();
-        return (nowTime - startTime) >= timeSpinningOut;
-
+        return startTime - nowTime >= timeToSpin;
     }
 
     public void end() {
