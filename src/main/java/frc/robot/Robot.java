@@ -22,7 +22,11 @@ import frc.command.autonomous.ActuatePanelIntakeOutCommand;
 import frc.command.autonomous.DriveForwardInchesCommand;
 import frc.command.autonomous.HatchOuttakeCommand;
 import frc.command.autonomous.RollerBarOutCommand;
-import frc.command.autonomous.TurnAndDriveCommand;
+import frc.command.autonomous.TurningDegreesCommand;
+import frc.command.autonomous.TurningLeft;
+import frc.command.autonomous.TurningRight;
+import frc.command.autonomous.DriveStraightCommand;
+import frc.command.autonomous.DriveStraightBetterCommand;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
 import frc.logging.LogHandler;
@@ -106,6 +110,8 @@ public class Robot extends TimedRobot {
 
 	private Gyro gyro;
 
+
+
 	private CommandRunner autonomousCommand;
 	private Logger robotLogger;
 
@@ -162,8 +168,21 @@ public class Robot extends TimedRobot {
 
 
 		// Edit this code here to complete the maze!!!!!!!!!!!
+		SequentialCommand goAngle = new SequentialCommand(new Command[] {
+			new TurningDegreesCommand(-getAngle(5*12, 12)), //remember put negative if ur going left !!!!!!!!!!!!!!!!!!!!!!
+			new DriveStraightBetterCommand(getHype(5*12,12), 1),
+			new TurningDegreesCommand(getAngle(5*12, 12)),
+			new DriveStraightBetterCommand(12,1)
+		});
+		System.out.println(-getAngle(5*12, 12));
+
+		
+
 		SequentialCommand turnAndGo = new SequentialCommand(new Command[] {
-			new TurnAndDriveCommand(6*12)
+			new TurningLeft(),
+			new DriveStraightBetterCommand(12,1),
+			new TurningRight(),
+			new DriveStraightBetterCommand(4*12, 1)
 		});
 
 		ParallelCommand getTheBall = new ParallelCommand(new Command[] {
@@ -176,7 +195,7 @@ public class Robot extends TimedRobot {
 			new DriveForwardInchesCommand(125),
 			new HatchOuttakeCommand(2.0)
 		});
-		autonomousCommand = new CommandRunner(turnAndGo);
+		autonomousCommand = new CommandRunner(goAngle);
 
 		ParallelCommand noahsTestCommand = new ParallelCommand(new Command[] {
 			new SequentialCommand(new Command[] {
@@ -454,6 +473,28 @@ public class Robot extends TimedRobot {
 			return 0.0;
 		}
 	}
+
+	    /**
+     * 
+     * @param forward the distance moving forward
+     * @param sideways the distance moving sideways
+     * @return returns distance you will need to move at an angle
+     */
+    public double getHype(double forward, double sideways) { 
+        return Math.sqrt((Math.pow(forward, 2.0) + Math.pow(sideways, 2.0)));
+    }
+
+    /**
+     * 
+     * @param forward the distance moving forward
+     * @param sideways the distance moving sideways
+     * @return returns angle to turn 
+     */
+    public double getAngle(double forward, double sideways) {
+        return Math.toDegrees(Math.atan((sideways/forward)));
+    }
+
+
 
 	// public void driveForward(double distance) {
 	// 	autonomousCommand = new DrivingForward(distance);
