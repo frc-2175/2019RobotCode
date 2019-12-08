@@ -60,8 +60,8 @@ public class ElevatorSubsystem {
 		pidController = new PIDController(elevatorKP, elevatorKI, elevatorKD);
 
 	}
-	public void setIsManual(boolean x) {
-		isManual = x;
+	public void setIsManual(boolean x) {  //if ur manual u can do whatever you want really 
+		isManual = x; //but if ur not then weird setpoint stuff happens so be careful !!!
 	}
 	public void setStickMoved(boolean x) {
 		stickMoved = x;
