@@ -27,6 +27,7 @@ import frc.command.autonomous.TurningDegreesCommand;
 import frc.command.autonomous.TurningLeft;
 import frc.command.autonomous.TurningRight;
 import frc.command.autonomous.DriveStraightCommand;
+import frc.command.autonomous.ElevatorUpCommand;
 import frc.command.autonomous.DriveStraightBetterCommand;
 import frc.info.RobotInfo;
 import frc.info.SmartDashboardInfo;
@@ -201,7 +202,7 @@ public class Robot extends TimedRobot {
 			new DriveForwardInchesCommand(125),
 			new HatchOuttakeCommand(2.0)
 		});
-		autonomousCommand = new CommandRunner(goAngle);
+		autonomousCommand = new cargoShip(goAngle); //here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 		ParallelCommand noahsTestCommand = new ParallelCommand(new Command[] {
 			new SequentialCommand(new Command[] {
@@ -209,6 +210,11 @@ public class Robot extends TimedRobot {
 				new HatchOuttakeCommand(2.0)
 			}),
 			new RollerBarOutCommand(3.0)
+		});
+
+		SequentialCommand cargoShip = new SequentialCommand(new Command[] {
+			new DriveForwardInchesCommand(105),
+			new ElevatorUpCommand()
 		});
 	}
 
