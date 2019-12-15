@@ -376,7 +376,7 @@ public class Robot extends TimedRobot {
 		boolean isManual = !(gamepad.getRawButton(GAMEPAD_X) || gamepad.getRawButton(GAMEPAD_B) || isGoingCargoShip); //if you are pressing X or B then it's not manual
 
 		elevatorSubsystem.setIsManual(isManual);
-		if (!isManual && isPreviousManual) {
+		if (!isManual && isPreviousManual) { //if you start being automatic and you weren't before, hold your place when you first press the button
 			elevatorSubsystem.setSetpoint(elevatorSubsystem.getElevatorPosition());
 			stayingAutomatic = false;
 		}

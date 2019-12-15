@@ -22,11 +22,15 @@ public class ElevatorUpCommand extends Command {
        elevatorSubsystem.CargoPlaceElevatorShip();
    }
    public boolean isFinished() {
+<<<<<<< Updated upstream
         if (elevatorSubsystem.getElevatorPosition() >= 31) {
             return true;
         } else {
             return false;
         }
+=======
+       
+>>>>>>> Stashed changes
    }
    public void end() {
         elevatorSubsystem.setIsManual(true);
