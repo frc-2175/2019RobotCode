@@ -24,7 +24,7 @@ public class ElevatorUpCommand extends Command {
     }
 
     public boolean isFinished() {
-        if (elevatorSubsystem.getElevatorPosition() >= (elevatorSubsystem.getSetpoint() - 1)) {
+        if (elevatorSubsystem.getElevatorPosition() >= (elevatorSubsystem.getSetpoint() - 4)) {
             return true;
         } else {
             return false;

@@ -28,6 +28,7 @@ import frc.command.autonomous.TurningDegreesCommand;
 import frc.command.autonomous.TurningLeft;
 import frc.command.autonomous.TurningRight;
 import frc.command.autonomous.DriveStraightCommand;
+import frc.command.autonomous.ElevatorStayCommand;
 import frc.command.autonomous.ElevatorUpCommand;
 import frc.command.autonomous.DriveStraightBetterCommand;
 import frc.info.RobotInfo;
@@ -214,8 +215,7 @@ public class Robot extends TimedRobot {
 
 		SequentialCommand cargoShip = new SequentialCommand(new Command[] {
 			new DriveForwardInchesCommand(95),
-			new ElevatorUpCommand(),
-			new SpitOutCargoCommand(5)
+			new RunWhileCommand( new SpitOutCargoCommand(1) , new ElevatorStayCommand() )
 		});
 
 		autonomousCommand = new CommandRunner(cargoShip); //here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

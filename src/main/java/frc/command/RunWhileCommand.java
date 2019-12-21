@@ -3,6 +3,8 @@ package frc.command;
 import frc.spacetime.SpacetimeEvent;
 
 public class RunWhileCommand extends Command {
+	//while the first command is running, the second command will also run. when the first command is finished, the second command will stop as well : )
+
 	private Command primaryCommand;
 	private Command secondaryCommand;
 

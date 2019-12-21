@@ -27,7 +27,6 @@ public class SpitOutCargoCommand extends Command {
 
     public void execute() {
         nowTime = Timer.getFPGATimestamp();
-        cargoIntakeSubsystem.solenoidIn();
         cargoIntakeSubsystem.rollOut();
     }
 
@@ -36,7 +35,6 @@ public class SpitOutCargoCommand extends Command {
     }
 
     public void end() {
-        cargoIntakeSubsystem.solenoidOut();
         cargoIntakeSubsystem.stopAllMotors();
     }
 }
