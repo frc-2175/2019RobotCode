@@ -2,10 +2,12 @@ package command;
 
 import frc.command.Command;
 
-public class TestCommand2 extends Command {
+public class TestCommand extends Command {
 	private int timesExecuted = 0;
 	private boolean hasInitialized = false;
-	private boolean hasEnded = false;
+	private int timesEnded = 0;
+	private boolean _isFinished = false;
+
 	public void init() {
 		hasInitialized = true;
 	}
@@ -15,11 +17,11 @@ public class TestCommand2 extends Command {
 	}
 
 	public boolean isFinished() {
-		return timesExecuted >= 2;
+		return _isFinished;
 	}
 
 	public void end() {
-		hasEnded = true;
+		timesEnded++;
 	}
 
 	public int getTimes() {
@@ -31,6 +33,14 @@ public class TestCommand2 extends Command {
 	}
 
 	public boolean getHasEnded() {
-		return hasEnded;
+		return timesEnded > 0;
+	}
+
+	public int getTimesEnded() {
+		return timesEnded;
+	}
+
+	public void setIsFinished(boolean isFinished) {
+		this._isFinished = isFinished;
 	}
 }
