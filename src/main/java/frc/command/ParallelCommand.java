@@ -13,7 +13,7 @@ public class ParallelCommand extends Command {
     /**
      * @param commands an array of the commands to be run in parallel
      */
-    public ParallelCommand(Command[] commands) {
+    public ParallelCommand(Command... commands) {
         this.commands = commands;
         System.out.println("# Of Commands");
         System.out.println(commands.length);

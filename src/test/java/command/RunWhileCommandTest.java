@@ -9,7 +9,7 @@ import org.junit.Before;
 
 import frc.ServiceLocator;
 import frc.command.Command;
-import frc.command.RunWhileCommand;;
+import frc.command.RunWhileCommand;
 import frc.logging.LogHandler;
 import frc.logging.Logger;
 import frc.logging.StdoutHandler;
